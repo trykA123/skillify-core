@@ -1,9 +1,9 @@
 ---
-name: diagnose
+name: traceify
 description: Structured repair loop for when something is broken. Observe symptoms, form hypotheses, test them, confirm root cause, apply minimal fix, verify no regression. Standalone for trivial fixes; feeds the pipeline when the fix needs planning. Use when "it was working yesterday" or "this error makes no sense."
 ---
 
-# Diagnose
+# Traceify
 
 Something is broken. Your job: find out why, fix it minimally, prove it's fixed.
 
@@ -22,7 +22,7 @@ causes from effects, not deduce effects from specs.
 
 - Greenfield work or features → the build pipeline (undumbify → shapeify → shipify)
 - "I want to improve X" → that's a feature, not a bug
-- Exploratory "what if" → `explore`
+- Exploratory "what if" → `explorify`
 
 ## 1. Capture Symptoms
 
@@ -142,7 +142,7 @@ step 2 with new evidence. Do NOT stack workarounds.
 
 ## Topology Behavior
 
-- **Single-agent:** Diagnose runs inline. The loop is fast — observe, think, check,
+- **Single-agent:** Traceify runs inline. The loop is fast — observe, think, check,
   fix. No formal artifacts until the report.
 - **Subagent:** If dispatched as a subagent (e.g., "go figure out why X is broken"),
   return the full Diagnosis Report. If the fix is non-trivial, return the Root-Cause
@@ -150,10 +150,10 @@ step 2 with new evidence. Do NOT stack workarounds.
 
 ## Interaction With Pipeline
 
-- Trivial fix → diagnose handles end-to-end, no pipeline involvement
-- Non-trivial fix → diagnose produces Root-Cause Brief → undumbify or shapeify
-- Fix reveals architectural problem → diagnose produces brief → undumbify (rethink)
-- Fix is a known pattern → diagnose notes it as follow-up, doesn't block
+- Trivial fix → traceify handles end-to-end, no pipeline involvement
+- Non-trivial fix → traceify produces Root-Cause Brief → undumbify or shapeify
+- Fix reveals architectural problem → traceify produces brief → undumbify (rethink)
+- Fix is a known pattern → traceify notes it as follow-up, doesn't block
 
 ## Final Gate
 

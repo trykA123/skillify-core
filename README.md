@@ -1,89 +1,159 @@
 # skillify
 
-A set of six interlocking skills for AI-assisted work. Designed around one insight:
-**the ceremony between skills should match the context boundary they cross.**
+Six interlocking skills for AI-assisted work. Harness-agnostic — works with Qwen Code,
+Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown.
+
+## Install
+
+### Option 1: `npx skills` (recommended, uses symlinks by default)
+
+```bash
+# Global install (all detected agents)
+npx skills add trykA123/skillify -g
+
+# Target specific agents
+npx skills add trykA123/skillify -g -a claude-code -a cursor
+
+# Copy instead of symlink
+npx skills add trykA123/skillify -g --copy
+```
+
+### Option 2: Manual symlinks via install script
+
+```bash
+git clone git@github.com:trykA123/skillify.git ~/path/to/skillify
+cd ~/path/to/skillify
+
+# Auto-detect harnesses, symlink globally
+./install.sh
+
+# Target specific harnesses
+./install.sh --harness qwen,claude,cursor
+
+# Project-local instead of global
+./install.sh --project
+
+# Copy instead of symlink (for systems without symlink support)
+./install.sh --copy
+
+# Remove
+./install.sh --uninstall
+```
+
+### Option 3: Reference directly in rules/system prompt
+
+Any harness that accepts a rules file or system prompt can reference the skills directly:
+
+```markdown
+<!-- In CLAUDE.md, .cursorrules, AGENTS.md, QWEN.md, etc. -->
+When planning implementation, follow: /path/to/skillify/shapeify/SKILL.md
+When debugging, follow: /path/to/skillify/traceify/SKILL.md
+```
+
+No install needed — the SKILL.md files ARE the prompts.
 
 ## The Skills
 
-| Skill | Cognitive mode | Entry point |
-|-------|---------------|-------------|
-| `explore` | Divergent — generate radically different options | "I don't know what I want yet" |
+| Skill | Cognitive mode | Trigger |
+|-------|---------------|---------|
+| `explorify` | Divergent — generate radically different options | "I don't know what I want yet" |
 | `undumbify` | Convergent — extract intent from ambiguity | "I have a direction but it's vague" |
-| `shapeify` | Structural — decompose into executable slices | "I know what I want, plan it" |
-| `shipify` | Disciplined — execute with adaptive validation | "Execute this plan" |
-| `reviewify` | Critical — judge against intent, not taste | "Review what was built" |
-| `diagnose` | Abductive — infer cause from symptoms | "Something broke" |
+| `shapeify` | Structural — decompose into executable slices | "Plan this" |
+| `shipify` | Disciplined — execute with adaptive validation | "Build this" |
+| `reviewify` | Critical — judge against intent, not taste | "Review this" |
+| `traceify` | Abductive — infer cause from symptoms | "Something broke" |
 
 ## How They Connect
 
+```mermaid
+flowchart TD
+    explorify["🔭 explorify<br/><i>divergent</i>"]
+    undumbify["🎯 undumbify<br/><i>convergent</i>"]
+    shapeify["📐 shapeify<br/><i>structural</i>"]
+    shipify["🚀 shipify<br/><i>disciplined</i>"]
+    reviewify["🔍 reviewify<br/><i>critical</i>"]
+    traceify["🩺 traceify<br/><i>abductive</i>"]
+
+    explorify -->|chosen direction| undumbify
+    undumbify -->|intent brief| shapeify
+    shapeify -->|worker packet| shipify
+    shipify -->|completion report| reviewify
+
+    shipify -->|revision request| shapeify
+    reviewify -->|replan| shapeify
+
+    traceify -->|root-cause brief| undumbify
+    traceify -->|trivial fix| traceify_done((✓ fixed))
+
+    style explorify fill:#e8d5b7,stroke:#8b6914
+    style traceify fill:#d4e8d4,stroke:#2d6b2d
+    style undumbify fill:#d5e5f5,stroke:#1a5276
+    style shapeify fill:#d5e5f5,stroke:#1a5276
+    style shipify fill:#d5e5f5,stroke:#1a5276
+    style reviewify fill:#d5e5f5,stroke:#1a5276
 ```
-                    ┌──────────┐
-                    │ explore  │  (standalone, pre-pipeline)
-                    └────┬─────┘
-                         │ chosen direction
-                         ▼
-┌──────────    ┌──────────┐    ┌──────────    ┌──────────┐
-│ undumbify│───▶│ shapeify │───▶│ shipify  │───▶│ reviewify│
-└──────────┘    └──────────┘    └──────────┘    └──────────┘
-      ▲               ▲               │               │
-      │               │    BLOCKED    │    REPLAN     │
-      │               └───────────────┘───────────────┘
-      │                               │
-      │         ┌──────────┐          │
-      └─────────│ diagnose │──────────┘
-   root-cause   └──────────   trivial fix
-   brief                     (handled inline)
-```
+
+**Legend:**
+- 🟡 Standalone entry points (explorify, traceify)
+- 🔵 Build pipeline (undumbify → shapeify → shipify → reviewify)
+- Feedback loops: shipify can revise the plan cheaply; reviewify can trigger replan
 
 ## Topology Awareness
 
-Every skill detects its execution topology and adjusts ceremony accordingly:
+Every skill detects its execution context and adjusts ceremony:
 
-- **Single-agent (all roles in one context):** Handoff artifacts are internal working notes.
-  No formal briefs between steps — the agent already has the context.
-- **Subagent (each role in isolated context):** Full handoff documents. The packet IS the
-  only rope the next agent has. Ceremony = signal.
-- **Hybrid (plan in main thread, execute in subagent):** Planning absorbs conversational
-  nuance; execution follows the packet faithfully with no drift.
-
-Skills signal topology via a `topology:` field in their output. When absent, assume
-single-agent and collapse ceremony.
+| Topology | Behavior |
+|----------|----------|
+| **Single-agent** | Handoff artifacts are internal notes. Ceremony collapses. |
+| **Subagent** | Full handoff documents. The packet is the only rope. |
+| **Hybrid** | Plan in main thread (absorbs nuance), execute in subagent (follows packet). |
 
 ## Shared ID System
 
 IDs flow through the pipeline without renaming:
 
-- `R1, R2, ...` — Requirements (testable behaviors)
-- `I1, I2, ...` — Invariants (boundaries that must remain true)
-- `A1, A2, ...` — Acceptance checks (commands/observations that prove R* and I*)
-- `P1, P2, ...` — Plan steps (ordered implementation actions)
-- `S1, S2, ...` — Slices (independently shippable groups of steps)
-- `F1, F2, ...` — Findings (review issues with location and fix)
+| Prefix | Meaning |
+|--------|---------|
+| `R*` | Requirements (testable behaviors) |
+| `I*` | Invariants (must remain true) |
+| `A*` | Acceptance checks (prove R* and I*) |
+| `P*` | Plan steps (ordered actions) |
+| `S*` | Slices (independently shippable groups) |
+| `F*` | Findings (review issues) |
 
 ## Design Principles
 
-1. **Constraints over solutions.** Skills extract WHY, not HOW. The user provides intent;
-   the agent figures out implementation.
-2. **Anti-examples are high-signal.** "NOT like X" eliminates more bad options than
-   "like Y" generates good ones.
-3. **Priority ordering resolves conflicts silently.** When things clash, the stated
-   priority wins without asking.
-4. **Feeling of done > acceptance checklist.** The gestalt target guides micro-decisions
-   that no checklist can enumerate.
-5. **Adaptive granularity.** Not every step needs the same isolation. Risk determines
-   validation frequency.
-6. **Living documents.** Plans can be revised in place. Feedback loops don't require
-   full regeneration.
-7. **Solo mode is first-class.** Most work is one human + one agent. The pipeline
-   shouldn't require a team to be useful.
+1. **Constraints over solutions** — extract WHY, not HOW
+2. **Anti-examples are high-signal** — "NOT like X" eliminates more than "like Y" generates
+3. **Priority ordering resolves conflicts silently** — no asking when things clash
+4. **Feeling of done > checklist** — the gestalt guides micro-decisions
+5. **Adaptive granularity** — risk determines validation frequency
+6. **Living documents** — plans amend in place, no full regeneration
+7. **Solo mode is first-class** — one human + one agent is the default
 
-## Installation
+## Repo Structure
 
-Copy the skill folders to `~/.qwen/skills/`:
-
-```bash
-cp -r explore undumbify shapeify shipify reviewify diagnose ~/.qwen/skills/
 ```
+skillify/
+├── README.md
+├── install.sh
+├── explorify/SKILL.md
+├── undumbify/SKILL.md
+├── shapeify/SKILL.md
+├── shipify/SKILL.md
+├── reviewify/SKILL.md
+└── traceify/SKILL.md
+```
+
+## Supported Harnesses
+
+The `install.sh` script supports symlinks for:
+Qwen Code, Claude Code, Cursor, OpenCode, Codex, Windsurf, GitHub Copilot.
+
+The `npx skills` CLI supports even more — check `npx skills add --help`.
+
+For any other harness: reference the SKILL.md files directly in your rules/system prompt.
+They're just markdown with instructions. No magic format required.
 
 ## License
 

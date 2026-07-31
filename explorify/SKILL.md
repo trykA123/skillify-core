@@ -1,9 +1,9 @@
 ---
-name: explore
+name: explorify
 description: Generates radically different approaches to an underspecified desire. Use when the user doesn't have a direction yet — they need options, not clarity. Divergent thinking before the pipeline converges. Standalone; its output feeds undumbify.
 ---
 
-# Explore
+# Explorify
 
 Expand the possibility space before anyone tries to narrow it. This skill exists for the
 moment when "I know what I want" is a lie — the user has a feeling, a frustration, or a
@@ -20,7 +20,7 @@ decision.
 ## When NOT To Use
 
 - The user has a clear direction and needs it sharpened → `undumbify`
-- Something broke and needs fixing → `diagnose`
+- Something broke and needs fixing → `traceify`
 - The plan exists and needs execution → `shipify`
 
 ## 1. Capture The Seed
@@ -93,7 +93,7 @@ This becomes undumbify's input. The pipeline starts converging from here.
 
 - **Single-agent:** The exploration happens inline in conversation. No formal artifact
   needed until handoff — the user sees options and reacts naturally.
-- **Subagent:** If explore runs as a subagent, it returns the full options + sketches as
+- **Subagent:** If explorify runs as a subagent, it returns the full options + sketches as
   its output. The parent presents them to the user and returns the choice.
 
 ## Completion Criterion

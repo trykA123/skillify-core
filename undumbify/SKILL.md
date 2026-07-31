@@ -116,7 +116,7 @@ Use Handoff only when the user approves or the work is reversible.
 ## Invocation Brake
 
 Skip when: the task is already decision-ready, it's a direct low-risk operation, the user
-asked a quick factual question, or you're in a diagnose loop (diagnose has its own
+asked a quick factual question, or you're in a traceify loop (traceify has its own
 convergence path).
 
 ## Final Gate
