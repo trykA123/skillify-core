@@ -1,6 +1,6 @@
 # skillify
 
-Six interlocking skills for AI-assisted work. Harness-agnostic — works with Qwen Code,
+Nine interlocking skills for AI-assisted work. Harness-agnostic — works with Qwen Code,
 Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown.
 
 ## Install
@@ -56,24 +56,32 @@ No install needed — the SKILL.md files ARE the prompts.
 
 | Skill | Cognitive mode | Trigger |
 |-------|---------------|---------|
+| `orientify` | Cartographic — map an unknown codebase before acting | "I just landed in this repo" |
 | `explorify` | Divergent — generate radically different options | "I don't know what I want yet" |
 | `undumbify` | Convergent — extract intent from ambiguity | "I have a direction but it's vague" |
 | `shapeify` | Structural — decompose into executable slices | "Plan this" |
 | `shipify` | Disciplined — execute with adaptive validation | "Build this" |
 | `reviewify` | Critical — judge against intent, not taste | "Review this" |
 | `traceify` | Abductive — infer cause from symptoms | "Something broke" |
+| `promptify` | Coaching — teach prompt craft from your real conversations | "Debrief that" |
+| `explainify` | Teaching — explain code and its wiring at your level | "What does this do?" |
 
 ## How They Connect
 
 ```mermaid
 flowchart TD
+    orientify["🧭 orientify<br/><i>cartographic</i>"]
     explorify["🔭 explorify<br/><i>divergent</i>"]
     undumbify["🎯 undumbify<br/><i>convergent</i>"]
     shapeify["📐 shapeify<br/><i>structural</i>"]
     shipify["🚀 shipify<br/><i>disciplined</i>"]
     reviewify["🔍 reviewify<br/><i>critical</i>"]
     traceify["🩺 traceify<br/><i>abductive</i>"]
+    promptify["🗣️ promptify<br/><i>coaching</i>"]
+    explainify["🧠 explainify<br/><i>teaching</i>"]
+    game["🎮 game layer<br/><i>progress.json + html</i>"]
 
+    orientify -->|codebase brief| explorify
     explorify -->|chosen direction| undumbify
     undumbify -->|intent brief| shapeify
     shapeify -->|worker packet| shipify
@@ -85,17 +93,24 @@ flowchart TD
     traceify -->|root-cause brief| undumbify
     traceify -->|trivial fix| traceify_done((✓ fixed))
 
-    style explorify fill:#e8d5b7,stroke:#8b6914
+    promptify -->|reads/writes| game
+    explainify -->|reads/writes| game
+
+    style orientify fill:#e8d5b7,stroke:#8b6914
     style traceify fill:#d4e8d4,stroke:#2d6b2d
     style undumbify fill:#d5e5f5,stroke:#1a5276
     style shapeify fill:#d5e5f5,stroke:#1a5276
     style shipify fill:#d5e5f5,stroke:#1a5276
     style reviewify fill:#d5e5f5,stroke:#1a5276
+    style promptify fill:#fdf0d5,stroke:#b45309
+    style explainify fill:#d5f5ee,stroke:#0f766e
+    style game fill:#e8e8f0,stroke:#4a4a6a
 ```
 
 **Legend:**
-- 🟡 Standalone entry points (explorify, traceify)
+- 🟡 Standalone entry points (orientify, explorify, traceify)
 - 🔵 Build pipeline (undumbify → shapeify → shipify → reviewify)
+- 🟠/🟢 Teaching cluster (promptify, explainify) sharing the 🎮 game layer
 - Feedback loops: shipify can revise the plan cheaply; reviewify can trigger replan
 
 ## Topology Awareness
@@ -137,12 +152,22 @@ IDs flow through the pipeline without renaming:
 skillify/
 ├── README.md
 ├── install.sh
+├── orientify/SKILL.md
 ├── explorify/SKILL.md
 ├── undumbify/SKILL.md
 ├── shapeify/SKILL.md
 ├── shipify/SKILL.md
 ├── reviewify/SKILL.md
-└── traceify/SKILL.md
+├── traceify/SKILL.md
+├── promptify/
+│   ├── SKILL.md
+│   ├── game-layer.md
+│   ├── html-template.md
+│   └── seeds/
+└── explainify/
+    ├── SKILL.md
+    ├── html-template.md
+    └── seeds/
 ```
 
 ## Supported Harnesses
