@@ -41,6 +41,8 @@ Scan the discussion for 1–2 high-signal patterns:
 
 Use their real words. Never invent an example.
 
+**Check the index first — no re-teaching.** Before committing to a pattern, check the profile's Known terms and the `lessons/` filenames: is this (or a near-twin) already taught? If yes, teach a different pattern from the harvest, go one level deeper on the same one, or skip with a one-line pointer to the existing lesson ('covered on <date> — link'). Re-teaching is the only sin.
+
 ### 3. Teach One Lesson (ZPD-sized)
 
 One pattern, one fix, in chat, tight:
@@ -61,7 +63,11 @@ A lesson fits in one screen. Two strong patterns? Teach the better one, note the
 
 ### 5. Update The Game
 
-Per game-layer.md: +10 XP, streak, level, badges, regenerate `progress.html`. One line to the user.
+Per game-layer.md: +10 XP, streak, level, badges, then render the dashboard with `node <promptify-skill-folder>/game-render.js <progress.json>`. One line to the user.
+
+## Quick Mode
+
+When the moment is small — a one-line prompt fix, a short exchange, a coaching nudge — declare **quick mode**: teach chat-only, no lesson file, no HTML. Still update the profile (one dated habit line) and still award +10 XP, with the history artifact set to `null`. Say it in the game line: 'quick lesson — chat only'. The full ceremony returns when the lesson earns it; quick mode exists so small moments stay cheap instead of being skipped.
 
 ## Artifact Templates
 
@@ -111,13 +117,14 @@ Per game-layer.md: +10 XP, streak, level, badges, regenerate `progress.html`. On
 
 ## Completion Criterion
 
-The user can state the fix in their own words (or tries it in their next message) AND the artifacts exist: lesson saved, glossary updated, game updated. No artifacts, no XP — the game never rewards talk.
+The user can state the fix in their own words (or tries it in their next message) AND the artifacts exist: lesson saved, glossary updated, game updated — or quick mode was declared (chat-only, artifact null). No artifacts, no XP — the game never rewards talk.
 
 ## Final Gate
 
 - [ ] Profile and game layer loaded before teaching
+- [ ] Pattern checked against the lessons index + glossary — no re-teaching
 - [ ] One pattern taught — real words, one screen, one fix
-- [ ] Lesson saved (md; html when encouraged)
+- [ ] Lesson saved (md; html when encouraged) — or quick mode declared (artifact null)
 - [ ] Glossary updated with 1–3 weighted terms
 - [ ] Profile updated with dated observations
 - [ ] Game updated: +10 XP, streak, level, badges, dashboard regenerated

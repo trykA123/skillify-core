@@ -167,6 +167,7 @@ skillify/
 ├── promptify/
 │   ├── SKILL.md
 │   ├── game-layer.md
+│   ├── game-render.js
 │   ├── html-template.md
 │   └── seeds/
 └── explainify/
