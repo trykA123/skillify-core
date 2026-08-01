@@ -96,15 +96,20 @@ flowchart TD
     promptify -->|reads/writes| game
     explainify -->|reads/writes| game
 
-    style orientify fill:#e8d5b7,stroke:#8b6914
-    style traceify fill:#d4e8d4,stroke:#2d6b2d
-    style undumbify fill:#d5e5f5,stroke:#1a5276
-    style shapeify fill:#d5e5f5,stroke:#1a5276
-    style shipify fill:#d5e5f5,stroke:#1a5276
-    style reviewify fill:#d5e5f5,stroke:#1a5276
-    style promptify fill:#fdf0d5,stroke:#b45309
-    style explainify fill:#d5f5ee,stroke:#0f766e
-    style game fill:#e8e8f0,stroke:#4a4a6a
+    classDef sand fill:#e8d5b7,stroke:#8b6914,color:#4a3a10
+    classDef green fill:#d4e8d4,stroke:#2d6b2d,color:#1f4a1f
+    classDef blue fill:#d5e5f5,stroke:#1a5276,color:#123c57
+    classDef amber fill:#fdf0d5,stroke:#b45309,color:#7a3b06
+    classDef teal fill:#d5f5ee,stroke:#0f766e,color:#0a4f4a
+    classDef gray fill:#e8e8f0,stroke:#4a4a6a,color:#2e2e45
+
+    class orientify sand
+    class traceify green
+    class traceify_done green
+    class undumbify,shapeify,shipify,reviewify blue
+    class promptify amber
+    class explainify teal
+    class game gray
 ```
 
 **Legend:**
