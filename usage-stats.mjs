@@ -419,7 +419,7 @@ function renderHtml(j) {
   const shownRuns = j.runs.slice(0, MIX_ROWS);
   const mixRows = shownRuns.map((r) => `<tr>
       <td class="rname">${esc(r.label)}</td>
-      ${j.agents.map((a) => `<td>${r.mix[a] === '0.00' ? '0.00' : r.mix[a]}</td>`).join('')}
+      ${j.agents.map((a) => `<td>${r.mix[a.name]}</td>`).join('')}
       <td style="color:var(--ink)">${r.calls}</td>
     </tr>`).join('\n');
 

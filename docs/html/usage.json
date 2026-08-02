@@ -1,57 +1,57 @@
 {
-  "generatedAt": "2026-08-02T23:36:12.480Z",
+  "generatedAt": "2026-08-02T23:46:04.346Z",
   "scope": "pi agent session logs — every subagent call recorded per run",
   "counting": "call = one subagent spawn (toolCall name:\"subagent\" with an agent and no action)",
   "windowDays": 14,
   "trendAvailable": false,
   "totals": {
-    "calls": 252,
-    "runs": 74,
-    "escalations": 82,
-    "repairRounds": 63,
+    "calls": 271,
+    "runs": 78,
+    "escalations": 84,
+    "repairRounds": 68,
     "unclassified": 0
   },
   "agents": [
     {
       "name": "worker",
-      "calls": 125,
-      "share": "49.60",
+      "calls": 136,
+      "share": "50.18",
       "trend": null
     },
     {
       "name": "reviewer",
-      "calls": 64,
-      "share": "25.40",
+      "calls": 69,
+      "share": "25.46",
       "trend": null
     },
     {
       "name": "planner",
-      "calls": 35,
-      "share": "13.89",
+      "calls": 36,
+      "share": "13.28",
       "trend": null
     },
     {
       "name": "orchestrator",
       "calls": 9,
-      "share": "3.57",
+      "share": "3.32",
       "trend": null
     },
     {
       "name": "oracle",
-      "calls": 7,
-      "share": "2.78",
+      "calls": 8,
+      "share": "2.95",
       "trend": null
     },
     {
       "name": "scout",
       "calls": 7,
-      "share": "2.78",
+      "share": "2.58",
       "trend": null
     },
     {
       "name": "researcher",
-      "calls": 5,
-      "share": "1.98",
+      "calls": 6,
+      "share": "2.21",
       "trend": null
     },
     {
@@ -116,7 +116,7 @@
     },
     {
       "severity": "low",
-      "text": "+16 more runs with escalations"
+      "text": "+17 more runs with escalations"
     },
     {
       "severity": "medium",
@@ -140,15 +140,15 @@
     },
     {
       "severity": "low",
-      "text": "+9 more repair clusters"
+      "text": "+10 more repair clusters"
     },
     {
       "severity": "low",
-      "text": "session 1 · run 1 — longest run, 1550 records (median 77.5)"
+      "text": "session 1 · run 1 — longest run, 1550 records (median 71.5)"
     }
   ],
   "runLength": {
-    "medianRecords": 77.5,
+    "medianRecords": 71.5,
     "longest": {
       "label": "session 1 · run 1",
       "records": 1550
@@ -175,49 +175,68 @@
       }
     },
     {
+      "label": "session 4 · run 71",
+      "calls": 4,
+      "escalations": 0,
+      "repairRounds": 1,
+      "records": 67,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "0.00",
+        "worker": "50.00",
+        "reviewer": "25.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "25.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 70",
+      "calls": 2,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 136,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "0.00",
+        "worker": "50.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "50.00",
+        "delegate": "0.00"
+      }
+    },
+    {
       "label": "session 4 · run 69",
-      "calls": 2,
+      "calls": 4,
       "escalations": 0,
-      "repairRounds": 0,
-      "records": 122,
+      "repairRounds": 1,
+      "records": 39,
       "mix": {
         "orchestrator": "0.00",
         "scout": "0.00",
         "context-builder": "0.00",
         "planner": "0.00",
         "worker": "50.00",
-        "reviewer": "0.00",
+        "reviewer": "25.00",
         "oracle": "0.00",
         "advisor": "0.00",
-        "researcher": "50.00",
+        "researcher": "25.00",
         "delegate": "0.00"
       }
     },
     {
-      "label": "session 4 · run 68",
-      "calls": 2,
-      "escalations": 0,
-      "repairRounds": 0,
-      "records": 34,
-      "mix": {
-        "orchestrator": "0.00",
-        "scout": "0.00",
-        "context-builder": "0.00",
-        "planner": "0.00",
-        "worker": "50.00",
-        "reviewer": "0.00",
-        "oracle": "0.00",
-        "advisor": "0.00",
-        "researcher": "50.00",
-        "delegate": "0.00"
-      }
-    },
-    {
-      "label": "session 4 · run 66",
+      "label": "session 4 · run 67",
       "calls": 3,
       "escalations": 0,
       "repairRounds": 0,
-      "records": 102,
+      "records": 186,
       "mix": {
         "orchestrator": "0.00",
         "scout": "0.00",
@@ -232,7 +251,7 @@
       }
     },
     {
-      "label": "session 4 · run 65",
+      "label": "session 4 · run 66",
       "calls": 2,
       "escalations": 0,
       "repairRounds": 0,
@@ -251,21 +270,40 @@
       }
     },
     {
-      "label": "session 4 · run 64",
-      "calls": 3,
+      "label": "session 4 · run 65",
+      "calls": 4,
       "escalations": 0,
-      "repairRounds": 0,
-      "records": 41,
+      "repairRounds": 1,
+      "records": 48,
       "mix": {
         "orchestrator": "0.00",
         "scout": "0.00",
         "context-builder": "0.00",
-        "planner": "33.33",
-        "worker": "33.33",
-        "reviewer": "0.00",
+        "planner": "25.00",
+        "worker": "25.00",
+        "reviewer": "25.00",
         "oracle": "0.00",
         "advisor": "0.00",
-        "researcher": "33.33",
+        "researcher": "25.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 59",
+      "calls": 11,
+      "escalations": 2,
+      "repairRounds": 2,
+      "records": 258,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "9.09",
+        "worker": "63.64",
+        "reviewer": "18.18",
+        "oracle": "9.09",
+        "advisor": "0.00",
+        "researcher": "0.00",
         "delegate": "0.00"
       }
     },
@@ -274,7 +312,7 @@
       "calls": 10,
       "escalations": 2,
       "repairRounds": 2,
-      "records": 283,
+      "records": 317,
       "mix": {
         "orchestrator": "0.00",
         "scout": "0.00",
@@ -404,18 +442,18 @@
     },
     {
       "label": "session 4 · run 51",
-      "calls": 10,
+      "calls": 11,
       "escalations": 2,
       "repairRounds": 2,
-      "records": 220,
+      "records": 230,
       "mix": {
         "orchestrator": "0.00",
         "scout": "0.00",
         "context-builder": "0.00",
-        "planner": "10.00",
-        "worker": "60.00",
-        "reviewer": "20.00",
-        "oracle": "10.00",
+        "planner": "9.09",
+        "worker": "63.64",
+        "reviewer": "18.18",
+        "oracle": "9.09",
         "advisor": "0.00",
         "researcher": "0.00",
         "delegate": "0.00"
@@ -1079,7 +1117,7 @@
     },
     {
       "date": "2026-08-02",
-      "calls": 252,
+      "calls": 271,
       "partial": true
     }
   ]
