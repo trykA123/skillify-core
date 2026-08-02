@@ -2,14 +2,16 @@
 
 Curated, de-identified records of real orchestrator runs. These feed the docs site's tab titled **"Case studies for agent workflows"** (no other name) and serve as the fleet's institutional memory.
 
-## The four workflows (the page shows exactly these four)
+## The workflows
 
 | # | Workflow | Status |
 |---|----------|--------|
 | 01 | [The alerts dashboard rebuild](01-alerts-rebuild.md) | ✅ complete |
 | 02 | [The torrent seed-watch watcher](02-seed-watch.md) | ✅ complete |
 | 03 | [The agents tab build](03-agents-tab.md) | 🔄 in progress |
-| 04 | [The feature round](04-feature-round.md) | 🔄 in progress |
+| 04 | [The feature round](04-feature-round.md) | ✅ complete |
+| 05 | [The polish round](05-polish-round.md) | ✅ complete |
+| 06 | [The skill map build](06-skill-map.md) | 🔄 in progress |
 
 Process lessons that are not full workflows (e.g. the [README reconcile](03-readme-reconcile.md)) stay on record as side notes, not as numbered workflows.
 
