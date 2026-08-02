@@ -7,7 +7,7 @@
 <meta name="description" content="skillify — nine cognitive skills that chain into a pipeline for AI-assisted work. What each does, when to reach for it, how to invoke it.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════ skillify · the cognitive pipeline · field guide ═══════════
    Opens with the living flow, because the pipeline IS the subject.
@@ -19,9 +19,13 @@
   --bg-3:oklch(21% 0.024 260);
   --ink:oklch(94% 0.01 250);
   --ink-soft:oklch(74% 0.015 250);
-  --ink-faint:oklch(54% 0.02 250);
+  --ink-faint:oklch(62% 0.02 250);
   --line:oklch(94% 0.01 250 / .12);
   --line-strong:oklch(94% 0.01 250 / .26);
+  /* skill colors — dark theme (all AA+ on the dark ground) */
+  --sk-orientify:#d8a24a;--sk-explorify:#d97a4a;--sk-traceify:#7ba05a;
+  --sk-undumbify:#4aa8a0;--sk-shapeify:#5b8ab5;--sk-shipify:#5a9ec5;
+  --sk-reviewify:#b58ab0;--sk-promptify:#d9944a;--sk-explainify:#4ab5a0;
   --disp:'Bricolage Grotesque',ui-sans-serif,system-ui,sans-serif;
   --body:'Instrument Sans',ui-sans-serif,system-ui,sans-serif;
   --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
@@ -43,10 +47,18 @@ html[data-theme="light"]{
   --bg-3:oklch(94% 0.008 250);
   --ink:oklch(20% 0.02 250);
   --ink-soft:oklch(42% 0.02 250);
-  --ink-faint:oklch(56% 0.02 250);
+  --ink-faint:oklch(46% 0.02 250);
   --line:oklch(20% 0.02 250 / .14);
   --line-strong:oklch(20% 0.02 250 / .3);
+  /* skill colors — light theme (darkened to AA on the light ground) */
+  --sk-orientify:#8a6420;--sk-explorify:#a34d1e;--sk-traceify:#55702e;
+  --sk-undumbify:#20655e;--sk-shapeify:#37597e;--sk-shipify:#2f6186;
+  --sk-reviewify:#755170;--sk-promptify:#8d5b16;--sk-explainify:#1c6a58;
 }
+/* font combinations — swap the display / body / mono voices */
+html[data-font="editorial"]{--disp:'Fraunces',Georgia,serif;--body:'Source Sans 3',ui-sans-serif,system-ui,sans-serif}
+html[data-font="technical"]{--disp:'Space Grotesk',ui-sans-serif,sans-serif;--body:'IBM Plex Sans',ui-sans-serif,sans-serif;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+html[data-font="hyperlegible"]{--disp:'Atkinson Hyperlegible',ui-sans-serif,sans-serif;--body:'Atkinson Hyperlegible',ui-sans-serif,sans-serif}
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth;font-size:125%} /* 20px base = 1.25em */
 body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.6;overflow-x:hidden}
@@ -66,6 +78,13 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1
   border:1px solid var(--line-strong);background:var(--bg-2);color:var(--ink);font-size:1.1rem;cursor:pointer;
   display:grid;place-items:center;transition:transform .2s,border-color .2s,box-shadow .2s}
 .theme-toggle:hover{transform:translateY(-2px);border-color:var(--ink-faint);box-shadow:0 8px 20px -8px color-mix(in srgb,var(--ink) 30%,transparent)}
+.font-switch{position:fixed;top:18px;right:70px;z-index:10;display:flex;gap:2px;
+  border:1px solid var(--line-strong);border-radius:8px;background:var(--bg-2);padding:3px}
+.font-switch button{font-family:var(--mono);font-size:.62rem;font-weight:600;letter-spacing:.03em;
+  background:none;border:0;color:var(--ink-faint);padding:.42rem .6rem;border-radius:5px;cursor:pointer;
+  transition:color .2s,background .2s}
+.font-switch button:hover{color:var(--ink)}
+.font-switch button.on{background:color-mix(in srgb, var(--ink) 14%, transparent);color:var(--ink)}
 #sparks{position:fixed;inset:0;z-index:0;pointer-events:none}
 
 .wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:0 24px}
@@ -91,12 +110,12 @@ h1 .thin{font-weight:500;color:var(--ink-soft)}
 .flow-head .note{font-family:var(--mono);font-size:.6rem;color:var(--ink-faint);letter-spacing:.08em;margin-left:auto}
 svg#flow{width:100%;height:auto;display:block}
 .fnode{cursor:pointer}
-.fnode rect{transition:filter .25s,stroke-width .25s}
+.fnode rect{fill:color-mix(in srgb, var(--nc) 13%, var(--bg-2));stroke:var(--nc);stroke-width:1.5;transition:filter .25s,stroke-width .25s}
 .fnode:hover rect{stroke-width:2.5;filter:drop-shadow(0 0 12px var(--nc))}
 .fnode.lit rect{stroke-width:3;filter:drop-shadow(0 0 16px var(--nc))}
 .fnode text{pointer-events:none;user-select:none}
-.fnode .fname{font-family:var(--disp);font-weight:700;font-size:15px}
-.fnode .fmode{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase}
+.fnode .fname{fill:var(--ink);font-family:var(--disp);font-weight:700;font-size:15px}
+.fnode .fmode{fill:var(--nc);font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase}
 .fedge{fill:none;stroke-width:1.8;stroke-linecap:round}
 .fedge.flow-anim{stroke-dasharray:3 9;animation:dash 1.4s linear infinite}
 @keyframes dash{to{stroke-dashoffset:-12}}
@@ -178,6 +197,7 @@ footer .fline{flex:1;height:1px;background:var(--line)}
   .dossier{grid-template-columns:1fr}
   .d-id{border-right:0;border-bottom:1px solid var(--line)}
   .d-cols{grid-template-columns:1fr}
+  .font-switch{top:64px;right:18px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -193,6 +213,12 @@ footer .fline{flex:1;height:1px;background:var(--line)}
 <div class="glow c" aria-hidden="true"></div>
 <canvas id="sparks" aria-hidden="true"></canvas>
 <button class="theme-toggle" id="theme-toggle" aria-label="toggle theme">☀️</button>
+<div class="font-switch" id="font-switch" role="group" aria-label="font combination">
+  <button data-font="" class="on" title="Bricolage Grotesque + Instrument Sans">Grotesk</button>
+  <button data-font="editorial" title="Fraunces + Source Sans 3">Editorial</button>
+  <button data-font="technical" title="Space Grotesk + IBM Plex">Technical</button>
+  <button data-font="hyperlegible" title="Atkinson Hyperlegible — maximum readability">Legible</button>
+</div>
 
 <div class="wrap">
 
@@ -255,47 +281,47 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
 <script>
 /* ── the nine skills ── */
 var SK=[
- {id:'orientify',emoji:'🧭',mode:'cartographic',fam:'entry',color:'#d8a24a',no:'01',x:40,y:96,
+ {id:'orientify',emoji:'🧭',mode:'cartographic',fam:'entry',color:'var(--sk-orientify)',no:'01',x:40,y:96,
   does:'Maps a codebase you don\u2019t know <b>before</b> you touch it — vocabulary, architecture, hot spots, seams, landmines — into one Codebase Brief. Touch nothing, see everything.',
   when:['Dropped into a repo for the first time','Returning after weeks away','Before planning, when the codebase is the subject'],
   invoke:'/orientify',trig:'\u201cI just landed in this repo\u201d',explicit:true,
   io:'a repo <b>→</b> Codebase Brief',conn:'feeds <b>explorify · undumbify</b>'},
- {id:'explorify',emoji:'🔭',mode:'divergent',fam:'entry',color:'#d97a4a',no:'02',x:220,y:40,
+ {id:'explorify',emoji:'🔭',mode:'divergent',fam:'entry',color:'var(--sk-explorify)',no:'02',x:220,y:40,
   does:'Expands the possibility space when you don\u2019t have a direction yet. Generates options that differ on a <b>fundamental axis</b> — not three costumes of the same idea — each with a sketch you can react to.',
   when:['\u201cReimagine this\u201d / \u201cwhat if…\u201d','You reject a proposal but can\u2019t say why','The first idea would be a trap'],
   invoke:'/explorify',trig:'\u201cshow me options\u201d · \u201cI don\u2019t know what I want yet\u201d',
   io:'a vague desire <b>→</b> Direction Brief',conn:'feeds <b>undumbify</b>'},
- {id:'traceify',emoji:'🩺',mode:'abductive',fam:'entry',color:'#7ba05a',no:'03',x:220,y:250,
+ {id:'traceify',emoji:'🩺',mode:'abductive',fam:'entry',color:'var(--sk-traceify)',no:'03',x:220,y:250,
   does:'A tight repair loop for when something broke: capture symptoms, form <b>falsifiable</b> hypotheses, run the cheapest test first, name the root cause, fix it minimally, prove it\u2019s fixed. No stacked workarounds.',
   when:['Errors, crashes, 502s, silent failures','\u201cIt was working yesterday\u201d','A regression you can\u2019t explain'],
   invoke:'/traceify',trig:'\u201csomething broke\u201d · \u201cthis error makes no sense\u201d',
   io:'a symptom <b>→</b> Diagnosis Report',conn:'trivial → done · non-trivial <b>→ undumbify / shapeify</b>'},
- {id:'undumbify',emoji:'🎯',mode:'convergent',fam:'pipe',color:'#4aa8a0',no:'04',x:400,y:96,
+ {id:'undumbify',emoji:'🎯',mode:'convergent',fam:'pipe',color:'var(--sk-undumbify)',no:'04',x:400,y:96,
   does:'Extracts intent from ambiguity along six dimensions — constraints, anti-examples, priorities, feeling-of-done — gated by the <b>Materiality Gate</b>: never ask what you already know, never ask what doesn\u2019t matter.',
   when:['You have a direction but it\u2019s vague','Pressure-testing a plan before building','Handing off to shapeify'],
   invoke:'/undumbify',trig:'\u201cI have a direction but it\u2019s vague\u201d',
   io:'ambiguity <b>→</b> Intent Brief',conn:'feeds <b>shapeify</b> · fed by <b>explorify · traceify</b>'},
- {id:'shapeify',emoji:'📐',mode:'structural',fam:'pipe',color:'#5b8ab5',no:'05',x:580,y:40,
+ {id:'shapeify',emoji:'📐',mode:'structural',fam:'pipe',color:'var(--sk-shapeify)',no:'05',x:580,y:40,
   does:'Turns intent into a plan a worker can execute without guessing — a <b>Worker Packet</b> with requirements, invariants, risk register, and acceptance checks. Lite for small work, full when it\u2019s earned.',
   when:['\u201cPlan this\u201d','Multi-step or risky work','Dispatching to a subagent'],
   invoke:'/shapeify',trig:'\u201cplan this\u201d · \u201cbreak it into slices\u201d',
   io:'Intent Brief <b>→</b> Worker Packet',conn:'feeds <b>shipify</b> · revised by <b>reviewify</b>'},
- {id:'shipify',emoji:'🚀',mode:'disciplined',fam:'pipe',color:'#5a9ec5',no:'06',x:760,y:96,
+ {id:'shipify',emoji:'🚀',mode:'disciplined',fam:'pipe',color:'var(--sk-shipify)',no:'06',x:760,y:96,
   does:'Executes the packet with <b>adaptive granularity</b> — isolate the risky steps, batch the safe ones, verify with evidence. When a step\u2019s premise breaks, it stops and asks for a revision instead of improvising.',
   when:['\u201cBuild this\u201d / \u201cimplement this\u201d','Running a Worker Packet or slice','Work that must stay green'],
   invoke:'/shipify',trig:'\u201cbuild this\u201d · \u201cimplement the packet\u201d',
   io:'Worker Packet <b>→</b> Completion Report',conn:'feeds <b>reviewify</b> · revises <b>shapeify</b>'},
- {id:'reviewify',emoji:'🔍',mode:'critical',fam:'pipe',color:'#b58ab0',no:'07',x:940,y:40,
+ {id:'reviewify',emoji:'🔍',mode:'critical',fam:'pipe',color:'var(--sk-reviewify)',no:'07',x:940,y:40,
   does:'Judges the work against <b>intent, not taste</b> — through a few deep lenses, with findings that carry a location, a fix, and a way to verify. Solo mode hands you a punch list, not a report.',
   when:['\u201cReview this\u201d / a PR or diff','After shipify completes a slice','Before merging anything risky'],
   invoke:'/reviewify',trig:'\u201creview this\u201d · \u201cjudge it against the packet\u201d',
   io:'a diff + packet <b>→</b> verdict + findings',conn:'fixes <b>→ shipify</b> · replan <b>→ shapeify</b>'},
- {id:'promptify',emoji:'🗣️',mode:'coaching',fam:'teach',color:'#d9944a',no:'08',x:580,y:280,
+ {id:'promptify',emoji:'🗣️',mode:'coaching',fam:'teach',color:'var(--sk-promptify)',no:'08',x:580,y:280,
   does:'Teaches you to prompt better by debriefing your <b>real</b> conversations — one concrete improvement at a time, tracked on an evidence-based skill map. No XP, no streaks; the bars moving is the reward.',
   when:['\u201cDebrief that\u201d after a meaty exchange','\u201cHow should I have asked that?\u201d','Sharpening a draft prompt'],
   invoke:'/promptify',trig:'\u201cdebrief that\u201d · \u201cmake this prompt tighter\u201d',explicit:true,
   io:'a conversation <b>→</b> one lesson + skill-map evidence',conn:'shares the skill map with <b>explainify</b>'},
- {id:'explainify',emoji:'🧠',mode:'teaching',fam:'teach',color:'#4ab5a0',no:'09',x:760,y:280,
+ {id:'explainify',emoji:'🧠',mode:'teaching',fam:'teach',color:'var(--sk-explainify)',no:'09',x:760,y:280,
   does:'Explains code and its wiring <b>at your level</b> — what it does, how the parts talk, traced with real line references. Chat-first; a durable doc or diagram only when it\u2019s earned.',
   when:['\u201cWhat does this do?\u201d','\u201cHow do X and Y communicate?\u201d','Learning a module or flow'],
   invoke:'/explainify',trig:'\u201cwhat does this do?\u201d · \u201cmap the connections\u201d',explicit:true,
@@ -334,11 +360,13 @@ FLOWS.forEach(function(f){
   var mx=(x1+x2)/2,my=(y1+y2)/2;
   var d='M '+x1+' '+y1+' Q '+mx+' '+((y1+y2)/2+((y2>y1)?-26:26))+' '+x2+' '+y2;
   var col=b.color;
-  var p=el('path',{d:d,'class':'fedge'+(f[3]==='solid'?' flow-anim':''),stroke:col,opacity:f[3]==='solid'?0.55:0.3});
+  var p=el('path',{d:d,'class':'fedge'+(f[3]==='solid'?' flow-anim':''),opacity:f[3]==='solid'?0.55:0.3});
+  p.style.stroke=col;
   if(f[3]==='dashed')p.setAttribute('stroke-dasharray','4 6');
   flow.appendChild(p);
   if(f[2]){
-    var t=el('text',{x:mx,y:my-6,'text-anchor':'middle','class':'fedge-label',fill:col,opacity:.75});
+    var t=el('text',{x:mx,y:my-6,'text-anchor':'middle','class':'fedge-label',opacity:.75});
+    t.style.fill=col;
     t.textContent=f[2];flow.appendChild(t);
   }
 });
@@ -347,11 +375,10 @@ FLOWS.forEach(function(f){
 SK.forEach(function(s,i){
   var g=el('g',{'class':'fnode','data-id':s.id});
   g.style.setProperty('--nc',s.color);
-  g.appendChild(el('rect',{x:s.x,y:s.y,width:140,height:62,rx:9,
-    fill:'color-mix(in srgb, '+s.color+' 13%, var(--bg-2))',stroke:s.color,'stroke-width':1.5}));
+  g.appendChild(el('rect',{x:s.x,y:s.y,width:140,height:62,rx:9}));
   var em=el('text',{x:s.x+13,y:s.y+26,'font-size':15});em.textContent=s.emoji;g.appendChild(em);
-  var nm=el('text',{x:s.x+36,y:s.y+27,'class':'fname',fill:'var(--ink)'});nm.textContent=s.id;g.appendChild(nm);
-  var md=el('text',{x:s.x+13,y:s.y+47,'class':'fmode',fill:s.color});md.textContent=s.mode;g.appendChild(md);
+  var nm=el('text',{x:s.x+36,y:s.y+27,'class':'fname'});nm.textContent=s.id;g.appendChild(nm);
+  var md=el('text',{x:s.x+13,y:s.y+47,'class':'fmode'});md.textContent=s.mode;g.appendChild(md);
   g.addEventListener('click',function(){ gotoSkill(s.id); });
   g.addEventListener('mouseenter',function(){ lightChip(s.id,true); });
   g.addEventListener('mouseleave',function(){ lightChip(s.id,false); });
@@ -478,6 +505,24 @@ tbtn.addEventListener('click',function(){
   try{localStorage.setItem('skillify-guide-theme',isLight?'dark':'light');}catch(e){}
   tbtn.textContent=themeLabel();
 });
+
+/* font combination switcher — persisted */
+var fsw=document.getElementById('font-switch');
+try{var sf=localStorage.getItem('skillify-guide-font');if(sf)document.documentElement.setAttribute('data-font',sf);}catch(e){}
+function markFont(){
+  var cur=document.documentElement.getAttribute('data-font')||'';
+  fsw.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',(b.getAttribute('data-font')||'')===cur);});
+}
+fsw.querySelectorAll('button').forEach(function(b){
+  b.addEventListener('click',function(){
+    var f=b.getAttribute('data-font');
+    if(f)document.documentElement.setAttribute('data-font',f);
+    else document.documentElement.removeAttribute('data-font');
+    try{localStorage.setItem('skillify-guide-font',f);}catch(e){}
+    markFont();
+  });
+});
+markFont();
 </script>
 </body>
 </html>
