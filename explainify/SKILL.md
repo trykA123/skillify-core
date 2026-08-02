@@ -126,6 +126,7 @@ The user can explain the thing back (or asks a sharper follow-up) AND the skill 
 - [ ] Glossary updated with weighted terms (when escalated)
 - [ ] HTML + diagram produced only when connections were central AND the user wanted it
 - [ ] Skill map updated; one line of signal to the user
+- [ ] Session recorded via recordify (sanitized session record written to RECORDS_DIR) — the done path fires it; chat-only still records
 - [ ] Nothing modified outside `docs/learnings/` and the skill map
 
 ## Topology Behavior

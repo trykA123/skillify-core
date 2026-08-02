@@ -154,6 +154,7 @@ The user can state the fix in their own words (or tries it in their next message
 - [ ] Glossary updated with 1–3 weighted terms (when escalated)
 - [ ] Profile updated with dated observations
 - [ ] Skill map updated: evidence appended (honest valence); dashboard rendered when Node is available
+- [ ] Session recorded via recordify (sanitized session record written to RECORDS_DIR) — the done path fires it; quick mode still records
 - [ ] User told one line: which competency moved, or which gap was exposed
 - [ ] No invented examples; no lecture without a lesson
 
