@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>skillify · the data studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════ the data studio · editorial edition ═══════════
+   A bright analytics desk. Fraunces sets the figures; charts are
+   drawn live and re-animate on every tab. Detail lives in the readout. */
+:root{
+  color-scheme:light;
+  --bg:oklch(97.5% 0.006 250);
+  --bg-2:oklch(99.5% 0.004 250);
+  --bg-3:oklch(94.5% 0.008 250);
+  --ink:oklch(22% 0.03 255);
+  --ink-soft:oklch(44% 0.02 255);
+  --ink-faint:oklch(58% 0.02 255);
+  --line:oklch(22% 0.03 255 / .14);
+  --line-strong:oklch(22% 0.03 255 / .3);
+  --s-pl:oklch(58% 0.14 235);
+  --s-te:oklch(62% 0.15 55);
+  --s-or:oklch(52% 0.12 155);
+  --s-rp:oklch(58% 0.17 30);
+  --gain:oklch(48% 0.12 160);
+  --gain-soft:oklch(48% 0.12 160 / .1);
+  --amber:oklch(55% 0.12 60);
+  --disp:'Fraunces',Georgia,serif;
+  --sans:'Instrument Sans',ui-sans-serif,system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+html[data-mode="midnight"]{
+  color-scheme:dark;
+  --bg:oklch(16% 0.02 255);
+  --bg-2:oklch(19% 0.022 255);
+  --bg-3:oklch(22% 0.024 255);
+  --ink:oklch(95% 0.01 250);
+  --ink-soft:oklch(72% 0.015 250);
+  --ink-faint:oklch(56% 0.015 250);
+  --line:oklch(95% 0.01 250 / .14);
+  --line-strong:oklch(95% 0.01 250 / .3);
+  --s-pl:oklch(72% 0.13 235);
+  --s-te:oklch(74% 0.13 60);
+  --s-or:oklch(70% 0.12 155);
+  --s-rp:oklch(70% 0.14 35);
+  --gain:oklch(70% 0.12 160);
+  --gain-soft:oklch(70% 0.12 160 / .12);
+  --amber:oklch(74% 0.12 60);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;background:var(--bg);color:var(--ink);
+  font-family:var(--sans);line-height:1.55;overflow-x:hidden;
+  transition:background .35s,color .35s;
+}
+::selection{background:var(--s-pl);color:#fff}
+.ambient{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(900px 560px at 92% -10%, color-mix(in oklch,var(--s-pl) 9%,transparent), transparent 62%),
+    radial-gradient(760px 520px at -6% 106%, color-mix(in oklch,var(--s-te) 8%,transparent), transparent 60%);
+}
+.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:30px 22px 110px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ── chart-frame header ── */
+.frame{border:1.5px solid var(--line-strong);border-radius:18px;background:var(--bg-2);padding:20px 22px 0;box-shadow:0 24px 60px -38px oklch(30% 0.03 255/.35)}
+.fr-top{display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:16px}
+.fig{font-family:var(--mono);font-size:.64rem;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-faint)}
+.fig::before{content:"▤ ";color:var(--s-pl)}
+h1.title{margin:.35rem 0 0;font-family:var(--disp);font-weight:900;letter-spacing:-.02em;line-height:.98;font-size:clamp(2.3rem,5.6vw,3.7rem)}
+h1.title .ac{font-style:italic;font-weight:600;color:var(--s-pl)}
+.fr-weight{margin-left:auto;text-align:right}
+.fr-weight .k{font-family:var(--mono);font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint)}
+.fr-weight .v{font-family:var(--disp);font-size:2.9rem;font-weight:900;letter-spacing:-.03em;line-height:1}
+.fr-weight .v em{font-style:normal;font-family:var(--mono);font-size:.8rem;color:var(--gain);vertical-align:.9em}
+.fr-bar{width:150px;height:7px;border-radius:99px;background:var(--line);overflow:hidden;margin:6px 0 4px;margin-left:auto}
+.fr-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--s-pl),var(--gain));width:0;transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+
+.series-key{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:11px 15px;border:1px solid var(--line);border-radius:11px;font-family:var(--mono);font-size:.66rem;color:var(--ink-soft);margin-bottom:14px;background:var(--bg-3)}
+.series-key .k{font-size:.54rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint)}
+.series-key .sk{display:inline-flex;align-items:center;gap:6px}
+.series-key .dot{width:10px;height:10px;border-radius:99px}
+.series-key .l{width:18px;height:0;border-top:2px solid var(--ink)}
+.series-key .hint{margin-left:auto;color:var(--ink-faint);letter-spacing:.03em}
+
+.tabs{display:flex;gap:2px;overflow-x:auto}
+.tab{
+  font-family:var(--mono);font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  background:none;border:0;padding:10px 17px 13px;cursor:pointer;color:var(--ink-faint);
+  border-bottom:3px solid transparent;margin-bottom:-1.5px;white-space:nowrap;transition:color .15s,border-color .15s;
+}
+.tab:hover{color:var(--ink-soft)}
+.tab.on{color:var(--ink);border-bottom-color:var(--s-pl)}
+
+.panel{display:none}
+.panel.on{display:block;animation:rise .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.chart{background:var(--bg-2);border:1px solid var(--line);border-radius:16px;padding:20px 22px 16px;margin-top:16px}
+.chart h3{margin:0 0 14px;font-family:var(--mono);font-size:.7rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint)}
+.chart svg{width:100%;height:auto;display:block}
+.chart .hint{font-family:var(--mono);font-size:.64rem;color:var(--ink-faint);margin-top:10px}
+
+/* marks */
+.strip,.bar-g{cursor:pointer}
+.strip line{transition:stroke-width .15s,opacity .15s}
+.strip circle{transition:r .15s,opacity .15s}
+.strip:hover line,.strip.on line{stroke-width:7}
+.strip.dim{opacity:.18}
+.pt{cursor:pointer;transition:r .15s,opacity .15s}
+.pt:hover{r:10}
+.pt.on{r:10;stroke:var(--ink);stroke-width:2.5}
+.pt.dim{opacity:.18}
+.bar-g rect{transition:opacity .15s}
+.bar-g:hover rect{opacity:.82}
+.bar-g.on rect{stroke:var(--ink);stroke-width:2}
+.bar-g.dim rect{opacity:.15}
+
+/* tooltip */
+.tip{
+  position:fixed;z-index:60;pointer-events:none;background:var(--ink);color:var(--bg);
+  border-radius:11px;padding:11px 14px;font-size:.82rem;line-height:1.45;max-width:270px;
+  box-shadow:0 18px 40px -16px oklch(20% 0.03 255/.5);opacity:0;transition:opacity .12s ease;
+}
+.tip.show{opacity:1}
+.tip .tt-h{display:flex;align-items:baseline;gap:8px;margin-bottom:3px}
+.tip .tt-h b{font-family:var(--disp);font-size:.98rem;font-weight:700}
+.tip .tt-d{font-family:var(--mono);font-size:.64rem;font-weight:700;margin-left:auto}
+.tip .tt-d.up{color:oklch(80% 0.12 160)}
+.tip .tt-m{font-family:var(--mono);font-size:.68rem;opacity:.75;margin-bottom:4px}
+.tip .tt-n{font-size:.76rem;opacity:.85}
+
+/* summary */
+.sum-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:14px}
+.sum-card{border:1px solid var(--line);border-radius:14px;padding:15px 17px;background:var(--bg-3)}
+.sum-card .k{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint)}
+.sum-card .v{font-family:var(--disp);font-size:1.9rem;font-weight:900;letter-spacing:-.02em;margin-top:3px}
+.sum-card .s{font-size:.76rem;color:var(--ink-soft);margin-top:2px}
+.fam-avg{display:flex;flex-direction:column;gap:8px;margin-top:5px}
+.fam-avg .fa{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:.72rem}
+.fam-avg .fa .n{flex:0 0 5.2rem;color:var(--ink-soft)}
+.fam-avg .fa .tr{flex:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.fam-avg .fa .tr i{display:block;height:100%;border-radius:99px;width:0;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.fam-avg .fa b{flex:0 0 2.4rem;text-align:right}
+.best-chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:8px}
+.best-chips .bc{font-family:var(--mono);font-size:.68rem;font-weight:700;padding:6px 13px;border-radius:99px;color:#fff}
+.verdict-box{margin-top:14px;border-left:4px solid var(--gain);padding:4px 0 4px 18px;font-size:.92rem;color:var(--ink-soft);line-height:1.7}
+.verdict-box b{color:var(--ink)}
+
+/* ── readout ── */
+.readout{margin-top:18px;background:var(--bg-2);border:1.5px solid var(--line-strong);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px -38px oklch(30% 0.03 255/.35)}
+.ro-band{height:5px;transition:background .35s}
+.ro-body{padding:24px 28px;display:grid;grid-template-columns:auto auto 1fr;gap:30px;align-items:center}
+.ro-score{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:150px}
+.ro-score .num{font-family:var(--disp);font-size:4.6rem;font-weight:900;letter-spacing:-.05em;line-height:1}
+.ro-score .cap{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);text-align:center}
+.ro-delta{font-family:var(--mono);font-size:.78rem;font-weight:800;padding:4px 13px;border-radius:99px;margin-top:9px}
+.ro-delta.up{background:var(--gain);color:#fff}
+.ro-delta.flat{background:var(--line);color:var(--ink)}
+.ro-facts{display:grid;grid-template-columns:auto auto;gap:12px 30px}
+.ro-fact .k{font-family:var(--mono);font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint)}
+.ro-fact .v{font-size:1.02rem;font-weight:700;margin-top:1px}
+.ro-fact .v s{color:var(--ink-faint);font-weight:400}
+.ro-right{min-width:0}
+.ro-note{font-size:.9rem;color:var(--ink-soft);line-height:1.6;margin:0 0 10px}
+.ro-v{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.ro-v .vb{border-radius:10px;padding:10px 12px;font-size:.78rem;line-height:1.5}
+.ro-v .vb .vh{font-family:var(--mono);font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px}
+.ro-v .imp{background:var(--gain-soft);border:1px solid color-mix(in oklch,var(--gain) 40%,var(--line))}
+.ro-v .imp .vh{color:var(--gain)}
+.ro-v .gap{background:color-mix(in oklch,var(--amber) 10%,var(--bg-3));border:1px solid color-mix(in oklch,var(--amber) 40%,var(--line))}
+.ro-v .gap .vh{color:var(--amber)}
+.ro-v p{margin:0;color:var(--ink-soft)}
+.sparkline{grid-column:1/-1;display:flex;align-items:center;gap:12px;border-top:1px dashed var(--line);padding-top:14px}
+.sparkline .sl-cap{flex:0 0 5.4rem;font-family:var(--mono);font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)}
+.sparkline .sp-v1,.sparkline .sp-v2{font-family:var(--mono);font-size:.92rem;font-weight:700}
+.sparkline .sp-v1{color:var(--ink-faint)}
+.sparkline .sp-track{flex:1;height:9px;position:relative;background:var(--line);border-radius:99px}
+.sparkline .sp-line{position:absolute;top:1.5px;left:0;height:6px;border-radius:99px;transition:width .55s cubic-bezier(.2,.8,.2,1),left .55s cubic-bezier(.2,.8,.2,1),background .3s}
+.sparkline .sp-dot1,.sparkline .sp-dot2{position:absolute;top:50%;width:15px;height:15px;border-radius:99px;transform:translate(-50%,-50%);transition:left .55s cubic-bezier(.2,.8,.2,1),background .3s}
+.sparkline .sp-dot1{background:var(--ink-faint);border:2.5px solid var(--bg-2)}
+.sparkline .sp-dot2{background:var(--gain);border:2.5px solid var(--bg-2)}
+.sparkline .sp-chip{font-family:var(--mono);font-size:.7rem;font-weight:800;padding:3px 11px;border-radius:99px}
+.sparkline .sp-chip.up{background:var(--gain);color:#fff}
+.sparkline .sp-chip.flat{background:var(--line);color:var(--ink)}
+
+/* segmented toggle */
+.ctl{position:fixed;top:16px;right:16px;z-index:9;display:flex;gap:3px;background:var(--bg-2);border:1px solid var(--line-strong);border-radius:99px;padding:3px;box-shadow:0 10px 26px -14px oklch(30% 0.03 255/.4)}
+.ctl button{font-family:var(--mono);font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:none;border:0;padding:6px 13px;cursor:pointer;color:var(--ink-faint);border-radius:99px;transition:background .2s,color .2s}
+.ctl button.on{background:var(--s-pl);color:#fff}
+
+@media (max-width:880px){
+  .ro-body{grid-template-columns:1fr;gap:16px}
+  .sum-grid{grid-template-columns:1fr 1fr}
+  .ro-v{grid-template-columns:1fr}
+  .fr-weight{margin-left:0;text-align:left}
+  .fr-bar{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="ambient" aria-hidden="true"></div>
+<div class="ctl">
+  <button id="th-day" class="on">day</button>
+  <button id="th-night">midnight</button>
+</div>
+
+<div class="wrap">
+
+  <header class="frame">
+    <div class="fr-top">
+      <div>
+        <div class="fig">FIG. 2 · skillify evaluation · v2</div>
+        <h1 class="title">The Data <span class="ac">Studio</span></h1>
+      </div>
+      <div class="fr-weight">
+        <div class="k">system weight</div>
+        <div class="v"><span id="fr-num">0.0</span> <em>▲ +0.3</em></div>
+        <div class="fr-bar"><i id="fr-bar-i"></i></div>
+      </div>
+    </div>
+    <div class="series-key">
+      <span class="k">series key</span>
+      <span class="sk"><span class="dot" style="background:var(--s-pl)"></span>pipeline</span>
+      <span class="sk"><span class="dot" style="background:var(--s-te)"></span>teaching</span>
+      <span class="sk"><span class="dot" style="background:var(--s-or)"></span>orientation</span>
+      <span class="sk"><span class="dot" style="background:var(--s-rp)"></span>repair</span>
+      <span class="sk"><span class="l"></span>v1 → v2 track</span>
+      <span class="hint">hover a mark for detail · click selects · keys 1–5 switch charts</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab on" data-tab="mov">movement</button>
+      <button class="tab" data-tab="pos">position</button>
+      <button class="tab" data-tab="rank">rank</button>
+      <button class="tab" data-tab="sum">summary</button>
+      <button class="tab" data-tab="syn">synergy</button>
+    </div>
+  </header>
+
+  <div class="panel on" id="panel-mov"><div class="chart">
+    <h3>movement — one strip per skill, sorted by gain</h3>
+    <div id="strip"></div>
+    <div class="hint">● v1 → ● v2 · green chip = gain · nothing regressed · hover for the story</div>
+  </div></div>
+
+  <div class="panel" id="panel-pos"><div class="chart">
+    <h3>position — where each skill started vs where it is now</h3>
+    <div id="scatter"></div>
+    <div class="hint">x = weight at v1 (then) · y = weight at v2 (now) · above the diagonal = gained</div>
+  </div></div>
+
+  <div class="panel" id="panel-rank"><div class="chart">
+    <h3>rank — current weight</h3>
+    <div id="bars"></div>
+    <div class="hint">sorted by v2 weight · series colors constant across themes</div>
+  </div></div>
+
+  <div class="panel" id="panel-sum"><div class="chart">
+    <h3>summary — the system, aggregated</h3>
+    <div class="sum-grid">
+      <div class="sum-card"><div class="k">system weight</div><div class="v">8.8</div><div class="s">▲ +0.3 vs v1 (8.5)</div></div>
+      <div class="sum-card"><div class="k">changed / untouched</div><div class="v">6 / 3</div><div class="s">retouches landed, classics kept</div></div>
+      <div class="sum-card"><div class="k">biggest mover</div><div class="v">explainify</div><div class="s">▲ +1.1 · chat-first</div></div>
+      <div class="sum-card"><div class="k">family averages</div><div class="s"><div class="fam-avg" id="fam-avg"></div></div></div>
+    </div>
+    <div class="sum-card"><div class="k">best in class — colored by family</div>
+      <div class="best-chips">
+        <span class="bc" style="background:var(--s-rp)"><b>traceify</b> · debugging</span>
+        <span class="bc" style="background:var(--s-pl)"><b>explorify</b> · divergence</span>
+        <span class="bc" style="background:var(--s-pl)"><b>undumbify</b> · convergence</span>
+        <span class="bc" style="background:var(--s-pl)"><b>reviewify</b> · judgment</span>
+      </div>
+    </div>
+    <div class="verdict-box">
+      <b>8.8 / 10 — up from 8.5.</b> The v1 critique was ceremony and gimmickry; the v2 answer is the ceremony dial — every skill now has a lean default path with explicit escalation. "When in doubt: lite" / "Default: chat-only" / "Select 3–4 lenses" fix 80% of the friction. The skill map is the boldest change and the most correct: evidence-based competency tracking replaces XP theater. Remaining complaints concern <b>measurement, not design</b> — which is what a mature system should worry about.
+    </div>
+  </div></div>
+
+  <div class="panel" id="panel-syn"><div class="chart">
+    <h3>synergy — pair strength, ranked</h3>
+    <div id="syn"></div>
+    <div class="hint">each bar = two skills run together · the split shows who brings what · click a pair to select its first skill</div>
+  </div></div>
+
+  <!-- ══ readout ══ -->
+  <section class="readout">
+    <div class="ro-band" id="ro-band"></div>
+    <div class="ro-body">
+      <div class="ro-score">
+        <div class="num" id="ro-num">9.0</div>
+        <div class="cap" id="ro-cap">explainify · weight</div>
+        <div class="ro-delta up" id="ro-delta">▲ +1.1</div>
+      </div>
+      <div class="ro-facts">
+        <div class="ro-fact"><div class="k">rank</div><div class="v mono" id="ro-rank">1 of 9</div></div>
+        <div class="ro-fact"><div class="k">family</div><div class="v" id="ro-fam">teaching</div></div>
+        <div class="ro-fact"><div class="k">movement</div><div class="v mono" id="ro-mov"><s>7.9</s> → 9.0</div></div>
+        <div class="ro-fact"><div class="k">discovery</div><div class="v" id="ro-chg">retouched in v2</div></div>
+      </div>
+      <div class="ro-right">
+        <p class="ro-note" id="ro-note"></p>
+        <div class="ro-v">
+          <div class="vb imp"><div class="vh">▲ what improved</div><p id="ro-imp"></p></div>
+          <div class="vb gap"><div class="vh">⚠ remaining gap</div><p id="ro-gap"></p></div>
+        </div>
+      </div>
+      <div class="sparkline">
+        <span class="sl-cap">movement</span>
+        <span class="sp-v1" id="sp-v1">7.9</span>
+        <div class="sp-track"><span class="sp-line" id="sp-line"></span><span class="sp-dot1" id="sp-dot1"></span><span class="sp-dot2" id="sp-dot2"></span></div>
+        <span class="sp-v2" id="sp-v2">9.0</span>
+        <span class="sp-chip" id="sp-chip">▲ +1.1</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="tip" id="tip"></div>
+
+<script>
+var NS='http://www.w3.org/2000/svg';
+var FAM={pl:'var(--s-pl)',te:'var(--s-te)',or:'var(--s-or)',rp:'var(--s-rp)'};
+var FAML={pl:'pipeline',te:'teaching',or:'orientation',rp:'repair'};
+var SK=[
+  {n:'explainify',sy:'XN',fam:'te',av:9.0,v1:7.9,d:1.1,chg:'retouched in v2',note:'Chat-first default — "the explanation lives in the conversation." Escalation turns artifacts from ritual into judgment.',imp:'Chat-first default; artifacts only for 3+ modules, an explicit ask, or a repeat question.',gap:'SVG diagrams still error-prone for executors — but only attempted when earned.'},
+  {n:'reviewify',sy:'RV',fam:'pl',av:9.0,v1:8.6,d:0.4,chg:'retouched in v2',note:'Lens selection is senior judgment encoded. Contract lenses always-on.',imp:'3–4 deep lenses with a selection heuristic; skipped lenses stated; contract lenses always-on.',gap:'Minimal. This is what a review skill should feel like.'},
+  {n:'promptify',sy:'PF',fam:'te',av:8.9,v1:7.9,d:1.0,chg:'retouched in v2',note:'"No XP. No streaks. The bars moving IS the reward." Pipeline harvest is the most novel idea.',imp:'Skill map replaced XP/streaks/badges; quick mode is the default.',gap:'Still needs Node for the renderer; passive harvesting needs a structural hook.'},
+  {n:'traceify',sy:'TR',fam:'rp',av:8.9,v1:8.9,d:0,chg:'unchanged',note:'Untouched and still elite: cheapest test first, root cause before the fix.',imp:'Untouched — falsifiable hypotheses, cheapest test first, no stacked workarounds.',gap:'None. "Don\'t change a word."'},
+  {n:'explorify',sy:'XR',fam:'pl',av:8.9,v1:8.9,d:0,chg:'unchanged',note:'"Axes, not variations" + the sketch requirement — still the best divergence scaffolding.',imp:'Untouched — was already the best scaffolding.',gap:'Low trigger frequency is inherent (divergence is rare), not a flaw.'},
+  {n:'shapeify',sy:'SH',fam:'pl',av:8.8,v1:8.0,d:0.8,chg:'retouched in v2',note:'The Lite Packet is the biggest ceremony reduction in the set.',imp:'Lite packet (5 fields) for ≤5 steps; "when in doubt: lite"; escalation on double-failure.',gap:'Full template still 15+ fields — but the weight is now earned, not imposed.'},
+  {n:'undumbify',sy:'UN',fam:'pl',av:8.8,v1:8.8,d:0,chg:'unchanged',note:'The Materiality Gate still prevents the #1 AI sin.',imp:'Untouched — the Materiality Gate prevents the #1 AI sin.',gap:'Vocabulary is senior-oriented; juniors may bounce off the six dimensions.'},
+  {n:'shipify',sy:'SP',fam:'pl',av:8.7,v1:8.4,d:0.3,chg:'retouched in v2',note:'Three-line single-agent report turns ceremony into a receipt.',imp:'Three-line completion report for single-agent mode; full table reserved for subagents.',gap:"Output depends on shapeify's packet — lite mode shrinks the garbage-in surface."},
+  {n:'orientify',sy:'OR',fam:'or',av:8.6,v1:8.4,d:0.2,chg:'retouched in v2',note:'Quick Orient answers the "where does X live" case. Thinnest by design.',imp:'Quick Orient: a 5-line brief for small repos; escalation only when hidden complexity shows.',gap:'Thinnest by design — redundant for seniors, fine for subagents and cold starts.'}
+];
+var RX=[
+  {a:8,b:2,prod:'the clarification loop',impact:9.5,note:'Say what you mean, then say it back: undumbify extracts the intent, explainify verifies it in plain language.'},
+  {a:7,b:8,prod:'the teaching loop',impact:9.3,note:'The lesson is harvested into the skill map, and the map feeds the next explanation — the loop closes.'},
+  {a:3,b:4,prod:'the packet line',impact:9.2,note:'Shape twice, ship once: a clean worker packet is the cheapest insurance for a clean report.'},
+  {a:1,b:2,prod:'diverge → converge',impact:9.0,note:'Axes first, materiality gate second: the wildest options still get filtered by the six dimensions.'},
+  {a:6,b:5,prod:'root cause → verdict',impact:8.8,note:'Cheapest test first finds the why; the deep lenses verify the fix holds.'},
+  {a:0,b:6,prod:'cold-start repair',impact:8.5,note:'A 5-line brief points traceify at the right file before the first hypothesis.'}
+];
+var sel=0,W=940,H=470;
+var tip=document.getElementById('tip');
+function el(t,at){var e=document.createElementNS(NS,t);for(var k in at)e.setAttribute(k,at[k]);return e;}
+function attachTip(g,s){
+  g.addEventListener('mousemove',function(e){
+    var d=s.d>0?'+'+s.d.toFixed(1):'±0';
+    tip.innerHTML='<div class="tt-h"><b>'+s.n+'</b><span class="tt-d'+(s.d>0?' up':'')+'">'+(s.d>0?'▲ ':'')+d+'</span></div>'+
+      '<div class="tt-m">v1 '+s.v1.toFixed(1)+' → v2 '+s.av.toFixed(1)+' · '+FAML[s.fam]+'</div>'+
+      '<div class="tt-n">'+s.note+'</div>';
+    tip.classList.add('show');
+    var w=tip.offsetWidth,x=e.clientX+16,y=e.clientY-12;
+    if(x+w>innerWidth-8)x=e.clientX-w-16;
+    tip.style.left=x+'px';tip.style.top=Math.max(8,y)+'px';
+  });
+  g.addEventListener('mouseleave',function(){tip.classList.remove('show');});
+}
+
+function buildStrip(){
+  var host=document.getElementById('strip');host.innerHTML='';
+  var svg=el('svg',{viewBox:'0 0 '+W+' '+H,role:'img'});
+  var left=300,right=W-130;
+  var px=function(v){return left+((v-7.5)/2.1)*(right-left);};
+  for(var t=7.5;t<=9.6;t+=0.5){
+    svg.appendChild(el('text',{x:px(t),y:22,'text-anchor':'middle','font-size':12,fill:'var(--ink-faint)','font-family':'IBM Plex Mono,monospace'})).textContent=t.toFixed(1);
+    svg.appendChild(el('line',{x1:px(t),y1:30,x2:px(t),y2:H-24,stroke:'var(--line)','stroke-width':.7}));
+  }
+  var sorted=SK.slice().sort(function(a,b){return b.d-a.d;});
+  var rowH=(H-40)/sorted.length;
+  sorted.forEach(function(s,j){
+    var i=SK.indexOf(s),y=46+rowH*j+rowH/2;
+    var g=el('g',{class:'strip'+(i===sel?' on':''),'data-i':i});
+    g.appendChild(el('text',{x:0,y:y+5,'font-size':15,'font-weight':700,fill:'var(--ink)','font-family':'IBM Plex Mono,monospace'})).textContent=s.n;
+    var ln=el('line',{x1:px(s.v1),y1:y,x2:px(s.av),y2:y,stroke:FAM[s.fam],'stroke-width':4.5,opacity:.9});
+    g.appendChild(ln);
+    g.appendChild(el('circle',{cx:px(s.v1),cy:y,r:7,fill:FAM[s.fam],stroke:'var(--bg-2)','stroke-width':2.5}));
+    g.appendChild(el('circle',{cx:px(s.av),cy:y,r:9,fill:FAM[s.fam],stroke:'var(--bg-2)','stroke-width':2.5}));
+    var cx2=right+6;
+    g.appendChild(el('rect',{x:cx2,y:y-14,width:54,height:28,rx:14,fill:s.d>0?'var(--gain)':'var(--line)'}));
+    g.appendChild(el('text',{x:cx2+27,y:y+6,'text-anchor':'middle','font-size':13,'font-weight':800,fill:s.d>0?'#fff':'var(--ink)','font-family':'IBM Plex Mono,monospace'})).textContent=s.d>0?'+'+s.d.toFixed(1):'±0';
+    g.addEventListener('click',function(){select(i);});
+    attachTip(g,s);svg.appendChild(g);
+  });
+  host.appendChild(svg);
+}
+function buildScatter(){
+  var host=document.getElementById('scatter');host.innerHTML='';
+  var svg=el('svg',{viewBox:'0 0 '+W+' '+H});
+  var L=110,R=W-80,T=70,B=H-78;
+  var px=function(v){return L+((v-7.7)/1.5)*(R-L);};
+  var py=function(v){return B-((v-8.2)/1.0)*(B-T);};
+  svg.appendChild(el('polygon',{points:px(7.7)+','+py(9.2)+' '+px(9.2)+','+py(9.2)+' '+px(9.2)+','+py(8.4)+' '+px(7.7)+','+py(8.4),fill:'var(--gain)',opacity:.06}));
+  svg.appendChild(el('line',{x1:px(7.7),y1:py(7.7),x2:px(9.2),y2:py(9.2),stroke:'var(--line)','stroke-width':2.5,'stroke-dasharray':'8 6'}));
+  svg.appendChild(el('text',{x:L-64,y:(T+B)/2,'font-size':12,'letter-spacing':2.5,fill:'var(--ink-faint)','font-family':'IBM Plex Mono,monospace',transform:'rotate(-90 '+(L-64)+' '+((T+B)/2)+')'})).textContent='WEIGHT AT V2 (NOW)';
+  svg.appendChild(el('text',{x:(L+R)/2,y:B+42,'text-anchor':'middle','font-size':12,'letter-spacing':2.5,fill:'var(--ink-faint)','font-family':'IBM Plex Mono,monospace'})).textContent='WEIGHT AT V1 (THEN) →';
+  for(var v=8.0;v<=9.0;v+=0.5){
+    svg.appendChild(el('text',{x:px(v),y:B+20,'text-anchor':'middle','font-size':12,fill:'var(--ink-faint)','font-family':'IBM Plex Mono,monospace'})).textContent=v.toFixed(1);
+    svg.appendChild(el('text',{x:L-14,y:py(v)+4,'text-anchor':'end','font-size':12,fill:'var(--ink-faint)','font-family':'IBM Plex Mono,monospace'})).textContent=v.toFixed(1);
+  }
+  SK.forEach(function(s,i){
+    var pt=el('circle',{class:'pt'+(i===sel?' on':''),cx:px(s.v1),cy:py(s.av),r:9,fill:FAM[s.fam],'data-i':i});
+    pt.addEventListener('click',function(){select(i);});
+    attachTip(pt,s);svg.appendChild(pt);
+  });
+  host.appendChild(svg);
+}
+function buildBars(){
+  var host=document.getElementById('bars');host.innerHTML='';
+  var svg=el('svg',{viewBox:'0 0 '+W+' '+H});
+  var sorted=SK.slice().sort(function(a,b){return b.av-a.av;});
+  var rowH=H/(SK.length+1),max=9.05,min=8.5;
+  sorted.forEach(function(s,j){
+    var i=SK.indexOf(s),y=rowH*(j+0.5);
+    var bw=((s.av-min)/(max-min))*(W-220);
+    var g=el('g',{class:'bar-g'+(i===sel?' on':''),'data-i':i});
+    g.appendChild(el('rect',{x:0,y:y-rowH*0.34,width:bw,height:rowH*0.68,rx:5,fill:FAM[s.fam],opacity:.92}));
+    g.appendChild(el('text',{x:12,y:y+6,'font-size':14.5,'font-weight':700,fill:'var(--ink)','font-family':'IBM Plex Mono,monospace'})).textContent=s.n;
+    g.appendChild(el('text',{x:bw+14,y:y+6,'font-size':14.5,'font-weight':800,fill:'var(--ink)','font-family':'IBM Plex Mono,monospace'})).textContent=s.av.toFixed(1);
+    g.appendChild(el('text',{x:bw+58,y:y+6,'font-size':12,fill:s.d>0?'var(--gain)':'var(--ink-faint)','font-family':'IBM Plex Mono,monospace'})).textContent=s.d>0?'+'+s.d.toFixed(1):'±0';
+    g.addEventListener('click',function(){select(i);});
+    attachTip(g,s);svg.appendChild(g);
+  });
+  host.appendChild(svg);
+}
+function buildSyn(){
+  var host=document.getElementById('syn');host.innerHTML='';
+  var svg=el('svg',{viewBox:'0 0 '+W+' '+H});
+  var sorted=RX.slice().sort(function(x,y){return y.impact-x.impact;});
+  var rowH=(H-30)/sorted.length,trackX=330,trackW=320;
+  sorted.forEach(function(r,j){
+    var A=SK[r.a],B=SK[r.b],y=18+rowH*j+rowH/2;
+    var g=el('g',{});
+    g.appendChild(el('text',{x:0,y:y+5,'font-size':15,'font-weight':800,fill:'var(--ink)','font-family':'IBM Plex Mono,monospace'})).textContent=A.n+' + '+B.n;
+    var w=trackW*(r.impact/9.5);
+    g.appendChild(el('rect',{x:trackX,y:y-13,width:w/2,height:26,rx:6,fill:FAM[A.fam],opacity:.92}));
+    g.appendChild(el('rect',{x:trackX+w/2,y:y-13,width:w/2,height:26,rx:6,fill:FAM[B.fam],opacity:.92}));
+    g.appendChild(el('text',{x:trackX+12,y:y+5,'font-size':12,'font-weight':800,fill:'#fff','font-family':'IBM Plex Mono,monospace'})).textContent=A.sy;
+    g.appendChild(el('text',{x:trackX+w*0.75,y:y+5,'text-anchor':'middle','font-size':12,'font-weight':800,fill:'#fff','font-family':'IBM Plex Mono,monospace'})).textContent=B.sy;
+    g.appendChild(el('rect',{x:676,y:y-12,width:170,height:24,rx:12,fill:'var(--bg-3)',stroke:'var(--gain)','stroke-width':1.5}));
+    g.appendChild(el('text',{x:688,y:y+5,'font-size':11.5,'font-weight':800,fill:'var(--gain)','font-family':'IBM Plex Mono,monospace'})).textContent=r.prod;
+    g.appendChild(el('text',{x:trackX,y:y+34,'font-size':11.5,fill:'var(--ink-faint)','font-family':'IBM Plex Mono,monospace'})).textContent=r.note;
+    g.addEventListener('click',function(){select(r.a);});
+    svg.appendChild(g);
+  });
+  host.appendChild(svg);
+}
+function buildFamAvg(){
+  var host=document.getElementById('fam-avg');
+  var fams=[['pipeline',8.8,'--s-pl'],['teaching',9.0,'--s-te'],['orientation',8.6,'--s-or'],['repair',8.9,'--s-rp']];
+  host.innerHTML=fams.map(function(f){
+    return '<div class="fa"><span class="n">'+f[0]+'</span><span class="tr"><i data-w="'+(f[1]*10)+'" style="background:var('+f[2]+')"></i></span><b>'+f[1].toFixed(1)+'</b></div>';
+  }).join('');
+  setTimeout(function(){host.querySelectorAll('.tr i').forEach(function(i){i.style.width=i.getAttribute('data-w')+'%';});},100);
+}
+function dimAll(except){
+  document.querySelectorAll('.strip,.pt,.bar-g').forEach(function(m){
+    var on=Number(m.getAttribute('data-i'))===except;
+    m.classList.toggle('on',on);m.classList.toggle('dim',!on);
+  });
+}
+function drawSpark(s){
+  var p1=Math.max(0,Math.min(100,(s.v1-7.5)/2.1*100));
+  var p2=Math.max(0,Math.min(100,(s.av-7.5)/2.1*100));
+  document.getElementById('sp-v1').textContent=s.v1.toFixed(1);
+  document.getElementById('sp-v2').textContent=s.av.toFixed(1);
+  var line=document.getElementById('sp-line');
+  line.style.left=p1+'%';line.style.width=Math.max(0,p2-p1)+'%';line.style.background=FAM[s.fam];
+  document.getElementById('sp-dot1').style.left=p1+'%';
+  var d2=document.getElementById('sp-dot2');d2.style.left=p2+'%';d2.style.background=FAM[s.fam];
+  var chip=document.getElementById('sp-chip');
+  chip.textContent=s.d>0?'▲ +'+s.d.toFixed(1):'±0';
+  chip.className='sp-chip '+(s.d>0?'up':'flat');
+}
+function select(i){
+  sel=i;dimAll(i);
+  var s=SK[i];
+  document.getElementById('ro-band').style.background=FAM[s.fam];
+  document.getElementById('ro-num').textContent=s.av.toFixed(1);
+  var d=document.getElementById('ro-delta');
+  d.textContent=s.d>0?'▲ +'+s.d.toFixed(1):'±0';
+  d.className='ro-delta '+(s.d>0?'up':'flat');
+  document.getElementById('ro-cap').textContent=s.n+' · weight';
+  document.getElementById('ro-rank').textContent=(i+1)+' of 9';
+  document.getElementById('ro-fam').textContent=FAML[s.fam];
+  document.getElementById('ro-mov').innerHTML='<s>'+s.v1.toFixed(1)+'</s> → '+s.av.toFixed(1);
+  document.getElementById('ro-chg').textContent=s.chg;
+  document.getElementById('ro-note').textContent=s.note;
+  document.getElementById('ro-imp').textContent=s.imp;
+  document.getElementById('ro-gap').textContent=s.gap;
+  drawSpark(s);
+}
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click',function(){
+    var id=t.getAttribute('data-tab');
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.toggle('on',x===t);});
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.toggle('on',p.id==='panel-'+id);});
+    if(id==='mov')buildStrip();
+    if(id==='pos')buildScatter();
+    if(id==='rank')buildBars();
+    if(id==='syn')buildSyn();
+    if(id==='sum')buildFamAvg();
+  });
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight')select((sel+1)%SK.length);
+  if(e.key==='ArrowLeft')select((sel-1+SK.length)%SK.length);
+  var map={'1':'mov','2':'pos','3':'rank','4':'sum','5':'syn'};
+  if(map[e.key]){var b=document.querySelector('.tab[data-tab="'+map[e.key]+'"]');if(b)b.click();}
+});
+function setTheme(m){
+  document.documentElement.setAttribute('data-mode',m);
+  document.getElementById('th-day').classList.toggle('on',m!=='midnight');
+  document.getElementById('th-night').classList.toggle('on',m==='midnight');
+}
+document.getElementById('th-day').addEventListener('click',function(){setTheme('');});
+document.getElementById('th-night').addEventListener('click',function(){setTheme('midnight');});
+
+function countUp(node,to,dur){
+  var t0=null;
+  function step(ts){if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/dur);
+    node.textContent=(to*(1-Math.pow(1-p,3))).toFixed(1);
+    if(p<1)requestAnimationFrame(step);}
+  requestAnimationFrame(step);
+}
+buildStrip();select(0);
+countUp(document.getElementById('fr-num'),8.8,900);
+setTimeout(function(){document.getElementById('fr-bar-i').style.width='88%';},150);
+</script>
+</body>
+</html>

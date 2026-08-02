@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>skillify — the periodic table of skills</title>
+<style>
+/* ═══════════ the periodic table · v6 ═══════════
+   oklch. Element colors are identity — constant across themes.
+   The Bohr diagram is gone — replaced by a weight gauge (readable at
+   a glance). Spectrum values sit in the middle of their lines.
+   Header: a row of the 9 element tiles you can click. */
+:root {
+  color-scheme: light;
+  --paper: oklch(97% 0.008 90);
+  --paper-2: oklch(95% 0.012 90);
+  --ink: oklch(22% 0.03 260);
+  --ink-soft: oklch(42% 0.02 260);
+  --ink-faint: oklch(44% 0.02 260);
+  --line: oklch(22% 0.03 260 / 0.2);
+  --pipeline: oklch(80% 0.05 230);
+  --teaching: oklch(84% 0.08 85);
+  --orientation: oklch(82% 0.06 140);
+  --repair: oklch(80% 0.055 45);
+  --tile-ink: oklch(20% 0.03 260);
+  --up: oklch(44% 0.13 155);
+}
+html[data-mode='night'] {
+  color-scheme: dark;
+  --paper: oklch(14% 0.015 260);
+  --paper-2: oklch(16.5% 0.018 260);
+  --ink: oklch(93% 0.008 90);
+  --ink-soft: oklch(70% 0.015 90);
+  --ink-faint: oklch(60% 0.015 90);
+  --line: oklch(93% 0.008 90 / 0.18);
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: var(--paper); color: var(--ink); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; transition: background 0.3s, color 0.3s; }
+.mono { font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace; font-variant-numeric: tabular-nums; }
+.wrap { max-width: 1060px; margin: 0 auto; padding: 26px 20px 90px; }
+
+/* ── header — title + the 9 element tiles as a strip ── */
+.masthead { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; border-bottom: 3px double var(--ink); padding-bottom: 16px; }
+.mh-title { font-size: clamp(1.5rem, 3.5vw, 2.1rem); font-weight: 900; letter-spacing: -0.02em; margin: 0; }
+.mh-title .sym { color: var(--up); }
+.mh-sub { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); margin-top: 3px; }
+.mh-fams { display: flex; gap: 8px; margin-left: auto; }
+.mf {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-soft);
+  border: 1px solid var(--line); border-radius: 9px;
+  background: var(--paper-2); padding: 7px 11px;
+}
+.mf b {
+  font-size: 1.1rem; color: var(--tile-ink);
+  background: var(--fc); width: 26px; height: 26px;
+  display: grid; place-items: center; border-radius: 7px;
+  border: 1.5px solid var(--tile-ink);
+}
+.mh-weight { font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.1em; color: var(--ink-soft); text-align: right; }
+.mh-weight b { font-size: 1.15rem; color: var(--ink); }
+.mh-weight .d { color: var(--up); font-weight: 800; }
+
+.key-strip {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin: 14px 0 4px; padding: 11px 14px;
+  background: var(--paper-2); border: 1px solid var(--line); border-radius: 10px;
+  font-family: var(--mono); font-size: 0.72rem; color: var(--ink-soft);
+}
+.key-strip .k { color: var(--ink-faint); letter-spacing: 0.16em; text-transform: uppercase; font-size: 0.64rem; }
+.key-cell {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px;
+  background: var(--pipeline); color: var(--tile-ink);
+}
+.key-cell b { font-size: 0.8rem; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 12px 0 4px; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 14px; border: 1px solid var(--line); border-radius: 3px; }
+.legend .i-pl { background: var(--pipeline); } .legend .i-te { background: var(--teaching); }
+.legend .i-or { background: var(--orientation); } .legend .i-rp { background: var(--repair); }
+
+.table { display: grid; grid-template-columns: 3.4rem repeat(8, 1fr); gap: 6px; margin-top: 18px; }
+.period { grid-column: 1; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-family: var(--mono); font-size: 0.7rem; color: var(--ink-faint); letter-spacing: 0.08em; }
+.cell {
+  display: block; border: 1.5px solid var(--tile-ink); border-radius: 7px;
+  padding: 10px 8px 9px; text-align: center; cursor: pointer; position: relative;
+  color: var(--tile-ink);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, outline 0.15s ease;
+}
+.cell:hover { transform: translateY(-3px); box-shadow: 0 14px 28px -14px oklch(20% 0.03 260 / 0.45); }
+.cell.on { outline: 3px solid var(--up); outline-offset: 2px; transform: translateY(-2px); }
+.cell .an { position: absolute; top: 3px; left: 6px; font-family: var(--mono); font-size: 0.62rem; opacity: 0.75; }
+.cell .sy { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.02em; line-height: 1.1; }
+.cell .nm { display: block; font-size: 0.62rem; letter-spacing: 0.04em; opacity: 0.85; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cell .ma { font-family: var(--mono); font-size: 0.7rem; font-weight: 700; margin-top: 3px; }
+.cell .dl { position: absolute; bottom: 3px; right: 5px; font-family: var(--mono); font-size: 0.6rem; font-weight: 800; }
+.cell .dl.up { color: var(--up); }
+.cell.f-pl { background: linear-gradient(160deg, var(--pipeline), color-mix(in oklch, var(--pipeline) 78%, oklch(30% 0.03 230))); }
+.cell.f-te { background: linear-gradient(160deg, var(--teaching), color-mix(in oklch, var(--teaching) 78%, oklch(30% 0.03 85))); }
+.cell.f-or { background: linear-gradient(160deg, var(--orientation), color-mix(in oklch, var(--orientation) 78%, oklch(30% 0.03 140))); }
+.cell.f-rp { background: linear-gradient(160deg, var(--repair), color-mix(in oklch, var(--repair) 78%, oklch(30% 0.03 45))); }
+.empty { border: 1px dashed var(--line); border-radius: 7px; }
+
+/* ══ specimen card ══ */
+.specimen { margin-top: 30px; background: var(--paper-2); border: 1.5px solid var(--line); border-radius: 16px; overflow: hidden; }
+.sp-band { height: 7px; width: 100%; transition: background 0.3s; }
+.sp-body { padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; }
+.sp-id { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.sp-sym { width: 92px; height: 92px; border-radius: 12px; border: 2px solid var(--tile-ink); display: grid; place-items: center; font-size: 2.5rem; font-weight: 900; color: var(--tile-ink); }
+.sp-kick { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint); }
+.sp-name { font-size: 2.1rem; font-weight: 800; letter-spacing: -0.02em; margin: 2px 0 4px; }
+.sp-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-family: var(--mono); font-size: 0.72rem; color: var(--ink-soft); }
+.sp-meta .chip { font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 1px solid var(--line); color: var(--tile-ink); }
+.sp-weight { margin-left: auto; font-family: var(--mono); font-size: 0.82rem; color: var(--ink-faint); }
+.sp-weight b { font-size: 1.6rem; color: var(--ink); }
+.sp-weight .d { color: var(--up); font-weight: 800; }
+
+.props { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.prop { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.prop .k { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-faint); }
+.prop .v { font-size: 1.05rem; font-weight: 800; margin-top: 3px; }
+.prop .v s { color: var(--ink-faint); font-weight: 400; }
+.prop .v .d { color: var(--up); }
+
+.sp-main { display: grid; grid-template-columns: auto 1fr; gap: 30px; align-items: center; }
+/* the weight gauge — readable at a glance */
+.sp-gauge { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.sp-gauge svg { width: 218px; height: 168px; display: block; }
+.sp-gauge .g-title { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); }
+.gauge-track { font-family: var(--mono); font-size: 0.8rem; color: var(--ink-soft); }
+.gauge-track s { color: var(--ink-faint); }
+.gauge-track b { color: var(--ink); font-size: 0.85rem; }
+.gauge-track .d { color: var(--up); font-weight: 800; }
+
+.sp-right { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.spectrum-card { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px 10px; }
+.spectrum-card .sp-title { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px; }
+.spectrum { display: flex; align-items: stretch; gap: 0; height: 128px; position: relative; }
+.spec-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; }
+.spec-col .lbl { font-family: var(--mono); font-size: 0.64rem; color: var(--ink-faint); margin-top: 6px; }
+/* the value sits in the MIDDLE of its line */
+.spec-col .val {
+  font-family: var(--mono); font-size: 0.88rem; font-weight: 800; color: var(--tile-ink);
+  position: absolute; left: 50%; bottom: calc(var(--h) / 2 + 4px);
+  transform: translate(-50%, 50%); white-space: nowrap;
+}
+.spec-col .line { width: 16px; border-radius: 2px 2px 0 0; height: 0; transition: height 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.spec-col .base { position: absolute; bottom: 0; left: 0; right: 0; border-top: 1.5px solid var(--ink); }
+.ruler { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; width: 26px; margin-right: 6px; font-family: var(--mono); font-size: 0.62rem; color: var(--ink-faint); height: 128px; position: relative; }
+.ruler::before { content: ''; position: absolute; right: 0; top: 0; bottom: 0; border-left: 1px dashed var(--line); }
+
+.dims { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.dim { border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; }
+.dim .k { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); white-space: nowrap; }
+.dim .v { font-size: 1rem; font-weight: 800; }
+.dim .bar { height: 3px; border-radius: 99px; background: var(--line); margin-top: 4px; overflow: hidden; }
+.dim .bar i { display: block; height: 100%; transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+.verdicts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.verdict-block { border-radius: 10px; padding: 12px 14px; font-size: 0.88rem; line-height: 1.6; }
+.verdict-block .vh { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 5px; }
+.verdict-block.imp { background: color-mix(in oklch, var(--up) 10%, var(--paper-2)); border: 1px solid color-mix(in oklch, var(--up) 45%, var(--line)); }
+.verdict-block.imp .vh { color: var(--up); }
+.verdict-block.gap { background: color-mix(in oklch, oklch(70% 0.11 65) 10%, var(--paper-2)); border: 1px solid color-mix(in oklch, oklch(70% 0.11 65) 45%, var(--line)); }
+.verdict-block.gap .vh { color: oklch(55% 0.13 65); }
+.verdict-block p { margin: 0; color: var(--ink-soft); }
+
+.verdict { margin-top: 26px; font-size: 0.96rem; color: var(--ink-soft); border-left: 4px solid var(--up); padding: 2px 0 2px 16px; line-height: 1.6; }
+.verdict b { color: var(--ink); }
+
+/* reactions — elements in combination */
+.reactions { margin-top: 34px; }
+.rx-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; border-bottom: 3px double var(--ink); padding-bottom: 12px; margin-bottom: 16px; }
+.rx-title { font-size: 1.35rem; font-weight: 900; letter-spacing: -0.02em; margin: 0; }
+.rx-title .sym { color: var(--up); }
+.rx-sub { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-faint); }
+.rx-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.rx-card { border: 1px solid var(--line); border-radius: 12px; background: var(--paper-2); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.rx-eq { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.rx-tile {
+  width: 42px; height: 42px; border-radius: 8px; border: 1.5px solid var(--tile-ink);
+  display: grid; place-items: center; cursor: pointer;
+  font-weight: 900; font-size: 0.82rem; color: var(--tile-ink);
+  transition: transform 0.12s ease;
+}
+.rx-tile:hover { transform: translateY(-2px); }
+.rx-op { font-family: var(--mono); font-weight: 900; color: var(--ink-faint); font-size: 0.9rem; }
+.rx-eq-name { font-size: 0.8rem; font-weight: 700; color: var(--ink); }
+.rx-prod {
+  font-family: var(--mono); font-size: 0.72rem; font-weight: 800;
+  padding: 5px 12px; border-radius: 99px;
+  border: 1.5px solid var(--up); color: var(--up);
+  background: color-mix(in oklch, var(--up) 10%, var(--paper-2));
+}
+.rx-note { margin: 0; font-size: 0.86rem; color: var(--ink-soft); line-height: 1.55; }
+@media (max-width: 860px) { .rx-grid { grid-template-columns: 1fr; } }
+
+/* theme toggle — styled as a mini element cell (this concept's own) */
+.ctl { position: fixed; top: 14px; right: 14px; z-index: 9; }
+.ctl button {
+  font-family: var(--mono); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+  border: 1.5px solid var(--tile-ink); border-radius: 6px;
+  background: var(--paper); color: var(--ink);
+  padding: 8px 12px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.ctl button .an { font-size: 0.86rem; }
+.ctl button:hover { background: var(--up); border-color: var(--up); color: #fff; }
+
+@media (max-width: 860px) {
+  .table { grid-template-columns: 2.4rem repeat(4, 1fr); }
+  .period { font-size: 0.58rem; }
+  .props { grid-template-columns: 1fr 1fr; }
+  .sp-main { grid-template-columns: 1fr; }
+  .sp-body { padding: 18px; }
+  .sp-weight { margin-left: 0; }
+  .verdicts { grid-template-columns: 1fr; }
+  .dims { grid-template-columns: repeat(3, 1fr); }
+  .mh-fams { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .cell, .spec-col .line, .dim .bar i { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="ctl"><button id="night" aria-label="toggle theme"><span class="an">☾</span><span id="night-lbl">night</span></button></div>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <h1 class="mh-title">THE PERIODIC TABLE <span class="sym">OF SKILLS</span></h1>
+      <div class="mh-sub mono">evaluation №2 · 9 elements · 4 families · oklch</div>
+    </div>
+    <div class="mh-fams">
+      <span class="mf" style="--fc:var(--orientation)"><b>1</b>orientation</span>
+      <span class="mf" style="--fc:var(--pipeline)"><b>5</b>pipeline</span>
+      <span class="mf" style="--fc:var(--repair)"><b>1</b>repair</span>
+      <span class="mf" style="--fc:var(--teaching)"><b>2</b>teaching</span>
+    </div>
+    <div class="mh-weight mono">ATOMIC WEIGHT<br><b>8.8</b> <span class="d">▲ +0.3</span></div>
+  </header>
+
+  <div class="key-strip">
+    <span class="k">how to read an element</span>
+    <span class="key-cell"><b>9</b><span>XN</span><span>explainify</span><b>9.0</b></span>
+    <span>atomic number · symbol · name · atomic weight</span>
+    <span class="k" style="margin-left:auto">▼ click an element to study it</span>
+  </div>
+
+  <div class="legend">
+    <span><i class="i-pl"></i>pipeline</span>
+    <span><i class="i-te"></i>teaching</span>
+    <span><i class="i-or"></i>orientation</span>
+    <span><i class="i-rp"></i>repair</span>
+    <span>element colors are identity — they do not flip with the theme</span>
+  </div>
+
+  <div class="table" id="table"></div>
+
+  <!-- ══ the specimen card ══ -->
+  <section class="specimen" id="inspector">
+    <div class="sp-band" id="sp-band"></div>
+    <div class="sp-body">
+      <div class="sp-id">
+        <div class="sp-sym" id="i-sym">XN</div>
+        <div>
+          <div class="sp-kick mono" id="i-kick">element 09 · rank 1 of 9</div>
+          <h2 class="sp-name" id="i-name">explainify</h2>
+          <div class="sp-meta mono"><span class="chip" id="i-fam">teaching</span><span id="i-pos">Period IV · group of teaching</span></div>
+        </div>
+        <div class="sp-weight mono" id="i-mass">atomic weight <b>9.0</b> <span class="d">▲ +1.1</span></div>
+      </div>
+
+      <div class="props">
+        <div class="prop"><div class="k">atomic weight</div><div class="v mono" id="p-mass">9.0 <span class="d">▲ +1.1</span></div></div>
+        <div class="prop"><div class="k">mass change</div><div class="v mono" id="p-mov"><s>7.9</s> → 9.0</div></div>
+        <div class="prop"><div class="k">discovery</div><div class="v" id="p-chg">retouched in v2</div></div>
+        <div class="prop"><div class="k">shells</div><div class="v mono" id="p-shells">8.5 · 9.5 · 9.0 · 9.5</div></div>
+      </div>
+
+      <div class="sp-main">
+        <div class="sp-gauge">
+          <div class="g-title mono">weight gauge — measured at v2</div>
+          <svg viewBox="0 0 220 168" id="gauge"></svg>
+          <div class="gauge-track" id="gauge-track"></div>
+        </div>
+        <div class="sp-right">
+          <div class="spectrum-card">
+            <div class="sp-title">emission spectrum — the four perspectives</div>
+            <div class="spectrum">
+              <div class="ruler"><span>10</span><span>8</span><span>6</span></div>
+              <div id="i-spectrum" style="display:flex;flex:1;gap:4px;align-items:stretch;position:relative;"></div>
+            </div>
+          </div>
+          <div class="dims" id="i-dims"></div>
+          <div class="verdicts">
+            <div class="verdict-block imp"><div class="vh">▲ what improved</div><p id="i-imp"></p></div>
+            <div class="verdict-block gap"><div class="vh">⚠ remaining gap</div><p id="i-gap"></p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ reactions — elements in combination ══ -->
+  <section class="reactions">
+    <div class="rx-head">
+      <h2 class="rx-title">REACTIONS <span class="sym">— elements in combination</span></h2>
+      <span class="rx-sub mono">the set is stronger when elements react · click a reagent to study it</span>
+    </div>
+    <div class="rx-grid" id="rx-grid"></div>
+  </section>
+
+  <p class="verdict">The set went from <b>8.5 → 8.8</b> — v1's criticism was ceremony; v2's is measurement. The game → competency map pivot is the bravest change in the set.</p>
+</div>
+
+<script>
+var FAMILIES = {
+  pl: { label: 'pipeline', color: 'var(--pipeline)', pos: 'Period II' },
+  te: { label: 'teaching', color: 'var(--teaching)', pos: 'Period IV' },
+  or: { label: 'orientation', color: 'var(--orientation)', pos: 'Period I' },
+  rp: { label: 'repair', color: 'var(--repair)', pos: 'Period III' }
+};
+var DIMS = ['clarity', 'usefulness', 'completeness', 'innovation', 'adoption', 'tokens'];
+var EL = [
+  { n: 'orientify', sy: 'OR', an: 1, mass: 8.6, v1: 8.4, d: '+0.2', up: true, fam: 'or', p: [7.5, 9.0, 9.0, 9.0], dims: [9, 8.5, 9, 7.5, 8.5, 8.5], chg: 'retouched in v2', imp: 'Quick Orient: a 5-line brief for small repos and narrow questions. The full scan is now earned, not automatic — escalation only when the brief reveals hidden complexity.', gap: 'Thinnest by design. Redundant for seniors who can read a codebase — fine, its audience is subagents and cold starts.' },
+  { n: 'explorify', sy: 'XR', an: 2, mass: 8.9, v1: 8.9, d: '\u00b10', up: false, fam: 'pl', p: [8.0, 9.0, 9.0, 9.5], dims: [9, 8.5, 8.5, 9.5, 8.5, 8.5], chg: 'unchanged since v1', imp: 'Untouched — "axes, not variations" plus the mandatory sketch was already the best divergence scaffolding in the set.', gap: 'Low trigger frequency is inherent to its purpose (divergence is rare), not a design flaw.' },
+  { n: 'undumbify', sy: 'UN', an: 3, mass: 8.8, v1: 8.8, d: '\u00b10', up: false, fam: 'pl', p: [7.0, 9.0, 9.5, 9.5], dims: [9, 9, 9, 9.5, 8, 8], chg: 'unchanged since v1', imp: 'Untouched — the Materiality Gate plus known/assumed/unknown still prevents the #1 AI sin.', gap: 'Vocabulary ("feeling of done", "pushback permission") is senior-oriented; a junior may bounce off the six dimensions.' },
+  { n: 'shapeify', sy: 'SH', an: 4, mass: 8.8, v1: 8.0, d: '+0.8', up: true, fam: 'pl', p: [7.5, 9.5, 9.5, 9.5], dims: [9, 9, 9.5, 8.5, 7.5, 8], chg: 'retouched in v2', imp: 'The Lite Packet: 5 fields for \u22645 steps, "when in doubt: lite". The full packet is only earned, and escalation happens on double-failure.', gap: 'The full template is still 15+ fields — but the weight is now earned rather than imposed.' },
+  { n: 'shipify', sy: 'SP', an: 5, mass: 8.7, v1: 8.4, d: '+0.3', up: true, fam: 'pl', p: [7.5, 9.0, 9.5, 9.0], dims: [9, 9, 9.5, 9, 7.5, 7.5], chg: 'retouched in v2', imp: 'The completion report is 3 lines in single-agent mode (done / deviations / follow-ups); the full table is reserved for subagent mode.', gap: 'Output still depends on shapeify\'s packet — the lite split shrinks the garbage-in surface.' },
+  { n: 'reviewify', sy: 'RV', an: 6, mass: 9.0, v1: 8.6, d: '+0.4', up: true, fam: 'pl', p: [7.5, 9.5, 9.5, 9.5], dims: [9.5, 9, 9, 9, 8.5, 8.5], chg: 'retouched in v2', imp: '3–4 deep lenses instead of 9 shallow ones, with a selection heuristic. Contract lenses always-on, skipped lenses stated.', gap: 'Minimal. This is what a review skill should feel like.' },
+  { n: 'traceify', sy: 'TR', an: 7, mass: 8.9, v1: 8.9, d: '\u00b10', up: false, fam: 'rp', p: [8.5, 9.0, 9.0, 9.0], dims: [9.5, 9.5, 8.5, 8, 9, 9], chg: 'unchanged since v1', imp: 'Untouched and still elite: falsifiable hypotheses, cheapest test first, no stacked workarounds.', gap: 'None. "Don\'t change a word."' },
+  { n: 'promptify', sy: 'PF', an: 8, mass: 8.9, v1: 7.9, d: '+1.0', up: true, fam: 'te', p: [8.0, 9.5, 9.0, 9.5], dims: [8.5, 8.5, 9, 9, 7.5, 7.5], chg: 'retouched in v2', imp: 'The skill map replaced XP/streaks/badges — "the bars moving IS the reward." Quick mode is the default; the pipeline harvests evidence.', gap: 'Still needs Node for the renderer; passive harvesting needs a structural hook to be reliable.' },
+  { n: 'explainify', sy: 'XN', an: 9, mass: 9.0, v1: 7.9, d: '+1.1', up: true, fam: 'te', p: [8.5, 9.5, 9.0, 9.5], dims: [8.5, 8, 9, 8.5, 7.5, 7.5], chg: 'retouched in v2', imp: 'Chat-first default — the explanation lives in the conversation. Artifacts only for 3+ modules, an explicit ask, or a repeat question.', gap: 'SVG diagrams are still error-prone for executors — but now only attempted when genuinely earned.' }
+];
+
+var NS = 'http://www.w3.org/2000/svg';
+var SHELLS = [['K', 'junior'], ['L', 'senior'], ['M', 'ai'], ['N', 'expert']];
+
+var table = document.getElementById('table');
+var sel = 0, cursor = 0;
+var ROWS = [
+  { label: 'I · orientation', cells: ['or'] },
+  { label: 'II · pipeline', cells: ['pl', 'pl', 'pl', 'pl', 'pl'] },
+  { label: 'III · repair', cells: ['rp'] },
+  { label: 'IV · teaching', cells: ['te', 'te'] }
+];
+
+/* reactions — the set is stronger in combination */
+var RX = [
+  { a: 8, b: 2, prod: 'the clarification loop', note: 'Say what you mean, then say it back: undumbify extracts the intent, explainify verifies it in plain language — the loop closes in one pass.' },
+  { a: 3, b: 4, prod: 'the packet line', note: 'Shape twice, ship once: a clean worker packet is the cheapest insurance for a clean completion report.' },
+  { a: 1, b: 2, prod: 'diverge → converge', note: 'Axes first, materiality gate second: the wildest options still get filtered by the six dimensions.' },
+  { a: 6, b: 5, prod: 'root cause → verdict', note: 'Cheapest test first finds the why; the deep lenses verify the fix actually holds.' },
+  { a: 7, b: 8, prod: 'the teaching loop', note: 'The lesson gets harvested into the skill map, and the map feeds the next explanation — the loop closes.' },
+  { a: 0, b: 6, prod: 'cold-start repair', note: 'A 5-line brief points traceify at the right file before the first hypothesis is even written.' }
+];
+
+function buildReactions() {
+  var host = document.getElementById('rx-grid');
+  host.innerHTML = '';
+  RX.forEach(function (r) {
+    var A = EL[r.a], B = EL[r.b];
+    var card = document.createElement('div');
+    card.className = 'rx-card';
+    card.innerHTML =
+      '<div class="rx-eq">' +
+        '<span class="rx-tile" style="background:' + FAMILIES[A.fam].color + '" title="' + A.n + '">' + A.sy + '</span>' +
+        '<span class="rx-op">+</span>' +
+        '<span class="rx-tile" style="background:' + FAMILIES[B.fam].color + '" title="' + B.n + '">' + B.sy + '</span>' +
+        '<span class="rx-op">→</span>' +
+        '<span class="rx-eq-name">' + A.n + ' + ' + B.n + '</span>' +
+        '<span class="rx-prod">' + r.prod + '</span>' +
+      '</div>' +
+      '<p class="rx-note">' + r.note + '</p>';
+    card.querySelectorAll('.rx-tile')[0].addEventListener('click', function () { select(r.a); });
+    card.querySelectorAll('.rx-tile')[1].addEventListener('click', function () { select(r.b); });
+    host.appendChild(card);
+  });
+}
+
+function build() {
+  table.innerHTML = '';
+  var idx = 0;
+  ROWS.forEach(function (row) {
+    var p = document.createElement('div');
+    p.className = 'period';
+    p.textContent = row.label;
+    table.appendChild(p);
+    for (var c = 0; c < 8; c++) {
+      if (c < row.cells.length) {
+        var e = EL[idx];
+        var cell = document.createElement('button');
+        cell.className = 'cell f-' + row.cells[c] + (idx === sel ? ' on' : '');
+        cell.innerHTML =
+          '<span class="an">' + e.an + '</span>' +
+          '<span class="sy">' + e.sy + '</span>' +
+          '<span class="nm">' + e.n + '</span>' +
+          '<span class="ma">' + e.mass.toFixed(1) + '</span>' +
+          '<span class="dl ' + (e.up ? 'up' : '') + '">' + e.d + '</span>';
+        cell.addEventListener('click', (function (i) { return function () { select(i); }; })(idx));
+        table.appendChild(cell);
+        idx++;
+      } else {
+        var empty = document.createElement('div');
+        empty.className = 'empty';
+        table.appendChild(empty);
+      }
+    }
+  });
+}
+
+/* the weight gauge — arc + ticks + big number, readable */
+function drawGauge(e, famColor) {
+  var svg = document.getElementById('gauge');
+  svg.innerHTML = '';
+  var el = function (tag, attrs) { var e2 = document.createElementNS(NS, tag); for (var k in attrs) e2.setAttribute(k, attrs[k]); return e2; };
+  var cx = 110, cy = 140, r = 92;
+  var arc = 'M ' + (cx - r) + ' ' + cy + ' A ' + r + ' ' + r + ' 0 0 1 ' + (cx + r) + ' ' + cy;
+  var C = Math.PI * r;
+  var frac = Math.max(0, Math.min(1, (e.mass - 6) / 4));
+  svg.appendChild(el('path', { d: arc, fill: 'none', stroke: 'var(--line)', 'stroke-width': 13, 'stroke-linecap': 'round' }));
+  var val = el('path', { d: arc, fill: 'none', stroke: famColor, 'stroke-width': 13, 'stroke-linecap': 'round', 'stroke-dasharray': '0 ' + C });
+  svg.appendChild(val);
+  /* ticks + labels */
+  for (var v = 6; v <= 10; v += 0.5) {
+    var th = Math.PI * (v - 6) / 4;
+    var big = (v % 1 === 0);
+    var x1 = cx + (r + 2) * Math.cos(th), y1 = cy - (r + 2) * Math.sin(th);
+    var x2 = cx + (r + (big ? 11 : 7)) * Math.cos(th), y2 = cy - (r + (big ? 11 : 7)) * Math.sin(th);
+    svg.appendChild(el('line', { x1: x1, y1: y1, x2: x2, y2: y2, stroke: 'var(--ink-faint)', 'stroke-width': big ? 1.6 : 1 }));
+    if (big) {
+      var lx = cx + (r - 16) * Math.cos(th), ly = cy - (r - 16) * Math.sin(th) + 3;
+      svg.appendChild(el('text', { x: lx, y: ly, 'text-anchor': 'middle', 'font-size': 10.5, fill: 'var(--ink-faint)', 'font-family': 'monospace' })).textContent = v;
+    }
+  }
+  svg.appendChild(el('text', { x: cx, y: cy - 18, 'text-anchor': 'middle', 'font-size': 34, 'font-weight': 900, fill: 'var(--ink)', 'font-family': 'monospace' })).textContent = e.mass.toFixed(1);
+  svg.appendChild(el('text', { x: cx, y: cy + 6, 'text-anchor': 'middle', 'font-size': 9.5, 'letter-spacing': 0.18, fill: 'var(--ink-faint)', 'font-family': 'monospace' })).textContent = 'ATOMIC WEIGHT';
+  requestAnimationFrame(function () {
+    val.setAttribute('stroke-dasharray', (C * frac) + ' ' + C);
+  });
+  document.getElementById('gauge-track').innerHTML = 'v1 <s>' + e.v1.toFixed(1) + '</s> \u2192 <b>' + e.mass.toFixed(1) + '</b> <span class="d">' + (e.d === '\u00b10' ? '\u00b10' : '\u25b2 ' + e.d) + '</span>';
+}
+
+function drawSpectrum(scores, famColor) {
+  var host = document.getElementById('i-spectrum');
+  host.innerHTML = '';
+  SHELLS.forEach(function (sh, i) {
+    var h = Math.round(26 + scores[i] * 9.5);
+    var d = document.createElement('div');
+    d.className = 'spec-col';
+    d.style.setProperty('--h', h + 'px');
+    d.innerHTML =
+      '<div class="base"></div>' +
+      '<div class="line" style="background:' + famColor + '"></div>' +
+      '<div class="val">' + scores[i] + '</div>' +
+      '<div class="lbl">' + sh[0] + '</div>';
+    host.appendChild(d);
+    setTimeout(function () { d.querySelector('.line').style.height = h + 'px'; }, 60 + i * 50);
+  });
+}
+
+function drawDims(dims, famColor) {
+  var host = document.getElementById('i-dims');
+  host.innerHTML = '';
+  DIMS.forEach(function (k, i) {
+    host.innerHTML += '<div class="dim"><div class="k">' + k + '</div><div class="v">' + dims[i] + '</div><div class="bar"><i style="width:0;background:' + famColor + '"></i></div></div>';
+  });
+  setTimeout(function () {
+    host.querySelectorAll('.dim .bar i').forEach(function (bar, i) {
+      bar.style.width = (dims[i] * 10) + '%';
+    });
+  }, 80);
+}
+
+function select(i) {
+  sel = i;
+  document.querySelectorAll('.cell').forEach(function (c, j) { c.classList.toggle('on', j === sel); });
+  var e = EL[i];
+  var fam = FAMILIES[e.fam];
+  document.getElementById('sp-band').style.background = fam.color;
+  var sym = document.getElementById('i-sym');
+  sym.textContent = e.sy;
+  sym.style.background = fam.color;
+  document.getElementById('i-kick').textContent = 'element ' + e.an + ' · rank ' + (i + 1) + ' of 9';
+  document.getElementById('i-name').textContent = e.n;
+  var famChip = document.getElementById('i-fam');
+  famChip.textContent = fam.label;
+  famChip.style.background = fam.color;
+  document.getElementById('i-pos').textContent = fam.pos + ' · group of ' + fam.label;
+  document.getElementById('i-mass').innerHTML = 'atomic weight <b>' + e.mass.toFixed(1) + '</b> <span class="d">' + (e.d === '\u00b10' ? '\u00b10' : '\u25b2 ' + e.d) + '</span>';
+  document.getElementById('p-mass').innerHTML = e.mass.toFixed(1) + ' <span class="d">' + (e.d === '\u00b10' ? '\u00b10' : '\u25b2 ' + e.d) + '</span>';
+  document.getElementById('p-mov').innerHTML = '<s>' + e.v1.toFixed(1) + '</s> \u2192 ' + e.mass.toFixed(1);
+  document.getElementById('p-chg').textContent = e.chg;
+  document.getElementById('p-shells').textContent = e.p.join(' · ');
+  document.getElementById('i-imp').textContent = e.imp;
+  document.getElementById('i-gap').textContent = e.gap;
+  drawGauge(e, fam.color);
+  drawSpectrum(e.p, fam.color);
+  drawDims(e.dims, fam.color);
+}
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { cursor = (cursor + 1) % EL.length; select(cursor); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { cursor = (cursor - 1 + EL.length) % EL.length; select(cursor); }
+});
+var nightBtn = document.getElementById('night');
+nightBtn.addEventListener('click', function () {
+  var next = document.documentElement.getAttribute('data-mode') === 'night' ? '' : 'night';
+  document.documentElement.setAttribute('data-mode', next);
+  nightBtn.querySelector('.an').textContent = next === 'night' ? '☀' : '☾';
+  document.getElementById('night-lbl').textContent = next === 'night' ? 'day' : 'night';
+});
+
+build();
+buildReactions();
+select(0);
+</script>
+</body>
+</html>

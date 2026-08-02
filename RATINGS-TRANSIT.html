@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>skillify · the expedition line</title>
+<style>
+/* ═══════════ THE EXPEDITION LINE ═══════════
+   A task is a workpiece riding the line. Each station transforms it;
+   the artifact handed to the next station is labelled on the conveyor.
+   Click a station for its full manifest. Feedback runs the return rail. */
+:root {
+  color-scheme: dark;
+  --slate:  oklch(16% 0.02 250);
+  --slate-2:oklch(20% 0.022 250);
+  --slate-3:oklch(25% 0.024 250);
+  --ink:    oklch(92% 0.012 80);
+  --ink-dim:oklch(68% 0.014 75);
+  --ink-faint:oklch(48% 0.016 70);
+  --main:   oklch(72% 0.15 45);   /* the line — signal orange */
+  --repair: oklch(70% 0.12 160);
+  --teach:  oklch(74% 0.12 85);
+  --chip:   oklch(78% 0.10 200);  /* artifact chips */
+  --ok:     oklch(75% 0.14 155);
+  --serif: "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --mono: "JetBrains Mono",ui-monospace,Menlo,monospace;
+  --sans: system-ui,-apple-system,sans-serif;
+}
+html[data-mode="day"] {
+  color-scheme: light;
+  --slate:  oklch(93% 0.012 80); --slate-2:oklch(89% 0.014 80); --slate-3:oklch(83% 0.016 80);
+  --ink:    oklch(22% 0.02 250); --ink-dim:oklch(44% 0.02 250); --ink-faint:oklch(60% 0.02 250);
+  --main:   oklch(55% 0.16 40); --repair:oklch(44% 0.13 160); --teach:oklch(52% 0.12 75);
+  --chip:   oklch(45% 0.10 210); --ok:oklch(42% 0.13 155);
+}
+* { box-sizing:border-box; margin:0; }
+body { background:var(--slate); color:var(--ink); font-family:var(--sans); transition:background .4s,color .4s;
+  background-image: radial-gradient(1000px 500px at 85% -5%, oklch(from var(--slate-2) l c h / .9), transparent 70%); }
+::selection { background:var(--main); color:var(--slate); }
+.wrap { max-width:78rem; margin:0 auto; padding:2.2rem 1.5rem 5rem; }
+
+/* manifest header */
+.manifest { display:flex; align-items:center; gap:1.4rem; flex-wrap:wrap; border:1.5px solid var(--slate-3); border-radius:12px;
+  padding:1.1rem 1.4rem; background:linear-gradient(180deg,var(--slate-2),var(--slate)); position:relative; overflow:hidden; }
+.manifest::before { content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--main); }
+.manifest .no { font-family:var(--mono); font-size:.58rem; letter-spacing:.26em; text-transform:uppercase; color:var(--ink-faint); }
+.manifest h1 { font-size:clamp(1.5rem,3.6vw,2.1rem); font-weight:900; letter-spacing:-.01em; text-transform:uppercase; }
+.manifest h1 .ln { color:var(--main); }
+.manifest .sub { font-family:var(--mono); font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); margin-top:.15rem; }
+.manifest .sp { flex:1; }
+.manifest .score { text-align:right; }
+.manifest .score .k { font-family:var(--mono); font-size:.54rem; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); }
+.manifest .score .v { font-size:2.4rem; font-weight:900; color:var(--main); line-height:1; font-variant-numeric:tabular-nums; }
+.manifest .score .d { font-family:var(--mono); font-size:.66rem; color:var(--ok); }
+.mode { font-family:var(--mono); font-size:.58rem; letter-spacing:.16em; text-transform:uppercase; background:var(--slate-3); color:var(--ink);
+  border:1px solid oklch(100% 0 0 / .1); border-radius:5px; padding:.45rem .8rem; cursor:pointer; }
+
+/* the line */
+.line-wrap { margin-top:1.8rem; border:1.5px solid var(--slate-3); border-radius:12px; background:var(--slate-2); padding:1.6rem 1.2rem 1rem; overflow-x:auto; }
+.line-wrap .lh { display:flex; align-items:baseline; gap:1rem; margin-bottom:1rem; }
+.line-wrap .lh h2 { font-family:var(--mono); font-size:.7rem; letter-spacing:.26em; text-transform:uppercase; color:var(--ink-dim); }
+.line-wrap .lh .legend { margin-left:auto; display:flex; gap:1.1rem; font-family:var(--mono); font-size:.56rem; color:var(--ink-faint); }
+.line-wrap .lh .legend i { display:inline-block; width:1.4rem; height:.35rem; border-radius:99px; margin-right:.35rem; vertical-align:2px; }
+.line-wrap svg { min-width:880px; width:100%; height:auto; display:block; }
+.rail { stroke:var(--main); stroke-width:5; fill:none; stroke-linecap:round; }
+.rail.ret { stroke:var(--repair); stroke-width:2.5; stroke-dasharray:2 8; stroke-linecap:round; }
+.rail.teach { stroke:var(--teach); stroke-width:2.5; stroke-dasharray:2 8; stroke-linecap:round; }
+.station { cursor:pointer; }
+.station rect.body { fill:var(--slate); stroke:var(--main); stroke-width:2.5; rx:10; transition:stroke-width .2s; }
+.station:hover rect.body { stroke-width:4; }
+.station.sel rect.body { stroke-width:4; filter:drop-shadow(0 0 10px oklch(from var(--main) l c h / .5)); }
+.station text.name { font-family:var(--sans); font-size:13px; font-weight:800; fill:var(--ink); }
+.station text.score { font-family:var(--mono); font-size:11px; font-weight:800; fill:var(--main); }
+.station text.step { font-family:var(--mono); font-size:8px; fill:var(--ink-faint); letter-spacing:.15em; }
+.artifact { cursor:default; }
+.artifact rect { fill:oklch(from var(--chip) l c h / .12); stroke:var(--chip); stroke-width:1.2; rx:99; }
+.artifact text { font-family:var(--mono); font-size:9px; fill:var(--chip); letter-spacing:.04em; }
+.edgearrow { fill:var(--main); }
+.looplbl { font-family:var(--mono); font-size:9px; letter-spacing:.06em; }
+.workpiece { fill:var(--ink); stroke:var(--main); stroke-width:2.5; }
+
+/* station manifest — full data */
+.stn { margin-top:1.6rem; border:1.5px solid var(--slate-3); border-left:6px solid var(--main); border-radius:0 12px 12px 0;
+  background:var(--slate-2); padding:1.3rem 1.5rem; display:grid; grid-template-columns:auto 1fr auto; gap:2rem; align-items:center; }
+.stn .big { text-align:center; }
+.stn .big .num { font-size:3rem; font-weight:900; color:var(--main); line-height:1; font-variant-numeric:tabular-nums; }
+.stn .big .u { font-size:.95rem; color:var(--ink-faint); }
+.stn .big .lbl { font-family:var(--mono); font-size:.52rem; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); margin-top:.3rem; }
+.stn-mid { min-width:0; }
+.stn-name { font-size:1.25rem; font-weight:900; text-transform:uppercase; }
+.stn-io { font-family:var(--mono); font-size:.66rem; color:var(--chip); margin-top:.3rem; }
+.stn-io .arr { color:var(--ink-faint); }
+.stn-note { font-size:.84rem; color:var(--ink-dim); margin-top:.45rem; max-width:42rem; }
+.stn-mov { font-family:var(--mono); font-size:.66rem; color:var(--ink-faint); margin-top:.5rem; }
+.stn-mov b { color:var(--ok); }
+.stn-data { display:flex; flex-direction:column; gap:.9rem; min-width:15rem; }
+.stn-persp { display:flex; gap:.8rem; }
+.stn-persp .pp { text-align:center; flex:1; }
+.stn-persp .pp .bar { height:3rem; background:var(--slate-3); border-radius:4px; display:flex; align-items:flex-end; overflow:hidden; }
+.stn-persp .pp .bar i { display:block; width:100%; background:var(--main); height:var(--h); transition:height .6s cubic-bezier(.22,1,.36,1); }
+.stn-persp .pp .v { font-family:var(--mono); font-size:.62rem; font-weight:700; margin-top:.2rem; }
+.stn-persp .pp .k { font-family:var(--mono); font-size:.46rem; color:var(--ink-faint); text-transform:uppercase; }
+.stn-dims { display:grid; grid-template-columns:1fr 1fr; gap:.25rem .9rem; }
+.stn-dims .dm { display:flex; align-items:center; gap:.5rem; font-family:var(--mono); font-size:.6rem; }
+.stn-dims .dm .k { width:4.6rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; }
+.stn-dims .dm .tr { flex:1; height:4px; background:var(--slate-3); border-radius:99px; overflow:hidden; }
+.stn-dims .dm .tr i { display:block; height:100%; background:var(--teach); width:var(--w); transition:width .6s cubic-bezier(.22,1,.36,1); }
+.stn-dims .dm .v { width:1.6rem; text-align:right; color:var(--ink-dim); }
+.stn-vg { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1.1rem; grid-column:1/-1; }
+.stn-vg .vb { border-radius:8px; padding:.7rem .9rem; font-size:.78rem; line-height:1.45; color:var(--ink-dim); }
+.stn-vg .imp { background:oklch(from var(--ok) l c h / .1); border:1px solid oklch(from var(--ok) l c h / .3); }
+.stn-vg .gap { background:oklch(from var(--teach) l c h / .1); border:1px solid oklch(from var(--teach) l c h / .3); }
+.stn-vg .vh { font-family:var(--mono); font-size:.5rem; letter-spacing:.16em; text-transform:uppercase; margin-bottom:.25rem; }
+.stn-vg .imp .vh { color:var(--ok); } .stn-vg .gap .vh { color:var(--teach); }
+
+.verdict { margin-top:2rem; border-left:3px solid var(--main); padding:.4rem 0 .4rem 1.4rem; font-family:var(--serif); font-style:italic; color:var(--ink-dim); font-size:.98rem; max-width:50rem; }
+.verdict b { color:var(--ink); font-style:normal; }
+@media (max-width:900px){ .stn{grid-template-columns:1fr;} .stn-data{min-width:0;} }
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{ animation:none!important; transition:none!important;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="manifest">
+    <div>
+      <div class="no">waybill № 02 · 2026-08-02</div>
+      <h1>The <span class="ln">Expedition</span> Line</h1>
+      <div class="sub">a task rides the line · each station hands the next an artifact</div>
+    </div>
+    <div class="sp"></div>
+    <div class="score">
+      <div class="k">line rating</div>
+      <div class="v">8.7</div>
+      <div class="d">▲ +0.2 since last waybill</div>
+    </div>
+    <button class="mode" id="mode">day</button>
+  </header>
+
+  <section class="line-wrap">
+    <div class="lh">
+      <h2>the line — artifact handoffs</h2>
+      <div class="legend">
+        <span><i style="background:var(--main)"></i>main line</span>
+        <span><i style="background:var(--repair)"></i>repair return</span>
+        <span><i style="background:var(--teach)"></i>teaching shuttle</span>
+        <span style="color:var(--chip)">◗ artifact</span>
+      </div>
+    </div>
+    <svg viewBox="0 0 1000 300" id="line" aria-label="the expedition line"></svg>
+  </section>
+
+  <section class="stn" id="stn"></section>
+
+  <p class="verdict">The line runs at <b>8.7</b>, up 0.2. What moves between stations matters more than the stations themselves — the <b>intent brief</b> and the <b>worker packet</b> are the load-bearing artifacts, and this reading made both lighter without making them weaker. When a workpiece comes back on the return rail, it is <b>revised, not scrapped</b>. The teaching shuttle runs alongside, logging how the operator is improving.</p>
+</div>
+
+<script>
+var DIMS=['clarity','useful','complete','novelty','adopt','tokens'];
+var ST=[
+ {n:'orientify', step:'01', v1:8.4, v2:8.5, io:'— → direction brief', p:[7.5,8.5,9,9], d:[9,8.5,9,7.5,8.5,8.5],
+  note:'Maps the codebase cold. Quick orient — a five-line brief for small ground; the full scan only when complexity hides.',
+  imp:'Quick Orient for small repos and narrow questions; escalation on hidden complexity.',
+  gap:'Thinnest by design — redundant for seniors, fine for subagents and cold starts.'},
+ {n:'explorify', step:'02', v1:8.9, v2:8.9, io:'direction brief → chosen direction', p:[8,9,9,9.5], d:[9,8.5,8.5,9.5,8.5,8.5],
+  note:'Generates radically different directions, not variations. Axes, not variations; the sketch makes options judgeable.',
+  imp:'Untouched — “axes, not variations” plus the mandatory sketch was already best-in-class.',
+  gap:'Low trigger frequency is inherent to divergence, not a flaw.'},
+ {n:'undumbify', step:'03', v1:8.8, v2:8.8, io:'chosen direction → intent brief', p:[7,9,9.5,9.5], d:[9,9,9,9.5,8,8],
+  note:'Extracts intent from ambiguity. The Materiality Gate — it never asks what it already knows.',
+  imp:'Untouched — the Materiality Gate prevents the #1 AI sin.',
+  gap:'Vocabulary is senior-oriented; juniors may bounce (now eased with plain-language aliases).'},
+ {n:'shapeify', step:'04', v1:8.0, v2:8.6, io:'intent brief → worker packet', p:[7,8.5,9.5,9.5], d:[9,9,9.5,8.5,7.5,8],
+  note:'Decomposes intent into executable slices. The lite packet — full worker-packet weight is earned, never imposed.',
+  imp:'The Lite Packet — five fields for ≤5 steps; “when in doubt: lite”.',
+  gap:'Full template is still 15+ fields — but the weight is now earned, not imposed.'},
+ {n:'shipify', step:'05', v1:8.4, v2:8.5, io:'worker packet → completion report', p:[7,8.5,9.5,9], d:[9,9,9.5,9,7.5,7.5],
+  note:'Executes the packet with adaptive granularity. Isolate the risky, batch the safe; the single-agent report is three lines.',
+  imp:'Three-line single-agent report; the full table is reserved for subagent mode.',
+  gap:'Output depends on shapeify’s packet — the lite split shrinks the garbage-in surface.'},
+ {n:'reviewify', step:'06', v1:8.6, v2:8.9, io:'completion report → verdict', p:[7.5,9,9.5,9.5], d:[9.5,9,9,9,8.5,8.5],
+  note:'Judges the work against intent, not taste. Three or four lenses gone deep, the skipped ones named.',
+  imp:'Deep lenses with a selection heuristic; contract lenses always-on; skips stated.',
+  gap:'Minimal. This is what a review skill should feel like.'},
+ {n:'traceify', step:'R', v1:8.9, v2:8.9, io:'failure → root-cause brief', p:[8.5,9,9,9], d:[9.5,9.5,8.5,8,9,9],
+  note:'The repair service. Falsifiable hypotheses, the cheapest test first, no stacked workarounds.',
+  imp:'Untouched and still elite: falsifiable hypotheses, cheapest test first.',
+  gap:'None. Do not change a word.'},
+ {n:'promptify', step:'T', v1:7.9, v2:8.5, io:'evidence ⇄ skill map', p:[8,8.5,8.5,9], d:[8.5,8.5,9,9,7.5,7.5],
+  note:'The teaching shuttle. The game became a map — dated evidence in place of XP and streaks.',
+  imp:'Skill map replaced XP/streaks/badges; quick mode is the default; the pipeline harvests.',
+  gap:'Still needs Node for the renderer; passive harvesting now has a structural hook.'},
+ {n:'explainify', step:'T', v1:7.9, v2:8.4, io:'question ⇄ understanding', p:[8,8,8.5,9], d:[8.5,8,9,8.5,7.5,7.5],
+  note:'The teaching shuttle. Chat-first; the wiring diagram is earned, never automatic.',
+  imp:'Chat-first default — the explanation lives in the conversation; artifacts only when earned.',
+  gap:'SVG diagrams are still error-prone for executors — but only attempted when genuinely earned.'}
+];
+var ART=['direction brief','chosen direction','intent brief','worker packet','completion report'];
+var NS='http://www.w3.org/2000/svg';
+var svg=document.getElementById('line');
+function el(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+var Y=120, SW=118, GAP=42;
+var X=function(i){return 30+i*(SW+GAP);};
+/* main rail */
+svg.appendChild(el('line',{x1:20,y1:Y+28,x2:985,y2:Y+28,stroke:'var(--main)','stroke-width':5,'stroke-linecap':'round',opacity:.25}));
+/* repair return rail (below) */
+svg.appendChild(el('path',{d:'M '+X(4)+' '+(Y+56)+' C '+(X(4)-60)+' 250 '+(X(3)+100)+' 250 '+(X(3)+SW/2)+' '+(Y+56),'class':'rail ret',fill:'none'}));
+var rl=el('text',{x:(X(3)+X(4))/2+40,y:262,'text-anchor':'middle','class':'looplbl',fill:'var(--repair)'}); rl.textContent='← revision request · re-runs shape'; svg.appendChild(rl);
+/* traceify spur feeding undumbify */
+svg.appendChild(el('path',{d:'M 120 250 C 200 250 260 200 '+(X(2)+20)+' '+(Y+56),'class':'rail ret',fill:'none'}));
+var tl=el('text',{x:150,y:262,'class':'looplbl',fill:'var(--repair)'}); tl.textContent='traceify · root-cause brief'; svg.appendChild(tl);
+/* teaching shuttle (top) */
+svg.appendChild(el('path',{d:'M '+(X(6)+SW+30)+' 55 C '+(X(6)+SW+90)+' 30 '+(X(6)+SW+150)+' 30 '+(X(6)+SW+210)+' 55','class':'rail teach',fill:'none'}));
+svg.appendChild(el('path',{d:'M '+(X(6)+SW+210)+' 62 C '+(X(6)+SW+150)+' 85 '+(X(6)+SW+90)+' 85 '+(X(6)+SW+30)+' 62','class':'rail teach',fill:'none'}));
+var tcl=el('text',{x:X(6)+SW+120,y:22,'text-anchor':'middle','class':'looplbl',fill:'var(--teach)'}); tcl.textContent='teaching shuttle · skill map ⇄'; svg.appendChild(tcl);
+
+var sel=3;
+/* stations 0-5 on the main line */
+function station(i,x,y){
+  var s=ST[i];
+  var g=el('g',{'class':'station','data-i':i});
+  g.appendChild(el('rect',{x:x,y:y,width:SW,height:56,rx:10,'class':'body'}));
+  var st=el('text',{x:x+10,y:y+16,'class':'step'}); st.textContent='STEP '+s.step+' · '+s.v2.toFixed(1); g.appendChild(st);
+  var nm=el('text',{x:x+10,y:y+34,'class':'name'}); nm.textContent=s.n; g.appendChild(nm);
+  var sc=el('text',{x:x+SW-10,y:y+46,'text-anchor':'end','class':'score'}); sc.textContent=s.v2.toFixed(1); g.appendChild(sc);
+  g.addEventListener('click',function(){ sel=i; render(); });
+  g.addEventListener('mouseenter',function(){ sel=i; render(); });
+  svg.appendChild(g);
+  return g;
+}
+var stationEls=[];
+for(var i=0;i<6;i++) stationEls.push(station(i,X(i),Y));
+/* traceify + teaching pair, smaller, off-line */
+stationEls.push(station(6,60,215));
+stationEls.push(station(7,X(6)+SW+30,40));
+stationEls.push(station(8,X(6)+SW+210,40));
+/* artifact chips between main stations */
+for(var j=0;j<5;j++){
+  var cx=X(j)+SW+GAP/2;
+  var g=el('g',{'class':'artifact'});
+  var w=ART[j].length*5.6+16;
+  g.appendChild(el('rect',{x:cx-w/2,y:Y+18,width:w,height:20}));
+  var t=el('text',{x:cx,y:Y+31,'text-anchor':'middle'}); t.textContent=ART[j]; g.appendChild(t);
+  /* arrow */
+  svg.appendChild(el('path',{d:'M '+(cx+6)+' '+(Y+44)+' l 6 6 l -6 6',fill:'none',stroke:'var(--main)','stroke-width':2,'stroke-linecap':'round'}));
+  svg.appendChild(g);
+}
+/* the workpiece riding the line */
+var wp=el('circle',{cx:X(0),cy:Y+28,r:7,'class':'workpiece'});
+var am=el('animateMotion',{dur:'9s',repeatCount:'indefinite',path:'M '+X(0)+' '+(Y+28)+' L '+X(5)+' '+(Y+28)});
+wp.appendChild(am); svg.appendChild(wp);
+
+var panel=document.getElementById('stn');
+var PL=['J','S','A','E'];
+function render(){
+  var s=ST[sel], d=s.v2-s.v1;
+  document.querySelectorAll('.station').forEach(function(g){ g.classList.toggle('sel', +g.getAttribute('data-i')===sel); });
+  panel.innerHTML=
+    '<div class="big"><div class="num">'+s.v2.toFixed(1)+'<span class="u">/10</span></div><div class="lbl">station '+s.step+'</div></div>'+
+    '<div class="stn-mid"><div class="stn-name">'+s.n+'</div>'+
+    '<div class="stn-io">'+s.io+'</div>'+
+    '<div class="stn-note">'+s.note+'</div>'+
+    '<div class="stn-mov">v1 '+s.v1.toFixed(1)+' → v2 '+s.v2.toFixed(1)+' · <b>'+(d>0?'+'+d.toFixed(1):'on time')+'</b></div></div>'+
+    '<div class="stn-data"><div class="stn-persp">'+
+      s.p.map(function(v,j){return '<div class="pp"><div class="bar"><i style="--h:'+((v-6)/4*100)+'%"></i></div><div class="v">'+v+'</div><div class="k">'+PL[j]+'</div></div>';}).join('')+
+    '</div><div class="stn-dims">'+
+      s.d.map(function(v,j){return '<div class="dm"><span class="k">'+DIMS[j]+'</span><span class="tr"><i style="--w:'+(v*10)+'%"></i></span><span class="v">'+v+'</span></div>';}).join('')+
+    '</div></div>'+
+    '<div class="stn-vg"><div class="vb imp"><div class="vh">▲ improved</div>'+s.imp+'</div><div class="vb gap"><div class="vh">⚠ remaining</div>'+s.gap+'</div></div>';
+}
+render();
+
+var mb=document.getElementById('mode');
+if(localStorage.getItem('transit-mode')==='day'){document.documentElement.setAttribute('data-mode','day');mb.textContent='night';}
+mb.addEventListener('click',function(){
+  var day=document.documentElement.getAttribute('data-mode')==='day';
+  if(day){document.documentElement.removeAttribute('data-mode');mb.textContent='day';localStorage.setItem('transit-mode','night');}
+  else{document.documentElement.setAttribute('data-mode','day');mb.textContent='night';localStorage.setItem('transit-mode','day');}
+});
+</script>
+</body>
+</html>

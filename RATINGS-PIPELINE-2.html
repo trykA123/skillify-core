@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>skillify · evaluation.yml — the workflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════ the workflow · CI/CD edition ═══════════
+   A live run. Edges carry animated flow. Status pulses.
+   Click any job to open its terminal run-log. */
+:root{
+  color-scheme:dark;
+  --bg:oklch(15% 0.014 250);
+  --bg-2:oklch(18% 0.016 250);
+  --bg-3:oklch(21% 0.018 250);
+  --ink:oklch(95% 0.008 250);
+  --ink-soft:oklch(74% 0.012 250);
+  --ink-faint:oklch(56% 0.015 250);
+  --line:oklch(95% 0.008 250 / .13);
+  --line-strong:oklch(95% 0.008 250 / .28);
+  --ok:oklch(74% 0.15 152);
+  --ok-dim:oklch(74% 0.15 152 / .14);
+  --entry:oklch(74% 0.12 242);
+  --pipe:oklch(78% 0.1 215);
+  --repair:oklch(78% 0.15 62);
+  --teach:oklch(76% 0.12 192);
+  --edge:oklch(70% 0.02 250 / .55);
+  --disp:'Archivo',ui-sans-serif,system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+}
+html[data-mode="light"]{
+  color-scheme:light;
+  --bg:oklch(96.5% 0.006 250);
+  --bg-2:oklch(99% 0.004 250);
+  --bg-3:oklch(93% 0.008 250);
+  --ink:oklch(20% 0.02 250);
+  --ink-soft:oklch(42% 0.015 250);
+  --ink-faint:oklch(55% 0.015 250);
+  --line:oklch(20% 0.02 250 / .15);
+  --line-strong:oklch(20% 0.02 250 / .32);
+  --ok:oklch(46% 0.13 152);
+  --ok-dim:oklch(46% 0.13 152 / .12);
+  --entry:oklch(48% 0.12 242);
+  --pipe:oklch(46% 0.1 215);
+  --repair:oklch(50% 0.13 62);
+  --teach:oklch(44% 0.1 192);
+  --edge:oklch(40% 0.02 250 / .5);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;background:var(--bg);color:var(--ink);
+  font-family:var(--disp);line-height:1.5;overflow-x:hidden;
+  transition:background .35s,color .35s;
+}
+::selection{background:var(--ok);color:oklch(15% 0.03 150)}
+/* ambient dot-grid + soft status glow */
+.ambient{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(var(--line) 1px, transparent 1px);
+  background-size:26px 26px;
+  mask-image:radial-gradient(1000px 700px at 50% -5%, #000 0%, transparent 75%);
+}
+.ambient::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(800px 480px at 82% -8%, var(--ok-dim), transparent 65%);
+}
+.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:30px 20px 110px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ── run header ── */
+.run{border:1px solid var(--line-strong);border-radius:16px;background:var(--bg-2);overflow:hidden;box-shadow:0 24px 60px -34px oklch(5% 0.02 250/.8)}
+.run-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 20px;border-bottom:1px solid var(--line)}
+.run-ic{
+  width:40px;height:40px;border-radius:11px;background:var(--ok);display:grid;place-items:center;
+  color:oklch(15% 0.03 150);font-size:1.15rem;font-weight:900;position:relative;flex-shrink:0;
+}
+.run-ic::after{content:"";position:absolute;inset:-4px;border-radius:14px;border:2px solid var(--ok);opacity:.5;animation:ping 2s cubic-bezier(0,0,.2,1) infinite}
+@keyframes ping{0%{transform:scale(.85);opacity:.6}80%,100%{transform:scale(1.35);opacity:0}}
+.run-titles .repo{font-size:1.25rem;font-weight:800;letter-spacing:-.01em}
+.run-titles .repo .wf{font-family:var(--mono);font-weight:500;color:var(--ink-soft);font-size:1rem}
+.run-titles .sub{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)}
+.run-badges{display:flex;gap:9px;flex-wrap:wrap;margin-left:auto}
+.badge{font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:99px;border:1px solid var(--line-strong);color:var(--ink-soft)}
+.badge.ok{background:var(--ok);border-color:var(--ok);color:oklch(15% 0.03 150);display:inline-flex;align-items:center;gap:7px}
+.badge.ok i{width:7px;height:7px;border-radius:99px;background:oklch(15% 0.03 150);animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+.run-stats{display:flex;gap:0;flex-wrap:wrap;padding:0}
+.stat{flex:1;min-width:130px;padding:13px 20px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:0}
+.stat .k{font-family:var(--mono);font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)}
+.stat .v{font-size:1.05rem;font-weight:800;margin-top:2px}
+.stat .v .up{color:var(--ok)}
+.progress{height:4px;background:var(--line)}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pipe),var(--ok));transition:width 1.2s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 12px var(--ok)}
+
+/* ── legend ── */
+.legend{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin:20px 2px 6px;font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:12px;height:12px;border-radius:4px}
+.legend .ln{width:26px;height:0;border-top:2px solid var(--edge)}
+.legend .ln.dash{border-top-style:dashed}
+.legend .hint{margin-left:auto;color:var(--ink-faint);text-transform:none;letter-spacing:.04em}
+
+/* ── graph ── */
+.graph{display:flex;flex-direction:column;margin-top:16px}
+.stage{
+  position:relative;border:1.5px solid var(--line-strong);border-radius:16px;
+  background:var(--bg-2);padding:26px 20px 20px;
+}
+.stage .tag{
+  position:absolute;top:-11px;left:18px;background:var(--bg);padding:2px 12px;border-radius:99px;
+  font-family:var(--mono);font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  border:1px solid var(--line-strong);color:var(--ink-soft);
+}
+.stage.s-entry{border-color:color-mix(in oklch,var(--entry) 50%,var(--line-strong))}
+.stage.s-entry .tag{color:var(--entry);border-color:color-mix(in oklch,var(--entry) 55%,var(--line-strong))}
+.stage.s-pipe{border-color:color-mix(in oklch,var(--pipe) 45%,var(--line-strong))}
+.stage.s-pipe .tag{color:var(--pipe);border-color:color-mix(in oklch,var(--pipe) 50%,var(--line-strong))}
+.stage.s-repair{border-color:color-mix(in oklch,var(--repair) 50%,var(--line-strong));border-style:dashed}
+.stage.s-repair .tag{color:var(--repair);border-color:color-mix(in oklch,var(--repair) 55%,var(--line-strong))}
+.stage.s-teach{border-color:color-mix(in oklch,var(--teach) 50%,var(--line-strong))}
+.stage.s-teach .tag{color:var(--teach);border-color:color-mix(in oklch,var(--teach) 55%,var(--line-strong))}
+
+/* job node */
+.job{
+  position:relative;display:block;width:100%;text-align:left;cursor:pointer;
+  background:linear-gradient(to right, var(--jb) 0 4px, var(--bg-3) 4px);
+  border:1px solid var(--line-strong);border-radius:12px;padding:13px 16px 12px 18px;
+  color:var(--ink);font-family:var(--disp);
+  transition:transform .16s cubic-bezier(.2,.8,.2,1),box-shadow .25s ease,border-color .2s ease;
+}
+.job:hover{transform:translateY(-3px);border-color:var(--jb);box-shadow:0 16px 32px -16px color-mix(in oklch,var(--jb) 60%,transparent)}
+.job.on{border-color:var(--jb);box-shadow:0 0 0 2px var(--jb),0 16px 34px -14px color-mix(in oklch,var(--jb) 70%,transparent)}
+.job .top{display:flex;align-items:center;gap:9px}
+.job .ck{
+  width:19px;height:19px;border-radius:99px;background:var(--ok);color:oklch(15% 0.03 150);
+  display:grid;place-items:center;font-size:.62rem;font-weight:900;flex-shrink:0;
+}
+.job .st{font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)}
+.job .dur{margin-left:auto;font-family:var(--mono);font-size:.62rem;color:var(--ink-faint)}
+.job .nm{display:block;font-size:1.18rem;font-weight:800;letter-spacing:-.01em;margin-top:7px}
+.job .score{display:flex;align-items:baseline;gap:9px;margin-top:5px}
+.job .score .av{font-size:1.35rem;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.job .score .dl{font-family:var(--mono);font-size:.66rem;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--line);color:var(--ink-soft)}
+.job .score .dl.up{background:var(--ok-dim);color:var(--ok)}
+.job .lenses{margin-top:8px;font-family:var(--mono);font-size:.64rem;color:var(--ink-faint);letter-spacing:.03em}
+
+/* horizontal flow + animated connectors */
+.h-flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap}
+.h-flow .job{flex:1 1 168px;min-width:160px}
+.h-arrow{flex:0 0 34px;align-self:center;position:relative;height:2px;margin:0 -1px}
+.h-arrow::before{
+  content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,var(--edge) 0 6px,transparent 6px 12px);
+  animation:flow 1s linear infinite;
+}
+@keyframes flow{to{background-position:12px 0}}
+.h-arrow::after{
+  content:"";position:absolute;right:-1px;top:50%;transform:translateY(-50%);
+  border-left:7px solid var(--edge);border-top:5px solid transparent;border-bottom:5px solid transparent;
+}
+
+/* vertical connector */
+.v-edge{display:flex;flex-direction:column;align-items:center;height:52px;position:relative}
+.v-edge .ln{width:2px;height:100%;background:repeating-linear-gradient(180deg,var(--edge) 0 6px,transparent 6px 12px);animation:flowv 1s linear infinite}
+@keyframes flowv{to{background-position:0 12px}}
+.v-edge::after{content:"";position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);border-top:8px solid var(--edge);border-left:5px solid transparent;border-right:5px solid transparent}
+.v-edge.up::after{bottom:auto;top:-1px;border-top:0;border-bottom:8px solid var(--edge)}
+.v-edge .lbl{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:var(--bg);border:1px solid var(--line-strong);border-radius:99px;padding:3px 12px;
+  font-family:var(--mono);font-size:.62rem;color:var(--ink-soft);white-space:nowrap;
+}
+.v-edge.dash .ln{background:repeating-linear-gradient(180deg,var(--dc,var(--repair)) 0 5px,transparent 5px 11px)}
+.v-edge.dash::after{border-top-color:var(--dc,var(--repair))}
+.v-edge.dash.up::after{border-bottom-color:var(--dc,var(--repair));border-top:0}
+.v-edge.dash .lbl{color:var(--dc,var(--repair));border-color:color-mix(in oklch,var(--dc,var(--repair)) 45%,var(--line-strong))}
+
+/* conclusion */
+.concl{
+  display:flex;align-items:center;gap:13px;border:1.5px solid var(--ok);border-radius:14px;
+  background:var(--ok-dim);padding:14px 18px;
+}
+.concl .big-ck{width:30px;height:30px;border-radius:99px;background:var(--ok);color:oklch(15% 0.03 150);display:grid;place-items:center;font-weight:900;font-size:.95rem;flex-shrink:0;box-shadow:0 0 18px var(--ok)}
+.concl .t{font-family:var(--mono);font-size:.8rem;color:var(--ink-soft)}
+.concl .t b{color:var(--ink);font-size:.92rem}
+
+/* teach ferry */
+.ferry{display:flex;flex-direction:column;align-items:center;height:48px;position:relative}
+.ferry .ln{width:2px;height:100%;background:var(--teach)}
+.ferry::before{content:"";position:absolute;top:-1px;left:50%;transform:translateX(-50%);border-bottom:7px solid var(--teach);border-left:5px solid transparent;border-right:5px solid transparent}
+.ferry::after{content:"";position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);border-top:7px solid var(--teach);border-left:5px solid transparent;border-right:5px solid transparent}
+.ferry .lbl{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg);border:1px solid color-mix(in oklch,var(--teach) 50%,var(--line-strong));border-radius:99px;padding:3px 12px;font-family:var(--mono);font-size:.62rem;color:var(--teach);white-space:nowrap}
+.teach-note{margin-top:12px;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;color:var(--ink-faint)}
+
+/* combo paths */
+.combo-head{margin:40px 2px 14px;font-family:var(--mono);font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-faint)}
+.combo-head::before{content:"— ";color:var(--teach)}
+.combos{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.combo{border:1px solid var(--line);border-radius:14px;background:var(--bg-2);padding:15px 17px;transition:border-color .2s,transform .16s,box-shadow .25s}
+.combo:hover{border-color:var(--line-strong);transform:translateY(-3px);box-shadow:0 16px 34px -20px oklch(5% 0.02 250/.7)}
+.cb-flow{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.cb-job{
+  font-family:var(--mono);font-size:.72rem;font-weight:700;padding:6px 13px 6px 15px;border-radius:8px;
+  border:1.5px solid var(--line-strong);background:linear-gradient(to right,var(--jb) 0 4px,var(--bg-3) 4px);
+  color:var(--ink);cursor:pointer;transition:border-color .15s,transform .15s;
+}
+.cb-job:hover{border-color:var(--jb);transform:translateY(-2px)}
+.cb-op{font-family:var(--mono);font-weight:700;color:var(--ink-faint)}
+.cb-prod{font-family:var(--mono);font-size:.66rem;font-weight:700;padding:5px 12px;border-radius:99px;border:1.5px solid var(--ok);color:var(--ok);background:var(--ok-dim)}
+.cb-note{margin:10px 0 0;font-size:.82rem;color:var(--ink-soft);line-height:1.55}
+
+/* ── terminal modal ── */
+.term{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
+.term.open{display:flex}
+.term-back{position:absolute;inset:0;background:oklch(8% 0.02 250/.66);backdrop-filter:blur(2px)}
+.term-box{
+  position:relative;width:min(620px,100%);max-height:86dvh;display:flex;flex-direction:column;
+  background:oklch(13% 0.012 250);border:1px solid var(--line-strong);border-radius:14px;overflow:hidden;
+  box-shadow:0 50px 120px -40px oklch(3% 0.02 250/.9);animation:pop .28s cubic-bezier(.2,.8,.2,1);
+  color:oklch(92% 0.008 250);
+}
+@keyframes pop{from{opacity:0;transform:scale(.95) translateY(12px)}to{opacity:1;transform:none}}
+.term-bar{display:flex;align-items:center;gap:8px;padding:11px 15px;border-bottom:1px solid var(--line);background:oklch(16% 0.012 250)}
+.term-bar .dot{width:11px;height:11px;border-radius:99px}
+.term-bar .dot.r{background:oklch(65% 0.2 25)}.term-bar .dot.y{background:oklch(78% 0.15 85)}.term-bar .dot.g{background:oklch(70% 0.15 150)}
+.term-bar .ttl{margin-left:8px;font-family:var(--mono);font-size:.7rem;color:oklch(60% 0.015 250)}
+.term-bar .x{margin-left:auto;background:none;border:0;color:oklch(60% 0.015 250);font-size:1.15rem;cursor:pointer;line-height:1;padding:2px 6px}
+.term-bar .x:hover{color:oklch(92% 0.008 250)}
+.term-body{padding:18px 20px 20px;overflow-y:auto;font-family:var(--mono);font-size:.78rem;line-height:1.7}
+.term-body .cmd{color:oklch(60% 0.015 250)}
+.term-body .cmd b{color:oklch(92% 0.008 250)}
+.tl-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:12px 0 4px;padding-top:12px;border-top:1px dashed var(--line)}
+.tl-name{font-size:1.5rem;font-weight:800;font-family:var(--disp);letter-spacing:-.02em;color:oklch(95% 0.008 250)}
+.tl-fam{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--tc)}
+.tl-status{font-size:.62rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;background:var(--ok);color:oklch(15% 0.03 150);border-radius:99px;padding:3px 11px}
+.tl-score{display:flex;align-items:baseline;gap:12px;margin:8px 0 4px}
+.tl-score .big{font-family:var(--disp);font-size:3rem;font-weight:900;letter-spacing:-.04em;line-height:1;color:oklch(95% 0.008 250)}
+.tl-score .cap{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:oklch(56% 0.015 250)}
+.tl-score .chip{font-size:.7rem;font-weight:800;padding:3px 11px;border-radius:99px}
+.tl-score .chip.up{background:var(--ok);color:oklch(15% 0.03 150)}
+.tl-score .chip.flat{background:var(--line);color:oklch(92% 0.008 250)}
+.tl-move{font-size:.78rem;color:oklch(60% 0.015 250)}
+.tl-move s{color:oklch(48% 0.015 250)}
+.tl-move b{color:oklch(92% 0.008 250)}
+.tl-move .d{color:var(--ok);font-weight:700}
+.tl-handoff{display:flex;align-items:center;gap:7px;margin:12px 0}
+.tl-handoff .art{flex:1;text-align:center;border:1px dashed var(--line);border-radius:8px;padding:8px 4px;font-size:.62rem;color:oklch(60% 0.015 250)}
+.tl-handoff .art.this{border-style:solid;border-color:var(--tc);color:var(--tc);font-weight:800}
+.tl-handoff .arr{color:oklch(48% 0.015 250)}
+.tl-log{margin-top:6px}
+.tl-log .lh{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:oklch(48% 0.015 250);margin-bottom:7px}
+.logline{display:flex;align-items:baseline;gap:10px;padding:2px 0;opacity:0;transform:translateX(-6px);transition:opacity .3s ease,transform .3s ease}
+.logline.show{opacity:1;transform:none}
+.logline .t{color:oklch(48% 0.015 250);flex:0 0 3.4rem}
+.logline .mk{font-weight:800}
+.logline .mk.ok{color:var(--ok)}
+.logline .mk.warn{color:var(--repair)}
+.logline .k{flex:1;color:oklch(74% 0.012 250)}
+.logline .v{font-weight:800;color:oklch(92% 0.008 250)}
+.logline.note{align-items:flex-start}
+.logline.note .tx{flex:1;color:oklch(74% 0.012 250);line-height:1.6}
+.tl-chg{margin-top:14px;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:oklch(48% 0.015 250)}
+.tl-hint{margin-top:8px;font-size:.6rem;color:oklch(44% 0.015 250)}
+
+/* theme toggle — a status badge */
+.ctl{position:fixed;top:16px;left:16px;z-index:9}
+.ctl button{
+  font-family:var(--mono);font-size:.64rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  border:1px solid var(--line-strong);border-radius:99px;background:var(--bg-2);color:var(--ink-soft);
+  padding:7px 15px;cursor:pointer;transition:border-color .2s,color .2s;
+}
+.ctl button:hover{border-color:var(--ok);color:var(--ok)}
+
+@media (max-width:860px){
+  .h-flow{flex-direction:column}
+  .h-arrow{flex-basis:30px;align-self:center;width:2px;height:30px;margin:0}
+  .h-arrow::before{background:repeating-linear-gradient(180deg,var(--edge) 0 6px,transparent 6px 12px);animation:flowv 1s linear infinite}
+  .h-arrow::after{right:auto;left:50%;top:auto;bottom:-1px;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--edge)}
+  .combos{grid-template-columns:1fr}
+  .stat{min-width:45%}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .logline{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="ambient" aria-hidden="true"></div>
+<div class="ctl"><button id="mode"><span id="mode-lbl">◐ light</span></button></div>
+
+<div class="wrap">
+
+  <!-- ══ run header ══ -->
+  <header class="run">
+    <div class="run-bar">
+      <span class="run-ic">✓</span>
+      <div class="run-titles">
+        <div class="repo">skillify <span class="wf">/ evaluation.yml</span></div>
+        <div class="sub">workflow · v2 retouch · 9 jobs · top-down</div>
+      </div>
+      <div class="run-badges">
+        <span class="badge">run #2</span>
+        <span class="badge ok"><i></i>success · 8.8</span>
+        <span class="badge">trigger · skill retouch</span>
+      </div>
+    </div>
+    <div class="run-stats">
+      <div class="stat"><div class="k">branch</div><div class="v mono">main</div></div>
+      <div class="stat"><div class="k">duration</div><div class="v mono">2 weeks</div></div>
+      <div class="stat"><div class="k">jobs</div><div class="v mono">9 / 9 passed</div></div>
+      <div class="stat"><div class="k">system weight</div><div class="v mono">8.8 <span class="up">▲ +0.3</span></div></div>
+      <div class="stat"><div class="k">changed</div><div class="v mono">6 retouched · 3 kept</div></div>
+    </div>
+    <div class="progress"><i id="prog"></i></div>
+  </header>
+
+  <div class="legend">
+    <span><i style="background:var(--entry)"></i>entry</span>
+    <span><i style="background:var(--pipe)"></i>pipeline</span>
+    <span><i style="background:var(--repair)"></i>repair</span>
+    <span><i style="background:var(--teach)"></i>teach</span>
+    <span><span class="ln"></span>handoff</span>
+    <span><span class="ln dash"></span>re-run</span>
+    <span class="hint">click a job to open its run-log · ← → walks the graph</span>
+  </div>
+
+  <!-- ══ the graph ══ -->
+  <div class="graph">
+
+    <div class="stage s-entry"><span class="tag">job · orient</span><div id="g-entry"></div></div>
+    <div class="v-edge"><span class="ln"></span><span class="lbl">direction brief</span></div>
+
+    <div class="stage s-pipe"><span class="tag">job · pipeline — runs left → right</span><div class="h-flow" id="g-main"></div></div>
+    <div class="v-edge"><span class="ln"></span><span class="lbl">verdict</span></div>
+
+    <div class="concl"><span class="big-ck">✓</span><span class="t"><b>conclusion — 8.8 / 10</b> · re-rate on evidence in two weeks</span></div>
+
+    <div class="v-edge dash"><span class="ln"></span><span class="lbl">broken pipeline · failures land here</span></div>
+    <div class="stage s-repair"><span class="tag">job · repair</span><div id="g-repair"></div></div>
+    <div class="v-edge dash up"><span class="ln"></span><span class="lbl">↺ root-cause brief · re-runs the pipeline</span></div>
+
+    <div class="v-edge dash" style="--dc:var(--teach)"><span class="ln"></span><span class="lbl">evidence harvest · the pipeline feeds the map</span></div>
+    <div class="stage s-teach"><span class="tag">job · teach</span>
+      <div id="g-teach-a"></div>
+      <div class="ferry"><span class="ln"></span><span class="lbl">skill map ⇄</span></div>
+      <div id="g-teach-b"></div>
+      <div class="teach-note">one shared skill map · lessons flow both ways</div>
+    </div>
+    <div class="v-edge dash up" style="--dc:var(--teach)"><span class="ln"></span><span class="lbl">↺ lessons learned</span></div>
+
+  </div>
+
+  <div class="combo-head">combo paths — parallel runs that land better</div>
+  <div class="combos" id="combos"></div>
+</div>
+
+<!-- ══ terminal run-log ══ -->
+<div class="term" id="term">
+  <div class="term-back" id="term-back"></div>
+  <div class="term-box">
+    <div class="term-bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="ttl" id="term-ttl">skillify · run #2 · job log</span>
+      <button class="x" id="term-x" aria-label="close">×</button>
+    </div>
+    <div class="term-body">
+      <div class="cmd">$ skillify run --job <b id="tl-cmd">shapeify</b> --verbose</div>
+      <div class="tl-head">
+        <span class="tl-name" id="tl-name">shapeify</span>
+        <span class="tl-fam" id="tl-fam">pipeline · shape</span>
+        <span class="tl-status">✓ passed</span>
+      </div>
+      <div class="tl-score">
+        <span class="big" id="tl-num">8.8</span>
+        <span class="cap">weight<br>v2</span>
+        <span class="chip up" id="tl-chip">▲ +0.8</span>
+      </div>
+      <div class="tl-move" id="tl-move">v1 <s>8.0</s> → <b>8.8</b> <span class="d">▲ +0.8</span></div>
+      <div class="tl-handoff" id="tl-handoff"></div>
+      <div class="tl-log"><div class="lh">run log — lens checks</div><div id="tl-log"></div></div>
+      <div class="tl-log"><div class="lh">annotations</div>
+        <div class="logline note"><span class="mk ok">▲</span><span class="tx" id="tl-imp"></span></div>
+        <div class="logline note"><span class="mk warn">⚠</span><span class="tx" id="tl-gap"></span></div>
+      </div>
+      <div class="tl-chg" id="tl-chg"></div>
+      <div class="tl-hint">esc closes · ← → walks the jobs</div>
+    </div>
+  </div>
+</div>
+
+<script>
+var JOBS={
+  entry:{label:'entry',color:'var(--entry)'},
+  pl:{label:'pipeline',color:'var(--pipe)'},
+  rp:{label:'repair',color:'var(--repair)'},
+  te:{label:'teach',color:'var(--teach)'}
+};
+var SK=[
+  {n:'orientify',sy:'OR',jb:'entry',av:8.6,v1:8.4,d:'+0.2',up:true,p:[7.5,9,9,9],stage:'entry',st:'entry',dur:'0.4s',input:'—',output:'direction brief',imp:'Quick Orient: a 5-line brief for small repos; escalation only when hidden complexity shows.',gap:'Thinnest by design — redundant for seniors, fine for subagents and cold starts.',chg:'changed · quick brief, escalation'},
+  {n:'explorify',sy:'XR',jb:'pl',av:8.9,v1:8.9,d:'±0',up:false,p:[8,9,9,9.5],stage:'main',st:'diverge',dur:'1.1s',input:'direction brief',output:'chosen direction',imp:'Untouched — was already the best divergence scaffolding ("axes, not variations" + mandatory sketch).',gap:'Low trigger frequency is inherent (divergence is rare), not a flaw.',chg:'untouched'},
+  {n:'undumbify',sy:'UN',jb:'pl',av:8.8,v1:8.8,d:'±0',up:false,p:[7,9,9.5,9.5],stage:'main',st:'clarify',dur:'0.9s',input:'chosen direction',output:'intent brief',imp:'Untouched — the Materiality Gate plus known/assumed/unknown still prevents the #1 AI sin.',gap:'Vocabulary is senior-oriented; juniors may bounce off the six dimensions.',chg:'untouched'},
+  {n:'shapeify',sy:'SH',jb:'pl',av:8.8,v1:8.0,d:'+0.8',up:true,p:[7.5,9.5,9.5,9.5],stage:'main',st:'shape',dur:'2.3s',input:'intent brief',output:'worker packet',imp:'Lite packet (5 fields) for ≤5 steps; "when in doubt: lite"; escalation on double-failure.',gap:'Full template still 15+ fields — but the weight is now earned, not imposed.',chg:'changed · lite vs full, escalation'},
+  {n:'shipify',sy:'SP',jb:'pl',av:8.7,v1:8.4,d:'+0.3',up:true,p:[7.5,9,9.5,9],stage:'main',st:'ship',dur:'3.1s',input:'worker packet',output:'completion report',imp:'Three-line completion report for single-agent mode; full table reserved for subagents.',gap:"Output depends on shapeify's packet — lite mode shrinks the garbage-in surface.",chg:'changed · lean report'},
+  {n:'reviewify',sy:'RV',jb:'pl',av:9.0,v1:8.6,d:'+0.4',up:true,p:[7.5,9.5,9.5,9.5],stage:'main',st:'verify',dur:'1.8s',input:'completion report',output:'verdict',imp:'3–4 deep lenses with a selection heuristic; skipped lenses stated; contract lenses always-on.',gap:'Minimal. This is what a review skill should feel like.',chg:'changed · 3–4 lenses, skips stated'},
+  {n:'traceify',sy:'TR',jb:'rp',av:8.9,v1:8.9,d:'±0',up:false,p:[8.5,9,9,9],stage:'repair',st:'repair',dur:'1.4s',input:'broken pipeline',output:'root-cause brief',imp:'Untouched — falsifiable hypotheses, cheapest test first, no stacked workarounds.',gap:'None. "Don\'t change a word."',chg:'untouched'},
+  {n:'promptify',sy:'PF',jb:'te',av:8.9,v1:7.9,d:'+1.0',up:true,p:[8,9.5,9,9.5],stage:'teach',st:'teach',dur:'1.6s',input:'lesson',output:'skill map',imp:'Skill map replaced XP/streaks/badges; quick mode is the default; the pipeline harvests evidence.',gap:'Still needs Node for the renderer; passive harvesting needs a structural hook.',chg:'changed · skill map, quick default, harvest'},
+  {n:'explainify',sy:'XN',jb:'te',av:9.0,v1:7.9,d:'+1.1',up:true,p:[8.5,9.5,9,9.5],stage:'teach',st:'explain',dur:'1.2s',input:'skill map',output:'lesson',imp:'Chat-first default; artifacts only for 3+ modules, an explicit ask, or a repeat question.',gap:'SVG diagrams still error-prone for executors — but only attempted when earned.',chg:'changed · chat-first, escalation, skill map'}
+];
+var RX=[
+  {a:8,b:2,prod:'the clarification loop',note:'Say what you mean, then say it back: undumbify extracts the intent, explainify verifies it in plain language.'},
+  {a:3,b:4,prod:'the packet line',note:'Shape twice, ship once: a clean worker packet is the cheapest insurance for a clean report.'},
+  {a:1,b:2,prod:'diverge → converge',note:'Axes first, materiality gate second: the wildest options still get filtered by the six dimensions.'},
+  {a:6,b:5,prod:'root cause → verdict',note:'Cheapest test first finds the why; the deep lenses verify the fix holds.'},
+  {a:7,b:8,prod:'the teaching loop',note:'The lesson is harvested into the skill map, and the map feeds the next explanation — the loop closes.'},
+  {a:0,b:6,prod:'cold-start repair',note:'A 5-line brief points traceify at the right file before the first hypothesis is even written.'}
+];
+var sel=3,termOpen=false;
+
+function jobNode(s,i,hz){
+  var j=document.createElement('button');
+  j.className='job'+(i===sel?' on':'');
+  j.style.setProperty('--jb',JOBS[s.jb].color);
+  j.innerHTML=
+    '<div class="top"><span class="ck">✓</span><span class="st">'+s.st+'</span><span class="dur mono">'+s.dur+'</span></div>'+
+    '<span class="nm">'+s.n+'</span>'+
+    '<div class="score"><span class="av">'+s.av.toFixed(1)+'</span><span class="dl'+(s.up?' up':'')+'">'+(s.up?'▲ '+s.d:'±0')+'</span></div>'+
+    '<div class="lenses">J '+s.p[0]+' · S '+s.p[1]+' · A '+s.p[2]+' · E '+s.p[3]+'</div>';
+  j.addEventListener('click',function(){select(i);openTerm(true);});
+  return j;
+}
+function build(){
+  var map={entry:'g-entry',main:'g-main',repair:'g-repair'};
+  var main=document.getElementById('g-main');
+  SK.forEach(function(s,i){
+    if(s.stage==='teach')return;
+    var holder=document.getElementById(map[s.stage]);
+    if(s.stage==='main'&&main.children.length>0){
+      var a=document.createElement('span');a.className='h-arrow';a.setAttribute('aria-hidden','true');main.appendChild(a);
+    }
+    holder.appendChild(jobNode(s,i));
+  });
+  var ta=document.getElementById('g-teach-a'),tb=document.getElementById('g-teach-b'),first=true;
+  SK.forEach(function(s,i){
+    if(s.stage!=='teach')return;
+    (first?ta:tb).appendChild(jobNode(s,i));first=false;
+  });
+}
+function buildCombos(){
+  var host=document.getElementById('combos');host.innerHTML='';
+  RX.forEach(function(r){
+    var A=SK[r.a],B=SK[r.b];
+    var c=document.createElement('div');c.className='combo';
+    c.innerHTML='<div class="cb-flow">'+
+      '<span class="cb-job" style="--jb:'+JOBS[A.jb].color+'">'+A.n+'</span><span class="cb-op">+</span>'+
+      '<span class="cb-job" style="--jb:'+JOBS[B.jb].color+'">'+B.n+'</span><span class="cb-op">→</span>'+
+      '<span class="cb-prod">'+r.prod+'</span></div><p class="cb-note">'+r.note+'</p>';
+    var js=c.querySelectorAll('.cb-job');
+    js[0].addEventListener('click',function(){select(r.a);openTerm(true);});
+    js[1].addEventListener('click',function(){select(r.b);openTerm(true);});
+    host.appendChild(c);
+  });
+}
+function select(i){
+  sel=i;
+  document.querySelectorAll('.job').forEach(function(j,k){j.classList.toggle('on',k===i);});
+  var s=SK[i],c=JOBS[s.jb].color;
+  document.getElementById('term-ttl').textContent='skillify · run #2 · '+s.n;
+  document.getElementById('tl-cmd').textContent=s.n;
+  document.getElementById('tl-name').textContent=s.n;
+  var fam=document.getElementById('tl-fam');fam.textContent=JOBS[s.jb].label+' · '+s.st;fam.style.setProperty('--tc',c);fam.style.color=c;
+  document.getElementById('tl-num').textContent=s.av.toFixed(1);
+  var chip=document.getElementById('tl-chip');
+  chip.textContent=s.up?'▲ '+s.d:'±0';chip.className='chip '+(s.up?'up':'flat');
+  document.getElementById('tl-move').innerHTML='v1 <s>'+s.v1.toFixed(1)+'</s> → <b>'+s.av.toFixed(1)+'</b> <span class="d">'+(s.up?'▲ '+s.d:'±0')+'</span>';
+  var ho=document.getElementById('tl-handoff');
+  ho.innerHTML='<span class="art">'+(s.input==='—'?'start':s.input)+'</span><span class="arr">→</span>'+
+    '<span class="art this" style="--tc:'+c+'">'+s.n+'</span><span class="arr">→</span><span class="art">'+s.output+'</span>';
+  var lens=[['junior lens',s.p[0]],['senior lens',s.p[1]],['ai lens',s.p[2]],['expert lens',s.p[3]]];
+  var log=document.getElementById('tl-log');
+  log.innerHTML=lens.map(function(r,k){
+    return '<div class="logline"><span class="t">0.'+(k+2)+'s</span><span class="mk ok">✓</span><span class="k">'+r[0]+'</span><span class="v">'+r[1]+'</span></div>';
+  }).join('');
+  document.getElementById('tl-imp').textContent=s.imp;
+  document.getElementById('tl-gap').textContent=s.gap;
+  document.getElementById('tl-chg').textContent=s.chg;
+  /* stagger the log lines */
+  var lines=document.querySelectorAll('#tl-log .logline, .tl-log .logline.note');
+  lines.forEach(function(l){l.classList.remove('show');});
+  requestAnimationFrame(function(){
+    lines.forEach(function(l,k){setTimeout(function(){l.classList.add('show');},60+k*70);});
+  });
+}
+function openTerm(open){
+  termOpen=open;
+  document.getElementById('term').classList.toggle('open',open);
+  document.body.style.overflow=open?'hidden':'';
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')openTerm(false);
+  if(e.key==='ArrowRight'){select((sel+1)%SK.length);if(termOpen)openTerm(true);}
+  if(e.key==='ArrowLeft'){select((sel-1+SK.length)%SK.length);if(termOpen)openTerm(true);}
+});
+document.getElementById('term-x').addEventListener('click',function(){openTerm(false);});
+document.getElementById('term-back').addEventListener('click',function(){openTerm(false);});
+
+document.getElementById('mode').addEventListener('click',function(){
+  var isLight=document.documentElement.getAttribute('data-mode')==='light';
+  document.documentElement.setAttribute('data-mode',isLight?'':'light');
+  document.getElementById('mode-lbl').textContent=isLight?'◐ light':'◑ dark';
+});
+
+build();buildCombos();select(sel);
+setTimeout(function(){document.getElementById('prog').style.width='100%';},200);
+</script>
+</body>
+</html>

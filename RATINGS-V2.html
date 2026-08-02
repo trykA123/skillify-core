@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>skillify — evaluation no. 2</title>
+<style>
+/* ═══════════ Swiss editorial system ═══════════
+   Paper · Ink · Klein blue. Grid · rules · numerals.
+   The evaluation is a printed document, not a page. */
+:root {
+  color-scheme: light;
+  --paper: oklch(94% 0.02 85);
+  --paper-2: oklch(91% 0.025 85);
+  --ink: oklch(14% 0.01 70);
+  --ink-soft: oklch(40% 0.01 70);
+  --ink-faint: oklch(56% 0.01 70);
+  --rule: oklch(14% 0.01 70);
+  --rule-soft: oklch(14% 0.01 70 / 0.22);
+  --signal: oklch(46% 0.2 265);
+  --signal-soft: oklch(46% 0.2 265 / 0.08);
+  --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --grotesque: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+}
+html[data-mode='ink'] {
+  color-scheme: dark;
+  --paper: oklch(14% 0.01 70);
+  --paper-2: oklch(17.5% 0.012 70);
+  --ink: oklch(93% 0.01 85);
+  --ink-soft: oklch(70% 0.01 85);
+  --ink-faint: oklch(50% 0.01 85);
+  --rule: oklch(93% 0.01 85);
+  --rule-soft: oklch(93% 0.01 85 / 0.22);
+  --signal: oklch(72% 0.16 265);
+  --signal-soft: oklch(72% 0.16 265 / 0.12);
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--grotesque);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.serif { font-family: var(--serif); }
+
+/* ═══════════ masthead ═══════════ */
+.masthead {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: baseline;
+  padding: 14px 0;
+  border-bottom: 3px double var(--rule);
+}
+.mh-no { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.18em; color: var(--ink-faint); }
+.mh-title { font-size: 1rem; font-weight: 800; letter-spacing: 0.32em; text-transform: uppercase; text-align: center; }
+.mh-meta { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; text-align: right; color: var(--ink-faint); }
+.masthead-2 {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.mh-sub b { color: var(--signal); font-weight: 700; }
+
+/* ═══════════ shell & grid ═══════════ */
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px 120px; }
+.section { padding: 44px 0 0; }
+.sec-head {
+  display: flex; align-items: baseline; gap: 16px;
+  border-top: 1px solid var(--rule);
+  padding-top: 10px;
+  margin-bottom: 28px;
+}
+.sec-no { font-family: var(--mono); font-size: 0.78rem; font-weight: 700; color: var(--signal); }
+.sec-title { font-size: 0.82rem; font-weight: 800; letter-spacing: 0.3em; text-transform: uppercase; }
+.sec-note { margin-left: auto; font-family: var(--mono); font-size: 0.68rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* ═══════════ 00 · the figure ═══════════ */
+.fig {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  border-bottom: 1px solid var(--rule);
+  padding: 56px 0 48px;
+}
+.fig-main { position: relative; padding-right: 32px; }
+.fig-label { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px; }
+.fig-number {
+  font-size: clamp(9rem, 22vw, 15rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.055em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.fig-number .dec { color: var(--signal); }
+.fig-scale { font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.2em; color: var(--ink-faint); margin-top: 10px; }
+.fig-verdict { border-left: 3px solid var(--signal); padding: 4px 0 4px 20px; align-self: center; }
+.fig-verdict .kick { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--signal); margin-bottom: 10px; }
+.fig-verdict h1 { margin: 0 0 12px; font-size: 1.7rem; font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; }
+.fig-verdict p { margin: 0; font-size: 0.92rem; color: var(--ink-soft); max-width: 34rem; }
+
+/* perspective strip */
+.persp { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--rule); }
+.persp-cell { padding: 14px 16px; border-right: 1px solid var(--rule); }
+.persp-cell:last-child { border-right: 0; }
+.persp-cell .who { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); }
+.persp-cell .val { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.03em; margin-top: 2px; }
+.persp-cell .d { font-family: var(--mono); font-size: 0.66rem; color: var(--signal); margin-top: 2px; }
+.persp-cell .d.same { color: var(--ink-faint); }
+
+/* ═══════════ 01 · the ranking — a strict table ═══════════ */
+table { width: 100%; border-collapse: collapse; }
+th {
+  text-align: left;
+  font-family: var(--mono); font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-faint);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--rule);
+}
+td { padding: 14px 10px; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+tbody tr { transition: background 0.15s ease; }
+tbody tr:hover { background: var(--ink); color: var(--paper); }
+tbody tr:hover td .note, tbody tr:hover td .p { color: var(--paper); opacity: 0.75; }
+tbody tr:hover td .rank { color: var(--signal); }
+td.rank { font-family: var(--mono); font-size: 0.78rem; font-weight: 700; color: var(--ink-faint); width: 3.2rem; }
+tr.top td.rank { color: var(--signal); }
+tr.top { border-left: 3px solid var(--signal); }
+td.name { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.01em; width: 13rem; }
+td.avg { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.04em; width: 5.5rem; font-variant-numeric: tabular-nums; }
+td.p { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-soft); width: 13rem; }
+td.p span { display: block; }
+td.delta { width: 5rem; }
+.dchip {
+  display: inline-block;
+  font-family: var(--mono); font-size: 0.66rem; font-weight: 700;
+  padding: 2px 8px;
+  border: 1px solid var(--signal);
+  color: var(--signal);
+}
+.dchip.same { border-color: var(--ink-faint); color: var(--ink-faint); }
+td.note { font-size: 0.8rem; color: var(--ink-soft); min-width: 16rem; }
+td.note .chg { display: block; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin-top: 3px; }
+
+/* ═══════════ 02 · the movement ═══════════ */
+.mov { display: grid; grid-template-columns: 1fr 1fr; border-left: 1px solid var(--rule); }
+.mov-row { display: grid; grid-template-columns: 1fr auto auto auto 1.6fr; align-items: baseline; gap: 14px; padding: 13px 16px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule-soft); }
+.mov-row .n { font-weight: 700; font-size: 0.92rem; }
+.mov-row .v { font-family: var(--mono); font-size: 0.86rem; }
+.mov-row .v.old { color: var(--ink-faint); text-decoration: line-through; text-decoration-color: var(--ink-faint); }
+.mov-row .v.new { font-weight: 800; color: var(--signal); }
+.mov-row .arr { color: var(--ink-faint); }
+.mov-row .w { font-size: 0.74rem; color: var(--ink-soft); }
+
+/* ═══════════ 03 · the repair ═══════════ */
+.repair { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--rule); }
+.repair-item { padding: 18px 20px; border-bottom: 1px solid var(--rule-soft); border-right: 1px solid var(--rule); }
+.repair-item:nth-child(even) { border-right: 0; }
+.repair-item h4 { margin: 0 0 8px; font-size: 0.9rem; font-weight: 800; letter-spacing: -0.01em; }
+.repair-item .was, .repair-item .now { display: block; font-size: 0.78rem; }
+.repair-item .was { color: var(--ink-faint); margin-bottom: 3px; }
+.repair-item .was::before { content: '— '; }
+.repair-item .now { color: var(--ink); font-weight: 600; }
+.repair-item .now::before { content: '+ '; color: var(--signal); font-weight: 800; }
+
+/* ═══════════ 04 · the residue — numbered notes ═══════════ */
+.note-list { counter-reset: note; }
+.note-item { display: grid; grid-template-columns: 3.4rem 1fr; gap: 18px; padding: 16px 4px; border-bottom: 1px solid var(--rule-soft); }
+.note-item .num { counter-increment: note; font-family: var(--mono); font-size: 0.86rem; font-weight: 700; color: var(--ink-faint); }
+.note-item .num::before { content: '0' counter(note) '.'; }
+.note-item .t { font-size: 0.94rem; font-weight: 700; }
+.note-item .w { font-size: 0.82rem; color: var(--ink-soft); margin-top: 2px; max-width: 46rem; }
+
+/* ═══════════ 05 · the verdict — pull quote ═══════════ */
+.quote {
+  border-top: 4px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 44px 8px 40px;
+  display: grid; grid-template-columns: auto 1fr; gap: 28px;
+}
+.quote .q-mark { font-family: var(--serif); font-size: 7rem; line-height: 0.7; color: var(--signal); font-weight: 700; }
+.quote blockquote { margin: 0; font-family: var(--serif); font-size: 1.35rem; line-height: 1.45; font-style: italic; }
+.quote blockquote b { font-style: normal; font-weight: 700; }
+.quote .attrib { margin-top: 18px; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-faint); }
+.quote .attrib b { color: var(--signal); }
+
+/* ═══════════ colophon ═══════════ */
+.colophon {
+  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  margin-top: 60px; padding-top: 12px;
+  border-top: 3px double var(--rule);
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* ═══════════ invert control ═══════════ */
+.invert {
+  position: fixed; top: 16px; right: 16px; z-index: 50;
+  font-family: var(--mono); font-size: 0.64rem; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 9px 14px;
+  background: var(--ink); color: var(--paper);
+  border: 1px solid var(--ink);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.invert:hover { background: var(--signal); border-color: var(--signal); color: var(--paper); }
+
+/* ═══════════ reveal (print-like restraint) ═══════════ */
+.fig, .persp, .section { animation: set 0.45s cubic-bezier(0.2, 0.6, 0.2, 1) both; }
+.section:nth-of-type(2) { animation-delay: 0.05s; }
+.section:nth-of-type(3) { animation-delay: 0.1s; }
+.section:nth-of-type(4) { animation-delay: 0.15s; }
+@keyframes set { from { opacity: 0; transform: translateY(6px); } }
+
+@media (max-width: 860px) {
+  .fig { grid-template-columns: 1fr; padding: 40px 0 32px; gap: 28px; }
+  .fig-verdict { border-left: 0; border-top: 3px solid var(--signal); padding: 16px 0 0; }
+  .persp { grid-template-columns: 1fr 1fr; }
+  .persp-cell:nth-child(2) { border-right: 0; }
+  .persp-cell:nth-child(-n+2) { border-bottom: 1px solid var(--rule); }
+  td.note { display: none; }
+  td.name { width: auto; }
+  .mov { grid-template-columns: 1fr; }
+  .mov-row { grid-template-columns: 1fr auto auto auto; }
+  .mov-row .w { grid-column: 1 / -1; }
+  .repair { grid-template-columns: 1fr; }
+  .repair-item:nth-child(even) { border-right: 1px solid var(--rule); }
+  .quote { grid-template-columns: 1fr; gap: 14px; }
+  .masthead { grid-template-columns: 1fr auto; }
+  .mh-title { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<button class="invert" id="invert" aria-label="Invert paper and ink">Invert</button>
+
+<div class="wrap">
+
+  <!-- masthead -->
+  <header class="masthead">
+    <span class="mh-no">EVAL. NO. 02</span>
+    <span class="mh-title">Skillify — Evaluation</span>
+    <span class="mh-meta">2026 · 08 · 02</span>
+  </header>
+  <div class="masthead-2">
+    <span>9 skills · 4 perspectives · 6 dimensions</span>
+    <span class="mh-sub">re-rated by <b>the same AI</b> that gave no. 01</span>
+  </div>
+
+  <!-- 00 · the figure -->
+  <section class="fig" aria-label="Overall score">
+    <div class="fig-main">
+      <div class="fig-label">Overall — v2</div>
+      <div class="fig-number">8<span class="dec">.8</span></div>
+      <div class="fig-scale">SCALE / 10 · PREVIOUS 8.5 · Δ +0.3</div>
+    </div>
+    <div class="fig-verdict">
+      <div class="kick">The finding</div>
+      <h1>Brilliant, and finally appropriately weighted.</h1>
+      <p>The retouches are the v1 critique, implemented: ceremony dead, the game became a competency map, reviewify goes deep instead of shallow. The remaining complaints concern measurement — which is what a mature system should worry about.</p>
+    </div>
+  </section>
+
+  <!-- perspective strip -->
+  <div class="persp" aria-label="Perspective averages">
+    <div class="persp-cell"><div class="who">🌱 Junior</div><div class="val">8.1</div><div class="d">+0.7 vs v1</div></div>
+    <div class="persp-cell"><div class="who">🏗️ Senior</div><div class="val">9.2</div><div class="d">+0.6 vs v1</div></div>
+    <div class="persp-cell"><div class="who">🤖 AI executor</div><div class="val">9.3</div><div class="d">+0.5 vs v1</div></div>
+    <div class="persp-cell"><div class="who">🎓 Design expert</div><div class="val">9.4</div><div class="d">+0.3 vs v1</div></div>
+  </div>
+
+  <!-- 01 · ranking -->
+  <section class="section">
+    <div class="sec-head">
+      <span class="sec-no">01</span>
+      <span class="sec-title">The ranking</span>
+      <span class="sec-note">sorted · ties broken by judgment</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Skill</th><th>Avg</th><th>J · S · A · E</th><th>Δ</th><th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="top"><td class="rank">01</td><td class="name">explainify</td><td class="avg">9.0</td><td class="p"><span>J 8.5 · S 9.5</span><span>A 9.0 · E 9.5</span></td><td class="delta"><span class="dchip">+1.1</span></td><td class="note">Chat-first default is the cleanest fix in the set — "the explanation lives in the conversation." Escalation criteria turn artifacts from ritual into judgment.<span class="chg">changed · chat-first, escalation, skill map</span></td></tr>
+        <tr class="top"><td class="rank">02</td><td class="name">reviewify</td><td class="avg">9.0</td><td class="p"><span>J 7.5 · S 9.5</span><span>A 9.5 · E 9.5</span></td><td class="delta"><span class="dchip">+0.4</span></td><td class="note">Lens selection is senior judgment encoded. Contract lenses always-on protect the review; depth beats coverage.<span class="chg">changed · 3–4 lenses, skips stated</span></td></tr>
+        <tr><td class="rank">03</td><td class="name">promptify</td><td class="avg">8.9</td><td class="p"><span>J 8.0 · S 9.5</span><span>A 9.0 · E 9.5</span></td><td class="delta"><span class="dchip">+1.0</span></td><td class="note">"No XP. No streaks. The bars moving IS the reward." Harvest-from-everything is the most novel idea in the set.<span class="chg">changed · skill map, quick default, pipeline harvest</span></td></tr>
+        <tr><td class="rank">04</td><td class="name">traceify</td><td class="avg">8.9</td><td class="p"><span>J 8.5 · S 9.0</span><span>A 9.0 · E 9.0</span></td><td class="delta"><span class="dchip same">±0</span></td><td class="note">Untouched and still elite: falsifiable hypotheses, cheapest test first, root cause before the fix.<span class="chg">untouched</span></td></tr>
+        <tr><td class="rank">05</td><td class="name">explorify</td><td class="avg">8.9</td><td class="p"><span>J 8.0 · S 9.0</span><span>A 9.0 · E 9.5</span></td><td class="delta"><span class="dchip same">±0</span></td><td class="note">"Axes, not variations" + the sketch requirement remain the best divergence scaffolding around.<span class="chg">untouched</span></td></tr>
+        <tr><td class="rank">06</td><td class="name">shapeify</td><td class="avg">8.8</td><td class="p"><span>J 7.5 · S 9.5</span><span>A 9.5 · E 9.5</span></td><td class="delta"><span class="dchip">+0.8</span></td><td class="note">The Lite Packet is the biggest ceremony reduction in the set. Escalation on double-failure makes the split safe.<span class="chg">changed · lite vs full, escalation</span></td></tr>
+        <tr><td class="rank">07</td><td class="name">undumbify</td><td class="avg">8.8</td><td class="p"><span>J 7.0 · S 9.0</span><span>A 9.5 · E 9.5</span></td><td class="delta"><span class="dchip same">±0</span></td><td class="note">The Materiality Gate still prevents the #1 AI sin. Untouched because it didn't need touching.<span class="chg">untouched</span></td></tr>
+        <tr><td class="rank">08</td><td class="name">shipify</td><td class="avg">8.7</td><td class="p"><span>J 7.5 · S 9.0</span><span>A 9.5 · E 9.0</span></td><td class="delta"><span class="dchip">+0.3</span></td><td class="note">The three-line single-agent report turns completion ceremony into a receipt.<span class="chg">changed · lean report</span></td></tr>
+        <tr><td class="rank">09</td><td class="name">orientify</td><td class="avg">8.6</td><td class="p"><span>J 7.5 · S 9.0</span><span>A 9.0 · E 9.0</span></td><td class="delta"><span class="dchip">+0.2</span></td><td class="note">Quick Orient answers the "where does X live" case. Still the thinnest skill — by design, and that's fine.<span class="chg">changed · quick brief, escalation</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 02 · movement -->
+  <section class="section">
+    <div class="sec-head">
+      <span class="sec-no">02</span>
+      <span class="sec-title">The movement</span>
+      <span class="sec-note">v1 → v2 · all movement upward or flat</span>
+    </div>
+    <div class="mov">
+      <div class="mov-row"><span class="n">explainify</span><span class="v old">7.9</span><span class="arr">→</span><span class="v new">9.0</span><span class="w">ceremony objection fully answered</span></div>
+      <div class="mov-row"><span class="n">promptify</span><span class="v old">7.9</span><span class="arr">→</span><span class="v new">8.9</span><span class="w">game → skill map; quick default; pipeline harvest</span></div>
+      <div class="mov-row"><span class="n">shapeify</span><span class="v old">8.0</span><span class="arr">→</span><span class="v new">8.8</span><span class="w">lite packet; "when in doubt: lite"</span></div>
+      <div class="mov-row"><span class="n">reviewify</span><span class="v old">8.6</span><span class="arr">→</span><span class="v new">9.0</span><span class="w">lens selection — deep, not shallow</span></div>
+      <div class="mov-row"><span class="n">shipify</span><span class="v old">8.4</span><span class="arr">→</span><span class="v new">8.7</span><span class="w">three-line receipt for single-agent</span></div>
+      <div class="mov-row"><span class="n">orientify</span><span class="v old">8.4</span><span class="arr">→</span><span class="v new">8.6</span><span class="w">quick orient for small scopes</span></div>
+      <div class="mov-row"><span class="n">traceify · explorify · undumbify</span><span class="v old">8.9/8.9/8.8</span><span class="arr">→</span><span class="v new">same</span><span class="w">untouched — already tight</span></div>
+    </div>
+  </section>
+
+  <!-- 03 · repair -->
+  <section class="section">
+    <div class="sec-head">
+      <span class="sec-no">03</span>
+      <span class="sec-title">The repair</span>
+      <span class="sec-note">v1's criticisms, answered</span>
+    </div>
+    <div class="repair">
+      <div class="repair-item"><h4>shapeify's ceremony</h4><span class="was">full Worker Packet or nothing</span><span class="now">Lite Packet for ≤5 steps, escalation when reality demands</span></div>
+      <div class="repair-item"><h4>per-activation ceremony</h4><span class="was">5–6 artifacts + game bookkeeping per lesson</span><span class="now">chat-first default, evidence-only map, artifacts when earned</span></div>
+      <div class="repair-item"><h4>the game's manual mechanics</h4><span class="was">XP / levels / badges, hand-maintained JSON</span><span class="now">competency bars from dated evidence, no grind</span></div>
+      <div class="repair-item"><h4>reviewify's shallow-all-nine</h4><span class="was">every lens once, shallow</span><span class="now">3–4 lenses with real surface, skips stated</span></div>
+      <div class="repair-item"><h4>shipify's report tail</h4><span class="was">full report even when the user watched</span><span class="now">three lines in single-agent; full only for handoff</span></div>
+      <div class="repair-item"><h4>orientify's fixed cost</h4><span class="was">full scan for every question</span><span class="now">5-line quick brief, escalate when complexity hides</span></div>
+    </div>
+  </section>
+
+  <!-- 04 · residue -->
+  <section class="section">
+    <div class="sec-head">
+      <span class="sec-no">04</span>
+      <span class="sec-title">The residue</span>
+      <span class="sec-note">what's still wrong</span>
+    </div>
+    <div class="note-list">
+      <div class="note-item"><span class="num"></span><div><div class="t">Self-assessed evidence</div><div class="w">The skill map's ratings are the agent rating its own teaching. The evidence format helps; the bias remains.</div></div></div>
+      <div class="note-item"><span class="num"></span><div><div class="t">Pedagogy still unproven</div><div class="w">Two days of data. The mechanism is excellent; whether lessons convert to durable skill is still a hypothesis.</div></div></div>
+      <div class="note-item"><span class="num"></span><div><div class="t">Cross-folder dependency</div><div class="w">explainify's progression spec lives in promptify's folder. Still one delete away from breakage.</div></div></div>
+      <div class="note-item"><span class="num"></span><div><div class="t">Junior adoption wall</div><div class="w">Lite and quick modes help, but a newcomer still faces nine markdown files and "topology." The wall is shorter, not gone.</div></div></div>
+      <div class="note-item"><span class="num"></span><div><div class="t">Render step remains manual</div><div class="w">game-render.js is invoked by hand per activation. Fine at this scale; the temptation to skip grows at 30+ entries.</div></div></div>
+    </div>
+  </section>
+
+  <!-- 05 · verdict -->
+  <section class="section">
+    <div class="sec-head">
+      <span class="sec-no">05</span>
+      <span class="sec-title">The verdict</span>
+    </div>
+    <div class="quote">
+      <span class="q-mark" aria-hidden="true">“</span>
+      <div>
+        <blockquote>The retouches are not cosmetic — they are the v1 critique, implemented. The set went from <b>8.5 → 8.8</b>, and the shape of the criticism changed: v1 was about ceremony and gimmickry; v2 is about measurement and evidence — which is what a mature system should worry about. The teaching cluster's pivot from game to competency map is the bravest and best change in the set.</blockquote>
+        <div class="attrib">Recommendation · <b>run the skill map two weeks, then re-rate on evidence, not design</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- colophon -->
+  <footer class="colophon">
+    <span>skillify — evaluation no. 02</span>
+    <span>edition of 2026-08-02</span>
+    <span>rated by the same AI that gave no. 01</span>
+  </footer>
+
+</div>
+
+<script>
+  // Paper / ink inversion — the print negative.
+  var mode = localStorage.getItem('swiss-mode') || 'paper';
+  if (mode === 'ink') document.documentElement.setAttribute('data-mode', 'ink');
+  var btn = document.getElementById('invert');
+  btn.textContent = mode === 'ink' ? 'Paper' : 'Invert';
+  btn.addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-mode') === 'ink' ? 'paper' : 'ink';
+    document.documentElement.setAttribute('data-mode', next);
+    localStorage.setItem('swiss-mode', next);
+    btn.textContent = next === 'ink' ? 'Paper' : 'Invert';
+  });
+</script>
+</body>
+</html>

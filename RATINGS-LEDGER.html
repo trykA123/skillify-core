@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>skillify · the counting house</title>
+<style>
+/* ═══════════ THE COUNTING HOUSE · full reckoning ═══════════
+   Double-entry ledger. v1 brought forward, v2 carried down, gain posted.
+   Each account opens to its six dimension sub-accounts and the auditors' note. */
+:root {
+  color-scheme: light;
+  --cloth:  oklch(28% 0.05 165);
+  --cloth-2:oklch(32% 0.055 165);
+  --paper:  oklch(95% 0.02 90);
+  --paper-2:oklch(92% 0.024 88);
+  --paper-3:oklch(88% 0.028 86);
+  --ink:    oklch(24% 0.03 60);
+  --ink-dim:oklch(42% 0.028 58);
+  --ink-faint:oklch(58% 0.025 55);
+  --rule:   oklch(50% 0.09 30 / .5);
+  --rule-soft:oklch(50% 0.09 30 / .22);
+  --gold:   oklch(58% 0.11 78);
+  --stamp:  oklch(48% 0.17 28);
+  --credit: oklch(38% 0.09 160);
+  --num: "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --mono: "JetBrains Mono",ui-monospace,Menlo,monospace;
+  --sans: system-ui,-apple-system,sans-serif;
+}
+html[data-mode="night"] {
+  color-scheme: dark;
+  --cloth:  oklch(13% 0.03 165); --cloth-2:oklch(16% 0.035 165);
+  --paper:  oklch(20% 0.02 80); --paper-2:oklch(23% 0.022 78); --paper-3:oklch(27% 0.024 76);
+  --ink:    oklch(90% 0.02 85); --ink-dim:oklch(68% 0.02 80); --ink-faint:oklch(50% 0.02 75);
+  --rule:   oklch(62% 0.11 30 / .55); --rule-soft:oklch(62% 0.11 30 / .25);
+  --gold:   oklch(72% 0.10 80); --stamp:oklch(60% 0.16 30); --credit:oklch(70% 0.10 160);
+}
+* { box-sizing:border-box; margin:0; }
+body { background:var(--cloth); font-family:var(--sans); transition:background .4s;
+  background-image: radial-gradient(1000px 600px at 50% -10%, oklch(from var(--cloth-2) l c h / .8), transparent 70%); }
+::selection { background:var(--gold); color:var(--cloth); }
+.book { max-width:76rem; margin:2.2rem auto 5rem; background:var(--paper); color:var(--ink);
+  border-radius:6px; box-shadow: 0 30px 80px -20px oklch(8% 0.04 160 / .7), inset 0 2px 0 oklch(100% 0 0 / .15);
+  padding-bottom:3rem; position:relative; overflow:hidden; transition:background .4s,color .4s; }
+.book::before { content:""; position:absolute; top:0; bottom:0; left:5.2rem; width:1.5px; background:var(--rule); }
+.book::after { content:""; position:absolute; top:0; bottom:0; left:5.7rem; width:1px; background:var(--rule-soft); }
+.grain { position:absolute; inset:0; pointer-events:none; opacity:.4;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply; }
+html[data-mode="night"] .grain { mix-blend-mode:soft-light; opacity:.5; }
+
+.bind { display:grid; grid-template-columns:auto 1fr auto; gap:2rem; align-items:center;
+  padding:2.2rem 3rem 1.6rem 7rem; border-bottom:3px double var(--ink); position:relative; }
+.bind .folio { font-family:var(--mono); font-size:.6rem; letter-spacing:.28em; text-transform:uppercase; color:var(--ink-faint); }
+.bind h1 { font-family:var(--num); font-size:clamp(1.8rem,4.5vw,2.8rem); font-weight:700; font-variant:small-caps; letter-spacing:.02em; }
+.bind .sub { font-family:var(--num); font-style:italic; color:var(--ink-dim); font-size:.9rem; margin-top:.2rem; }
+.balance { text-align:right; position:relative; }
+.balance .k { font-family:var(--mono); font-size:.56rem; letter-spacing:.24em; text-transform:uppercase; color:var(--ink-faint); }
+.balance .v { font-family:var(--num); font-size:3.4rem; font-weight:800; line-height:1; font-variant-numeric:tabular-nums lining-nums; }
+.balance .d { font-family:var(--mono); font-size:.7rem; color:var(--credit); }
+.stamp { position:absolute; top:-.4rem; right:-.6rem; transform:rotate(-8deg);
+  border:2.5px solid var(--stamp); color:var(--stamp); border-radius:4px; padding:.25rem .7rem;
+  font-family:var(--mono); font-size:.62rem; font-weight:800; letter-spacing:.24em; text-transform:uppercase; opacity:.85; mix-blend-mode:multiply; }
+html[data-mode="night"] .stamp { mix-blend-mode:screen; }
+
+/* summary strip — the four T-accounts + perspectives */
+.t-accounts { display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid var(--rule-soft); }
+.ta { padding:1.1rem 1.4rem; border-right:1px solid var(--rule-soft); transition:background .25s; }
+.ta:last-child{border-right:0;}
+.ta:hover { background:var(--paper-2); }
+.ta .k { font-family:var(--mono); font-size:.56rem; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-faint); }
+.ta .v { font-family:var(--num); font-size:1.9rem; font-weight:800; margin-top:.2rem; font-variant-numeric:tabular-nums; }
+.ta .v.up { color:var(--credit); }
+.ta .s { font-family:var(--num); font-style:italic; font-size:.78rem; color:var(--ink-dim); }
+.persp-strip { display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid var(--rule-soft); }
+.psp { padding:.9rem 1.4rem; border-right:1px solid var(--rule-soft); }
+.psp:last-child{border-right:0;}
+.psp .who { font-family:var(--mono); font-size:.54rem; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); }
+.psp .val { font-family:var(--num); font-size:1.5rem; font-weight:800; }
+.psp .d { font-family:var(--mono); font-size:.62rem; color:var(--credit); }
+
+.ledger-head { display:flex; align-items:baseline; gap:1.2rem; padding:1.8rem 3rem .8rem 7rem; }
+.ledger-head h2 { font-family:var(--num); font-size:1.25rem; font-variant:small-caps; }
+.ledger-head .note { font-family:var(--num); font-style:italic; font-size:.8rem; color:var(--ink-faint); margin-left:auto; }
+table { width:100%; border-collapse:collapse; }
+thead th { font-family:var(--mono); font-size:.54rem; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-faint);
+  text-align:left; padding:.5rem .8rem; border-bottom:2px solid var(--rule); }
+thead th:first-child { padding-left:7rem; }
+thead th.num { text-align:right; }
+tbody td { padding:.8rem .8rem; border-bottom:1px solid var(--rule-soft); vertical-align:middle; font-size:.86rem; }
+tbody td:first-child { padding-left:7rem; }
+tbody tr.acct-row { transition:background .2s; cursor:pointer; }
+tbody tr.acct-row:hover { background:var(--paper-2); }
+tbody tr.acct-row.open { background:var(--paper-2); }
+td.folio { font-family:var(--mono); font-size:.66rem; color:var(--ink-faint); }
+td.acct { font-family:var(--num); font-weight:700; font-size:1.02rem; }
+td.acct .fam { display:block; font-family:var(--mono); font-size:.5rem; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); font-weight:400; margin-top:.1rem; }
+td.acct .car { display:inline-block; font-family:var(--mono); font-size:.6rem; color:var(--ink-faint); margin-left:.4rem; transition:transform .3s; }
+tr.open td.acct .car { transform:rotate(90deg); }
+td.bf, td.cd { font-family:var(--num); font-variant-numeric:tabular-nums lining-nums; text-align:right; }
+td.bf { color:var(--ink-faint); }
+td.cd { font-weight:800; font-size:1.05rem; }
+td.gain { text-align:right; font-family:var(--mono); font-size:.74rem; font-weight:700; }
+td.gain.up { color:var(--credit); } td.gain.flat { color:var(--ink-faint); }
+td.persp { font-family:var(--mono); font-size:.64rem; color:var(--ink-dim); white-space:nowrap; }
+td.rb { width:8rem; }
+td.rb .track { height:.45rem; background:var(--paper-3); border-radius:2px; overflow:hidden; }
+td.rb .fill { height:100%; width:0; background:var(--gold); transition:width 1s cubic-bezier(.22,1,.36,1); }
+body.open td.rb .fill { width:var(--w); }
+/* the opened sub-ledger */
+tr.subledger td { padding:0 1rem 1.4rem 7rem; background:var(--paper-2); border-bottom:1px solid var(--rule-soft); }
+.subledger .inner { display:grid; grid-template-columns:1.2fr 1fr; gap:1.6rem; padding-top:1rem; }
+.sub-dims { display:grid; grid-template-columns:1fr 1fr; gap:.4rem 1.6rem; }
+.sdim { display:flex; align-items:center; gap:.6rem; font-family:var(--mono); font-size:.66rem; }
+.sdim .k { width:5.4rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.06em; }
+.sdim .tr { flex:1; height:5px; background:var(--paper-3); border-radius:99px; overflow:hidden; }
+.sdim .tr i { display:block; height:100%; background:var(--gold); }
+.sdim .v { width:1.8rem; text-align:right; color:var(--ink-dim); font-weight:700; }
+.sub-vg { display:flex; flex-direction:column; gap:.6rem; }
+.sub-vg .vb { border-radius:6px; padding:.6rem .8rem; font-size:.78rem; line-height:1.45; color:var(--ink-dim); }
+.sub-vg .imp { background:oklch(from var(--credit) l c h / .1); border:1px solid oklch(from var(--credit) l c h / .3); }
+.sub-vg .gap { background:oklch(from var(--gold) l c h / .1); border:1px solid oklch(from var(--gold) l c h / .3); }
+.sub-vg .vh { font-family:var(--mono); font-size:.5rem; letter-spacing:.16em; text-transform:uppercase; margin-bottom:.2rem; }
+.sub-vg .imp .vh { color:var(--credit); } .sub-vg .gap .vh { color:var(--gold); }
+
+.audit { margin:2.4rem 3rem 0 7rem; border:1.5px solid var(--rule); padding:1.3rem 1.6rem; position:relative; background:var(--paper-2); }
+.audit h3 { font-family:var(--num); font-variant:small-caps; font-size:1.05rem; margin-bottom:.5rem; }
+.audit p { font-family:var(--num); font-style:italic; color:var(--ink-dim); font-size:.92rem; line-height:1.6; max-width:54rem; }
+.audit p b { color:var(--ink); font-style:normal; }
+.audit .stamp2 { position:absolute; top:-1rem; right:1.4rem; transform:rotate(4deg);
+  border:2.5px solid var(--stamp); color:var(--stamp); border-radius:50%; width:5.4rem; height:5.4rem;
+  display:grid; place-items:center; text-align:center; font-family:var(--mono); font-size:.5rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; line-height:1.4; opacity:.8; mix-blend-mode:multiply; }
+html[data-mode="night"] .audit .stamp2 { mix-blend-mode:screen; }
+.mode { position:fixed; top:1.2rem; right:1.2rem; z-index:9; font-family:var(--mono); font-size:.6rem; letter-spacing:.18em; text-transform:uppercase;
+  background:var(--cloth-2); color:var(--paper); border:1px solid oklch(100% 0 0 / .2); border-radius:4px; padding:.5rem .9rem; cursor:pointer; }
+@media (max-width:900px){
+  .book::before,.book::after{display:none;}
+  .bind,.ledger-head{padding-left:1.6rem;} thead th:first-child,tbody td:first-child,tr.subledger td{padding-left:1.6rem;}
+  .t-accounts,.persp-strip{grid-template-columns:1fr 1fr;} .ta,.psp{border-bottom:1px solid var(--rule-soft);}
+  td.persp{display:none;} .subledger .inner{grid-template-columns:1fr;} .audit{margin-left:1.6rem;margin-right:1.6rem;}
+}
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{ transition:none!important; animation:none!important;} }
+</style>
+</head>
+<body>
+<button class="mode" id="mode">night</button>
+<div class="book">
+  <div class="grain"></div>
+  <header class="bind">
+    <div>
+      <div class="folio">folio 02 · 2026 · aug</div>
+      <h1>The Counting House</h1>
+      <div class="sub">being a true account of the skillify estate, second reckoning</div>
+    </div>
+    <div></div>
+    <div class="balance">
+      <div class="k">balance of the estate</div>
+      <div class="v">8.7</div>
+      <div class="d">▲ +0.2 carried forward</div>
+      <span class="stamp">balanced</span>
+    </div>
+  </header>
+
+  <div class="t-accounts">
+    <div class="ta"><div class="k">accounts</div><div class="v">9</div><div class="s">skills on the books</div></div>
+    <div class="ta"><div class="k">gains posted</div><div class="v up">+2.6</div><div class="s">sum of all deltas</div></div>
+    <div class="ta"><div class="k">accounts improved</div><div class="v">6</div><div class="s">three held steady</div></div>
+    <div class="ta"><div class="k">largest entry</div><div class="v">+0.6</div><div class="s">shapeify &amp; promptify</div></div>
+  </div>
+  <div class="persp-strip" id="persp-strip"></div>
+
+  <div class="ledger-head"><h2>Accounts Current</h2><span class="note">click an account to open its sub-ledger · b/f = v1 · c/d = v2</span></div>
+  <table>
+    <thead><tr><th>Account</th><th class="num">b/f</th><th class="num">c/d</th><th class="num">Gain</th><th>J · S · A · E</th><th>Standing</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <div class="audit">
+    <span class="stamp2">audited<br>· 02 ·<br>2026</span>
+    <h3>Auditor's note</h3>
+    <p>The estate is <b>sound and better weighted</b> than at the first reckoning. The criticism has changed its nature — from ceremony to measurement — which is what a mature account should show. The teaching pair posted the largest gains, having <b>changed their method entirely</b>; the three steady accounts (traceify, explorify, undumbify) are not idle but <b>already correct</b>. The AI executor's verdict rose most (+0.3) — the books are easier to work from. Recommend reopening in a fortnight, when the skill map has evidence of its own.</p>
+  </div>
+</div>
+
+<script>
+var DIMS=['clarity','usefulness','completeness','innovation','adoption','tokens'];
+var FAM={pl:'pipeline',st:'standalone',te:'teaching'};
+var A=[
+ {n:'reviewify', f:'pl', v1:8.6, v2:8.9, p:[7.5,9,9.5,9.5], d:[9.5,9,9,9,8.5,8.5],
+  imp:'Three or four deep lenses with a selection heuristic; contract lenses always-on; the skipped ones are named.',
+  gap:'Minimal. This is what a review skill should feel like.'},
+ {n:'explorify', f:'st', v1:8.9, v2:8.9, p:[8,9,9,9.5], d:[9,8.5,8.5,9.5,8.5,8.5],
+  imp:'Untouched — “axes, not variations” plus the mandatory sketch was already the best divergence scaffolding.',
+  gap:'Low trigger frequency is inherent to divergence, not a flaw.'},
+ {n:'traceify', f:'st', v1:8.9, v2:8.9, p:[8.5,9,9,9], d:[9.5,9.5,8.5,8,9,9],
+  imp:'Untouched and still elite: falsifiable hypotheses, cheapest test first, no stacked workarounds.',
+  gap:'None. Do not change a word.'},
+ {n:'undumbify', f:'pl', v1:8.8, v2:8.8, p:[7,9,9.5,9.5], d:[9,9,9,9.5,8,8],
+  imp:'Untouched — the Materiality Gate plus known/assumed/unknown still prevents the #1 AI sin.',
+  gap:'Vocabulary is senior-oriented; juniors may bounce (now eased with plain-language aliases).'},
+ {n:'shapeify', f:'pl', v1:8.0, v2:8.6, p:[7,8.5,9.5,9.5], d:[9,9,9.5,8.5,7.5,8],
+  imp:'The Lite Packet — five fields for ≤5 steps; “when in doubt: lite”; escalation on double-failure.',
+  gap:'Full template is still 15+ fields — but the weight is now earned, not imposed.'},
+ {n:'orientify', f:'st', v1:8.4, v2:8.5, p:[7.5,8.5,9,9], d:[9,8.5,9,7.5,8.5,8.5],
+  imp:'Quick Orient — a five-line brief for small ground; the full scan only when hidden complexity shows.',
+  gap:'Thinnest by design — redundant for seniors, fine for subagents and cold starts.'},
+ {n:'shipify', f:'pl', v1:8.4, v2:8.5, p:[7,8.5,9.5,9], d:[9,9,9.5,9,7.5,7.5],
+  imp:'Three-line single-agent report; the full table is reserved for subagent / plan-folder mode.',
+  gap:'Output depends on shapeify’s packet — the lite split shrinks the garbage-in surface.'},
+ {n:'promptify', f:'te', v1:7.9, v2:8.5, p:[8,8.5,8.5,9], d:[8.5,8.5,9,9,7.5,7.5],
+  imp:'Skill map replaced XP/streaks/badges; quick mode is the default; the pipeline harvests evidence.',
+  gap:'Still needs Node for the renderer; passive harvesting now has a structural hook.'},
+ {n:'explainify', f:'te', v1:7.9, v2:8.4, p:[8,8,8.5,9], d:[8.5,8,9,8.5,7.5,7.5],
+  imp:'Chat-first default — the explanation lives in the conversation; artifacts only when earned.',
+  gap:'SVG diagrams are still error-prone for executors — but only attempted when genuinely earned.'}
+];
+/* perspective strip */
+var avg=function(a){return a.reduce(function(x,y){return x+y;},0)/a.length;};
+var pAvg=[0,1,2,3].map(function(j){return avg(A.map(function(a){return a.p[j];}));});
+var pD=[0.2,0.1,0.3,0.2];
+var PLBL=['🌱 junior','🏗️ senior','🤖 ai executor','🎓 design expert'];
+document.getElementById('persp-strip').innerHTML=pAvg.map(function(v,i){
+  return '<div class="psp"><div class="who">'+PLBL[i]+'</div><div class="val">'+v.toFixed(1)+'</div><div class="d">▲ +'+pD[i].toFixed(1)+' vs v1</div></div>';
+}).join('');
+
+var body=document.getElementById('rows');
+A.forEach(function(a,i){
+  var d=a.v2-a.v1;
+  var tr=document.createElement('tr'); tr.className='acct-row';
+  tr.innerHTML='<td class="acct">'+a.n+'<span class="fam">'+FAM[a.f]+'</span><span class="car">▸</span></td>'+
+    '<td class="bf">'+a.v1.toFixed(1)+'</td><td class="cd">'+a.v2.toFixed(1)+'</td>'+
+    '<td class="gain '+(d>0?'up':'flat')+'">'+(d>0?'+'+d.toFixed(1):'±0')+'</td>'+
+    '<td class="persp">'+a.p.join(' · ')+'</td>'+
+    '<td class="rb"><div class="track"><div class="fill" style="--w:'+((a.v2-7)/2.5*100).toFixed(0)+'%"></div></div></td>';
+  var sub=document.createElement('tr'); sub.className='subledger'; sub.style.display='none';
+  sub.innerHTML='<td colspan="6"><div class="inner">'+
+    '<div class="sub-dims">'+ a.d.map(function(v,j){ return '<div class="sdim"><span class="k">'+DIMS[j]+'</span><span class="tr"><i style="width:'+(v*10)+'%"></i></span><span class="v">'+v+'</span></div>'; }).join('') +'</div>'+
+    '<div class="sub-vg"><div class="vb imp"><div class="vh">▲ improved</div>'+a.imp+'</div><div class="vb gap"><div class="vh">⚠ remaining</div>'+a.gap+'</div></div>'+
+    '</div></td>';
+  tr.addEventListener('click',function(){
+    var open=sub.style.display!=='none';
+    sub.style.display=open?'none':'table-row';
+    tr.classList.toggle('open',!open);
+  });
+  body.appendChild(tr); body.appendChild(sub);
+});
+requestAnimationFrame(function(){requestAnimationFrame(function(){document.body.classList.add('open');});});
+
+var mb=document.getElementById('mode');
+if(localStorage.getItem('ledger-mode')==='night'){document.documentElement.setAttribute('data-mode','night');mb.textContent='day';}
+mb.addEventListener('click',function(){
+  var night=document.documentElement.getAttribute('data-mode')==='night';
+  if(night){document.documentElement.removeAttribute('data-mode');mb.textContent='night';localStorage.setItem('ledger-mode','day');}
+  else{document.documentElement.setAttribute('data-mode','night');mb.textContent='day';localStorage.setItem('ledger-mode','night');}
+});
+</script>
+</body>
+</html>
