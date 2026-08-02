@@ -7,7 +7,7 @@
 <meta name="description" content="skillify — nine cognitive skills that chain into a pipeline for AI-assisted work. What each does, when to reach for it, how to invoke it.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════ skillify · the cognitive pipeline · field guide ═══════════
    Opens with the living flow, because the pipeline IS the subject.
@@ -26,8 +26,8 @@
   --sk-orientify:#d8a24a;--sk-explorify:#d97a4a;--sk-traceify:#7ba05a;
   --sk-undumbify:#4aa8a0;--sk-shapeify:#5b8ab5;--sk-shipify:#5a9ec5;
   --sk-reviewify:#b58ab0;--sk-promptify:#d9944a;--sk-explainify:#4ab5a0;
-  --disp:'Bricolage Grotesque',ui-sans-serif,system-ui,sans-serif;
-  --body:'Instrument Sans',ui-sans-serif,system-ui,sans-serif;
+  --disp:'Fraunces',Georgia,serif;
+  --body:'Source Sans 3',ui-sans-serif,system-ui,sans-serif;
   --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
   /* type scale — Major Third (1.250) on a 20px base */
   --fs-xs:.64rem;   /* 12.8px */
@@ -55,8 +55,8 @@ html[data-theme="light"]{
   --sk-undumbify:#20655e;--sk-shapeify:#37597e;--sk-shipify:#2f6186;
   --sk-reviewify:#755170;--sk-promptify:#8d5b16;--sk-explainify:#1c6a58;
 }
-/* font combinations — swap the display / body / mono voices */
-html[data-font="editorial"]{--disp:'Fraunces',Georgia,serif;--body:'Source Sans 3',ui-sans-serif,system-ui,sans-serif}
+/* font combinations — Editorial is the :root default; each swaps display / body / mono */
+html[data-font="grotesk"]{--disp:'Bricolage Grotesque',ui-sans-serif,system-ui,sans-serif;--body:'Literata',Georgia,serif}
 html[data-font="technical"]{--disp:'Space Grotesk',ui-sans-serif,sans-serif;--body:'IBM Plex Sans',ui-sans-serif,sans-serif;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace}
 html[data-font="hyperlegible"]{--disp:'Atkinson Hyperlegible',ui-sans-serif,sans-serif;--body:'Atkinson Hyperlegible',ui-sans-serif,sans-serif}
 *{box-sizing:border-box;margin:0}
@@ -78,13 +78,28 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1
   border:1px solid var(--line-strong);background:var(--bg-2);color:var(--ink);font-size:1.1rem;cursor:pointer;
   display:grid;place-items:center;transition:transform .2s,border-color .2s,box-shadow .2s}
 .theme-toggle:hover{transform:translateY(-2px);border-color:var(--ink-faint);box-shadow:0 8px 20px -8px color-mix(in srgb,var(--ink) 30%,transparent)}
-.font-switch{position:fixed;top:18px;right:70px;z-index:10;display:flex;gap:2px;
-  border:1px solid var(--line-strong);border-radius:8px;background:var(--bg-2);padding:3px}
-.font-switch button{font-family:var(--mono);font-size:.62rem;font-weight:600;letter-spacing:.03em;
-  background:none;border:0;color:var(--ink-faint);padding:.42rem .6rem;border-radius:5px;cursor:pointer;
-  transition:color .2s,background .2s}
-.font-switch button:hover{color:var(--ink)}
-.font-switch button.on{background:color-mix(in srgb, var(--ink) 14%, transparent);color:var(--ink)}
+.font-menu{position:fixed;top:18px;right:70px;z-index:11}
+.font-menu-btn{display:flex;align-items:center;gap:.55rem;
+  border:1px solid var(--line-strong);border-radius:8px;background:var(--bg-2);color:var(--ink);
+  font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.04em;
+  padding:.55rem .85rem;cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.font-menu-btn:hover{border-color:var(--ink-faint);box-shadow:0 8px 20px -8px color-mix(in srgb,var(--ink) 25%,transparent)}
+.font-menu-btn .fm-chev{font-size:.58rem;color:var(--ink-faint);transition:transform .25s}
+.font-menu.open .fm-chev{transform:rotate(180deg)}
+.font-menu-list{position:absolute;top:calc(100% + 8px);right:0;min-width:255px;
+  background:var(--bg-2);border:1px solid var(--line-strong);padding:5px;
+  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%);
+  opacity:0;visibility:hidden;transform:translateY(-6px);
+  transition:opacity .22s,transform .22s,visibility .22s;
+  box-shadow:0 18px 40px -14px color-mix(in srgb,var(--ink) 35%,transparent)}
+.font-menu.open .font-menu-list{opacity:1;visibility:visible;transform:none}
+.font-menu-list button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;
+  background:none;border:0;border-radius:7px;padding:.55rem .7rem;cursor:pointer;text-align:left;transition:background .15s}
+.font-menu-list button:hover{background:color-mix(in srgb,var(--ink) 10%,transparent)}
+.font-menu-list button.on{background:color-mix(in srgb,var(--ink) 14%,transparent)}
+.font-menu-list .fm-name{font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--ink)}
+.font-menu-list button.on .fm-name::after{content:" ✓";color:var(--sk-traceify)}
+.font-menu-list .fm-hint{font-family:var(--mono);font-size:.56rem;color:var(--ink-faint);letter-spacing:.02em}
 #sparks{position:fixed;inset:0;z-index:0;pointer-events:none}
 
 .wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:0 24px}
@@ -197,7 +212,7 @@ footer .fline{flex:1;height:1px;background:var(--line)}
   .dossier{grid-template-columns:1fr}
   .d-id{border-right:0;border-bottom:1px solid var(--line)}
   .d-cols{grid-template-columns:1fr}
-  .font-switch{top:64px;right:18px}
+  .font-menu{top:64px;right:18px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -213,11 +228,16 @@ footer .fline{flex:1;height:1px;background:var(--line)}
 <div class="glow c" aria-hidden="true"></div>
 <canvas id="sparks" aria-hidden="true"></canvas>
 <button class="theme-toggle" id="theme-toggle" aria-label="toggle theme">☀️</button>
-<div class="font-switch" id="font-switch" role="group" aria-label="font combination">
-  <button data-font="" class="on" title="Bricolage Grotesque + Instrument Sans">Grotesk</button>
-  <button data-font="editorial" title="Fraunces + Source Sans 3">Editorial</button>
-  <button data-font="technical" title="Space Grotesk + IBM Plex">Technical</button>
-  <button data-font="hyperlegible" title="Atkinson Hyperlegible — maximum readability">Legible</button>
+<div class="font-menu" id="font-menu">
+  <button class="font-menu-btn" id="font-menu-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="font combination">
+    <span id="fm-label">Editorial</span><span class="fm-chev">▾</span>
+  </button>
+  <div class="font-menu-list" role="listbox" aria-label="font combinations">
+    <button role="option" data-font="editorial"><span class="fm-name">Editorial</span><span class="fm-hint">Fraunces · Source Sans 3 · JetBrains Mono</span></button>
+    <button role="option" data-font="grotesk"><span class="fm-name">Grotesk</span><span class="fm-hint">Bricolage Grotesque · Literata · JetBrains Mono</span></button>
+    <button role="option" data-font="technical"><span class="fm-name">Technical</span><span class="fm-hint">Space Grotesk · IBM Plex Sans · IBM Plex Mono</span></button>
+    <button role="option" data-font="hyperlegible"><span class="fm-name">Legible</span><span class="fm-hint">Atkinson Hyperlegible · JetBrains Mono</span></button>
+  </div>
 </div>
 
 <div class="wrap">
@@ -506,23 +526,43 @@ tbtn.addEventListener('click',function(){
   tbtn.textContent=themeLabel();
 });
 
-/* font combination switcher — persisted */
-var fsw=document.getElementById('font-switch');
-try{var sf=localStorage.getItem('skillify-guide-font');if(sf)document.documentElement.setAttribute('data-font',sf);}catch(e){}
-function markFont(){
-  var cur=document.documentElement.getAttribute('data-font')||'';
-  fsw.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',(b.getAttribute('data-font')||'')===cur);});
+/* font combination dropdown — persisted */
+var fmenu=document.getElementById('font-menu');
+var fbtn=document.getElementById('font-menu-btn');
+var flabel=document.getElementById('fm-label');
+var FNAMES={editorial:'Editorial',grotesk:'Grotesk',technical:'Technical',hyperlegible:'Legible'};
+try{var sf=localStorage.getItem('skillify-guide-font');if(sf&&sf!=='editorial')document.documentElement.setAttribute('data-font',sf);}catch(e){}
+function curFont(){return document.documentElement.getAttribute('data-font')||'editorial';}
+function refreshMenu(){
+  var cur=curFont();
+  flabel.textContent=FNAMES[cur]||'Editorial';
+  fmenu.querySelectorAll('[role=option]').forEach(function(b){
+    var on=(b.getAttribute('data-font')||'editorial')===cur;
+    b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');
+  });
 }
-fsw.querySelectorAll('button').forEach(function(b){
+fbtn.addEventListener('click',function(e){
+  e.stopPropagation();
+  var open=fmenu.classList.toggle('open');
+  fbtn.setAttribute('aria-expanded',open);
+});
+fmenu.querySelectorAll('[role=option]').forEach(function(b){
   b.addEventListener('click',function(){
-    var f=b.getAttribute('data-font');
-    if(f)document.documentElement.setAttribute('data-font',f);
-    else document.documentElement.removeAttribute('data-font');
+    var f=b.getAttribute('data-font')||'editorial';
+    if(f==='editorial')document.documentElement.removeAttribute('data-font');
+    else document.documentElement.setAttribute('data-font',f);
     try{localStorage.setItem('skillify-guide-font',f);}catch(e){}
-    markFont();
+    fmenu.classList.remove('open');fbtn.setAttribute('aria-expanded','false');
+    refreshMenu();
   });
 });
-markFont();
+document.addEventListener('click',function(e){
+  if(!fmenu.contains(e.target)){fmenu.classList.remove('open');fbtn.setAttribute('aria-expanded','false');}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){fmenu.classList.remove('open');fbtn.setAttribute('aria-expanded','false');}
+});
+refreshMenu();
 </script>
 </body>
 </html>
