@@ -281,7 +281,7 @@ footer .fline{flex:1;height:1px;background:var(--line)}
       <h2>the cognitive pipeline</h2>
       <span class="note">click a node to jump to its dossier · pulses show the handoff direction</span>
     </div>
-    <svg id="flow" viewBox="0 0 1120 360" preserveAspectRatio="xMidYMid meet" aria-label="the skillify pipeline"></svg>
+    <svg id="flow" viewBox="0 0 1380 360" preserveAspectRatio="xMidYMid meet" aria-label="the skillify pipeline"></svg>
   </section>
 
   <!-- route by situation -->
@@ -325,42 +325,42 @@ var SK=[
   when:['Dropped into a repo for the first time','Returning after weeks away','Before planning, when the codebase is the subject'],
   invoke:'/orientify',trig:'\u201cI just landed in this repo\u201d',explicit:true,
   io:'a repo <b>→</b> Codebase Brief',conn:'feeds <b>explorify · undumbify</b>'},
- {id:'explorify',emoji:'🔭',mode:'divergent',fam:'entry',color:'var(--sk-explorify)',no:'02',x:220,y:40,
+ {id:'explorify',emoji:'🔭',mode:'divergent',fam:'entry',color:'var(--sk-explorify)',no:'02',x:280,y:40,
   does:'Expands the possibility space when you don\u2019t have a direction yet. Generates options that differ on a <b>fundamental axis</b> — not three costumes of the same idea — each with a sketch you can react to.',
   when:['\u201cReimagine this\u201d / \u201cwhat if…\u201d','You reject a proposal but can\u2019t say why','The first idea would be a trap'],
   invoke:'/explorify',trig:'\u201cshow me options\u201d · \u201cI don\u2019t know what I want yet\u201d',
   io:'a vague desire <b>→</b> Direction Brief',conn:'feeds <b>undumbify</b>'},
- {id:'traceify',emoji:'🩺',mode:'abductive',fam:'entry',color:'var(--sk-traceify)',no:'03',x:220,y:250,
+ {id:'traceify',emoji:'🩺',mode:'abductive',fam:'entry',color:'var(--sk-traceify)',no:'03',x:280,y:250,
   does:'A tight repair loop for when something broke: capture symptoms, form <b>falsifiable</b> hypotheses, run the cheapest test first, name the root cause, fix it minimally, prove it\u2019s fixed. No stacked workarounds.',
   when:['Errors, crashes, 502s, silent failures','\u201cIt was working yesterday\u201d','A regression you can\u2019t explain'],
   invoke:'/traceify',trig:'\u201csomething broke\u201d · \u201cthis error makes no sense\u201d',
   io:'a symptom <b>→</b> Diagnosis Report',conn:'trivial → done · non-trivial <b>→ undumbify / shapeify</b>'},
- {id:'undumbify',emoji:'🎯',mode:'convergent',fam:'pipe',color:'var(--sk-undumbify)',no:'04',x:400,y:96,
+ {id:'undumbify',emoji:'🎯',mode:'convergent',fam:'pipe',color:'var(--sk-undumbify)',no:'04',x:520,y:96,
   does:'Extracts intent from ambiguity along six dimensions — constraints, anti-examples, priorities, feeling-of-done — gated by the <b>Materiality Gate</b>: never ask what you already know, never ask what doesn\u2019t matter.',
   when:['You have a direction but it\u2019s vague','Pressure-testing a plan before building','Handing off to shapeify'],
   invoke:'/undumbify',trig:'\u201cI have a direction but it\u2019s vague\u201d',
   io:'ambiguity <b>→</b> Intent Brief',conn:'feeds <b>shapeify</b> · fed by <b>explorify · traceify</b>'},
- {id:'shapeify',emoji:'📐',mode:'structural',fam:'pipe',color:'var(--sk-shapeify)',no:'05',x:580,y:40,
+ {id:'shapeify',emoji:'📐',mode:'structural',fam:'pipe',color:'var(--sk-shapeify)',no:'05',x:760,y:40,
   does:'Turns intent into a plan a worker can execute without guessing — a <b>Worker Packet</b> with requirements, invariants, risk register, and acceptance checks. Lite for small work, full when it\u2019s earned.',
   when:['\u201cPlan this\u201d','Multi-step or risky work','Dispatching to a subagent'],
   invoke:'/shapeify',trig:'\u201cplan this\u201d · \u201cbreak it into slices\u201d',
   io:'Intent Brief <b>→</b> Worker Packet',conn:'feeds <b>shipify</b> · revised by <b>reviewify</b>'},
- {id:'shipify',emoji:'🚀',mode:'disciplined',fam:'pipe',color:'var(--sk-shipify)',no:'06',x:760,y:96,
+ {id:'shipify',emoji:'🚀',mode:'disciplined',fam:'pipe',color:'var(--sk-shipify)',no:'06',x:1000,y:96,
   does:'Executes the packet with <b>adaptive granularity</b> — isolate the risky steps, batch the safe ones, verify with evidence. When a step\u2019s premise breaks, it stops and asks for a revision instead of improvising.',
   when:['\u201cBuild this\u201d / \u201cimplement this\u201d','Running a Worker Packet or slice','Work that must stay green'],
   invoke:'/shipify',trig:'\u201cbuild this\u201d · \u201cimplement the packet\u201d',
   io:'Worker Packet <b>→</b> Completion Report',conn:'feeds <b>reviewify</b> · revises <b>shapeify</b>'},
- {id:'reviewify',emoji:'🔍',mode:'critical',fam:'pipe',color:'var(--sk-reviewify)',no:'07',x:940,y:40,
+ {id:'reviewify',emoji:'🔍',mode:'critical',fam:'pipe',color:'var(--sk-reviewify)',no:'07',x:1240,y:40,
   does:'Judges the work against <b>intent, not taste</b> — through a few deep lenses, with findings that carry a location, a fix, and a way to verify. Solo mode hands you a punch list, not a report.',
   when:['\u201cReview this\u201d / a PR or diff','After shipify completes a slice','Before merging anything risky'],
   invoke:'/reviewify',trig:'\u201creview this\u201d · \u201cjudge it against the packet\u201d',
   io:'a diff + packet <b>→</b> verdict + findings',conn:'fixes <b>→ shipify</b> · replan <b>→ shapeify</b>'},
- {id:'promptify',emoji:'🗣️',mode:'coaching',fam:'teach',color:'var(--sk-promptify)',no:'08',x:580,y:280,
+ {id:'promptify',emoji:'🗣️',mode:'coaching',fam:'teach',color:'var(--sk-promptify)',no:'08',x:760,y:280,
   does:'Teaches you to prompt better by debriefing your <b>real</b> conversations — one concrete improvement at a time, tracked on an evidence-based skill map. No XP, no streaks; the bars moving is the reward.',
   when:['\u201cDebrief that\u201d after a meaty exchange','\u201cHow should I have asked that?\u201d','Sharpening a draft prompt'],
   invoke:'/promptify',trig:'\u201cdebrief that\u201d · \u201cmake this prompt tighter\u201d',explicit:true,
   io:'a conversation <b>→</b> one lesson + skill-map evidence',conn:'shares the skill map with <b>explainify</b>'},
- {id:'explainify',emoji:'🧠',mode:'teaching',fam:'teach',color:'var(--sk-explainify)',no:'09',x:760,y:280,
+ {id:'explainify',emoji:'🧠',mode:'teaching',fam:'teach',color:'var(--sk-explainify)',no:'09',x:1000,y:280,
   does:'Explains code and its wiring <b>at your level</b> — what it does, how the parts talk, traced with real line references. Chat-first; a durable doc or diagram only when it\u2019s earned.',
   when:['\u201cWhat does this do?\u201d','\u201cHow do X and Y communicate?\u201d','Learning a module or flow'],
   invoke:'/explainify',trig:'\u201cwhat does this do?\u201d · \u201cmap the connections\u201d',explicit:true,
@@ -404,7 +404,7 @@ FLOWS.forEach(function(f){
   if(f[3]==='dashed')p.setAttribute('stroke-dasharray','4 6');
   flow.appendChild(p);
   if(f[2]){
-    var t=el('text',{x:mx,y:my-6,'text-anchor':'middle','class':'fedge-label',opacity:.75});
+    var t=el('text',{x:mx,y:my+(y2>y1?-19:7),'text-anchor':'middle','class':'fedge-label',opacity:.75});
     t.style.fill=col;
     t.textContent=f[2];flow.appendChild(t);
   }
