@@ -339,7 +339,7 @@ td.oneliner .v { font-family: var(--mono); font-size: .64rem; }
 .dis-row .where { font-family: var(--serif); font-weight: 800; font-size: 1rem; }
 .dis-row .where .nums { display: block; font-family: var(--mono); font-size: .64rem; font-weight: 400; color: var(--seal); margin-top: .3rem; letter-spacing: .04em; }
 .dis-row.pos .where .nums { color: var(--teal); }
-.dis-row .why { font-size: .8rem; color: var(--ink-soft); }
+.dis-row .why { font-size: 1rem; color: var(--ink-soft); }
 .dis-row .why b { color: var(--ink); }
 
 /* ── sessions ── */
