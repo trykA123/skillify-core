@@ -1,0 +1,1086 @@
+{
+  "generatedAt": "2026-08-02T23:36:12.480Z",
+  "scope": "pi agent session logs — every subagent call recorded per run",
+  "counting": "call = one subagent spawn (toolCall name:\"subagent\" with an agent and no action)",
+  "windowDays": 14,
+  "trendAvailable": false,
+  "totals": {
+    "calls": 252,
+    "runs": 74,
+    "escalations": 82,
+    "repairRounds": 63,
+    "unclassified": 0
+  },
+  "agents": [
+    {
+      "name": "worker",
+      "calls": 125,
+      "share": "49.60",
+      "trend": null
+    },
+    {
+      "name": "reviewer",
+      "calls": 64,
+      "share": "25.40",
+      "trend": null
+    },
+    {
+      "name": "planner",
+      "calls": 35,
+      "share": "13.89",
+      "trend": null
+    },
+    {
+      "name": "orchestrator",
+      "calls": 9,
+      "share": "3.57",
+      "trend": null
+    },
+    {
+      "name": "oracle",
+      "calls": 7,
+      "share": "2.78",
+      "trend": null
+    },
+    {
+      "name": "scout",
+      "calls": 7,
+      "share": "2.78",
+      "trend": null
+    },
+    {
+      "name": "researcher",
+      "calls": 5,
+      "share": "1.98",
+      "trend": null
+    },
+    {
+      "name": "advisor",
+      "calls": 0,
+      "share": "0.00",
+      "trend": null
+    },
+    {
+      "name": "context-builder",
+      "calls": 0,
+      "share": "0.00",
+      "trend": null
+    },
+    {
+      "name": "delegate",
+      "calls": 0,
+      "share": "0.00",
+      "trend": null
+    }
+  ],
+  "coldSpots": {
+    "unused": [
+      "advisor",
+      "context-builder",
+      "delegate"
+    ],
+    "underused": []
+  },
+  "issues": [
+    {
+      "severity": "high",
+      "text": "advisor — zero calls in the window"
+    },
+    {
+      "severity": "high",
+      "text": "context-builder — zero calls in the window"
+    },
+    {
+      "severity": "high",
+      "text": "delegate — zero calls in the window"
+    },
+    {
+      "severity": "medium",
+      "text": "session 4 · run 1 — 14 escalations"
+    },
+    {
+      "severity": "medium",
+      "text": "session 4 · run 3 — 10 escalations"
+    },
+    {
+      "severity": "medium",
+      "text": "session 4 · run 12 — 9 escalations"
+    },
+    {
+      "severity": "medium",
+      "text": "session 4 · run 11 — 8 escalations"
+    },
+    {
+      "severity": "medium",
+      "text": "session 4 · run 10 — 7 escalations"
+    },
+    {
+      "severity": "low",
+      "text": "+16 more runs with escalations"
+    },
+    {
+      "severity": "medium",
+      "text": "session 4 · run 12 — 7 consecutive worker→reviewer rounds (repair cluster)"
+    },
+    {
+      "severity": "medium",
+      "text": "session 4 · run 11 — 7 consecutive worker→reviewer rounds (repair cluster)"
+    },
+    {
+      "severity": "medium",
+      "text": "session 4 · run 3 — 7 consecutive worker→reviewer rounds (repair cluster)"
+    },
+    {
+      "severity": "medium",
+      "text": "session 4 · run 10 — 6 consecutive worker→reviewer rounds (repair cluster)"
+    },
+    {
+      "severity": "medium",
+      "text": "session 4 · run 9 — 5 consecutive worker→reviewer rounds (repair cluster)"
+    },
+    {
+      "severity": "low",
+      "text": "+9 more repair clusters"
+    },
+    {
+      "severity": "low",
+      "text": "session 1 · run 1 — longest run, 1550 records (median 77.5)"
+    }
+  ],
+  "runLength": {
+    "medianRecords": 77.5,
+    "longest": {
+      "label": "session 1 · run 1",
+      "records": 1550
+    }
+  },
+  "runs": [
+    {
+      "label": "session 5 · run 1",
+      "calls": 2,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 207,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "50.00",
+        "context-builder": "0.00",
+        "planner": "50.00",
+        "worker": "0.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 69",
+      "calls": 2,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 122,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "0.00",
+        "worker": "50.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "50.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 68",
+      "calls": 2,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 34,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "0.00",
+        "worker": "50.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "50.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 66",
+      "calls": 3,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 102,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "33.33",
+        "worker": "33.33",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "33.33",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 65",
+      "calls": 2,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 71,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "50.00",
+        "worker": "0.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "50.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 64",
+      "calls": 3,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 41,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "33.33",
+        "worker": "33.33",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "33.33",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 58",
+      "calls": 10,
+      "escalations": 2,
+      "repairRounds": 2,
+      "records": 283,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "10.00",
+        "worker": "60.00",
+        "reviewer": "20.00",
+        "oracle": "10.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 57",
+      "calls": 11,
+      "escalations": 2,
+      "repairRounds": 2,
+      "records": 373,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "9.09",
+        "worker": "63.64",
+        "reviewer": "18.18",
+        "oracle": "9.09",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 56",
+      "calls": 7,
+      "escalations": 2,
+      "repairRounds": 1,
+      "records": 303,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "14.29",
+        "worker": "57.14",
+        "reviewer": "14.29",
+        "oracle": "14.29",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 55",
+      "calls": 5,
+      "escalations": 2,
+      "repairRounds": 0,
+      "records": 203,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "20.00",
+        "worker": "60.00",
+        "reviewer": "0.00",
+        "oracle": "20.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 54",
+      "calls": 15,
+      "escalations": 1,
+      "repairRounds": 0,
+      "records": 634,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "6.67",
+        "worker": "86.67",
+        "reviewer": "0.00",
+        "oracle": "6.67",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 53",
+      "calls": 2,
+      "escalations": 1,
+      "repairRounds": 0,
+      "records": 92,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "50.00",
+        "worker": "0.00",
+        "reviewer": "0.00",
+        "oracle": "50.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 52",
+      "calls": 1,
+      "escalations": 1,
+      "repairRounds": 0,
+      "records": 83,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "100.00",
+        "worker": "0.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 51",
+      "calls": 10,
+      "escalations": 2,
+      "repairRounds": 2,
+      "records": 220,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "10.00",
+        "worker": "60.00",
+        "reviewer": "20.00",
+        "oracle": "10.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 50",
+      "calls": 4,
+      "escalations": 0,
+      "repairRounds": 1,
+      "records": 66,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "25.00",
+        "worker": "50.00",
+        "reviewer": "25.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 49",
+      "calls": 2,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 244,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "50.00",
+        "worker": "50.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 48",
+      "calls": 1,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 90,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "100.00",
+        "worker": "0.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 47",
+      "calls": 4,
+      "escalations": 0,
+      "repairRounds": 1,
+      "records": 45,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "25.00",
+        "worker": "50.00",
+        "reviewer": "25.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 44",
+      "calls": 2,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 68,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "50.00",
+        "worker": "50.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 43",
+      "calls": 1,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 27,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "100.00",
+        "worker": "0.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 42",
+      "calls": 3,
+      "escalations": 0,
+      "repairRounds": 1,
+      "records": 37,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "33.33",
+        "worker": "33.33",
+        "reviewer": "33.33",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 39",
+      "calls": 4,
+      "escalations": 0,
+      "repairRounds": 1,
+      "records": 120,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "25.00",
+        "worker": "50.00",
+        "reviewer": "25.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 38",
+      "calls": 2,
+      "escalations": 1,
+      "repairRounds": 0,
+      "records": 326,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "50.00",
+        "worker": "50.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 37",
+      "calls": 1,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 107,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "100.00",
+        "worker": "0.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 36",
+      "calls": 4,
+      "escalations": 0,
+      "repairRounds": 1,
+      "records": 115,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "25.00",
+        "worker": "50.00",
+        "reviewer": "25.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 35",
+      "calls": 4,
+      "escalations": 0,
+      "repairRounds": 1,
+      "records": 63,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "25.00",
+        "worker": "50.00",
+        "reviewer": "25.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 34",
+      "calls": 2,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 64,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "50.00",
+        "worker": "50.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 33",
+      "calls": 1,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 59,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "100.00",
+        "worker": "0.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 32",
+      "calls": 5,
+      "escalations": 0,
+      "repairRounds": 2,
+      "records": 58,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "20.00",
+        "worker": "40.00",
+        "reviewer": "40.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 19",
+      "calls": 7,
+      "escalations": 0,
+      "repairRounds": 2,
+      "records": 104,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "14.29",
+        "context-builder": "0.00",
+        "planner": "14.29",
+        "worker": "42.86",
+        "reviewer": "28.57",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 18",
+      "calls": 5,
+      "escalations": 0,
+      "repairRounds": 1,
+      "records": 123,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "20.00",
+        "context-builder": "0.00",
+        "planner": "20.00",
+        "worker": "40.00",
+        "reviewer": "20.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 17",
+      "calls": 3,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 56,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "33.33",
+        "context-builder": "0.00",
+        "planner": "33.33",
+        "worker": "33.33",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 16",
+      "calls": 2,
+      "escalations": 0,
+      "repairRounds": 0,
+      "records": 39,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "50.00",
+        "context-builder": "0.00",
+        "planner": "50.00",
+        "worker": "0.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 15",
+      "calls": 8,
+      "escalations": 0,
+      "repairRounds": 3,
+      "records": 63,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "12.50",
+        "context-builder": "0.00",
+        "planner": "12.50",
+        "worker": "37.50",
+        "reviewer": "37.50",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 12",
+      "calls": 16,
+      "escalations": 9,
+      "repairRounds": 7,
+      "records": 153,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "0.00",
+        "worker": "56.25",
+        "reviewer": "43.75",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 11",
+      "calls": 15,
+      "escalations": 8,
+      "repairRounds": 7,
+      "records": 237,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "0.00",
+        "worker": "53.33",
+        "reviewer": "46.67",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 10",
+      "calls": 13,
+      "escalations": 7,
+      "repairRounds": 6,
+      "records": 144,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "0.00",
+        "worker": "53.85",
+        "reviewer": "46.15",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 9",
+      "calls": 11,
+      "escalations": 5,
+      "repairRounds": 5,
+      "records": 149,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "0.00",
+        "worker": "54.55",
+        "reviewer": "45.45",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 8",
+      "calls": 9,
+      "escalations": 4,
+      "repairRounds": 4,
+      "records": 101,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "0.00",
+        "worker": "55.56",
+        "reviewer": "44.44",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 7",
+      "calls": 7,
+      "escalations": 4,
+      "repairRounds": 3,
+      "records": 159,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "0.00",
+        "worker": "57.14",
+        "reviewer": "42.86",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 6",
+      "calls": 5,
+      "escalations": 3,
+      "repairRounds": 2,
+      "records": 113,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "0.00",
+        "worker": "60.00",
+        "reviewer": "40.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 5",
+      "calls": 3,
+      "escalations": 2,
+      "repairRounds": 1,
+      "records": 83,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "0.00",
+        "worker": "66.67",
+        "reviewer": "33.33",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 4",
+      "calls": 1,
+      "escalations": 1,
+      "repairRounds": 0,
+      "records": 128,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "0.00",
+        "worker": "100.00",
+        "reviewer": "0.00",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 3",
+      "calls": 16,
+      "escalations": 10,
+      "repairRounds": 7,
+      "records": 146,
+      "mix": {
+        "orchestrator": "0.00",
+        "scout": "0.00",
+        "context-builder": "0.00",
+        "planner": "0.00",
+        "worker": "56.25",
+        "reviewer": "43.75",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    },
+    {
+      "label": "session 4 · run 1",
+      "calls": 16,
+      "escalations": 14,
+      "repairRounds": 0,
+      "records": 1089,
+      "mix": {
+        "orchestrator": "56.25",
+        "scout": "6.25",
+        "context-builder": "0.00",
+        "planner": "18.75",
+        "worker": "12.50",
+        "reviewer": "6.25",
+        "oracle": "0.00",
+        "advisor": "0.00",
+        "researcher": "0.00",
+        "delegate": "0.00"
+      }
+    }
+  ],
+  "timeline": [
+    {
+      "date": "2026-07-20",
+      "calls": 0,
+      "partial": false
+    },
+    {
+      "date": "2026-07-21",
+      "calls": 0,
+      "partial": false
+    },
+    {
+      "date": "2026-07-22",
+      "calls": 0,
+      "partial": false
+    },
+    {
+      "date": "2026-07-23",
+      "calls": 0,
+      "partial": false
+    },
+    {
+      "date": "2026-07-24",
+      "calls": 0,
+      "partial": false
+    },
+    {
+      "date": "2026-07-25",
+      "calls": 0,
+      "partial": false
+    },
+    {
+      "date": "2026-07-26",
+      "calls": 0,
+      "partial": false
+    },
+    {
+      "date": "2026-07-27",
+      "calls": 0,
+      "partial": false
+    },
+    {
+      "date": "2026-07-28",
+      "calls": 0,
+      "partial": false
+    },
+    {
+      "date": "2026-07-29",
+      "calls": 0,
+      "partial": false
+    },
+    {
+      "date": "2026-07-30",
+      "calls": 0,
+      "partial": false
+    },
+    {
+      "date": "2026-07-31",
+      "calls": 0,
+      "partial": false
+    },
+    {
+      "date": "2026-08-01",
+      "calls": 0,
+      "partial": false
+    },
+    {
+      "date": "2026-08-02",
+      "calls": 252,
+      "partial": true
+    }
+  ]
+}
