@@ -580,8 +580,8 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
         <p class="lede">The skills tab is the method; the agents tab is the fleet. This tab is the <b>evidence</b> — four real orchestrator runs logged as they happened: what broke, who caught it, what the numbers said, and what stuck. De-identified, verified, and kept as the fleet&#8217;s institutional memory.</p>
       </div>
       <div class="mast-side">
-        <div><span class="pip" style="background:var(--cs-ink)"></span><b>4</b> workflows</div>
-        <div><span class="pip" style="background:var(--sk-traceify)"></span><b>4</b> complete</div>
+        <div><span class="pip" style="background:var(--cs-ink)"></span><b>6</b> workflows</div>
+        <div><span class="pip" style="background:var(--sk-traceify)"></span><b>5</b> complete</div>
         <div style="margin-top:.6rem">major catches <b>4</b> · kept</div>
       </div>
     </header>
@@ -1101,7 +1101,29 @@ var CS=[
    'The reviewer caught a <b>real math bug</b> in the chart bucketing — read-only review, one repair round, re-verified.',
    'The 4K availability fix needed a <b>bounded contract-layer change</b> — is4k column + sync capture, nothing else.',
    'End-to-end telemetry: seed-watch runs now POST into the dashboard — the fleet monitors its own watcher.'
-  ]}
+  ]},
+ {id:'polishround',no:'05',title:'The polish round',
+  sub:'eight post-deploy findings · one preemptive taste pass',
+  status:'done',label:'complete',color:'var(--cs-done)',
+  stat:'9 commits · v1.0.35',
+  stats:[['8','findings fixed'],['9','commits + taste pass'],['v1.0.35','deployed']],
+  does:'The alerts app\u2019s <b>post-deploy polish round</b>: tdarr charts into a new /stats media tab, enso figure onto the type scale, gain-chart readability, mobile 6-row pagination, chip centering, DayLine redesign, scripts-room tabs, quieter background art.',
+  ftags:['stats media tab','enso scale + fit','chart readability','mobile ?limit=6','dayline redesign','room tabs','quieter art','pagination audits'],
+  catch:{h:'the taste pass',t:'After the fleet shipped, the strongest model reviewed the diff in the owner\u2019s place — and found chashi contrast failures (2.7:1), off-scale rems, a mobile first-paint flicker, and an estate chart still showing raw floats. All fixed preemptively in one commit before the owner saw them.'},
+  lessons:[
+   'A review that <b>measures</b> (computed contrast, measured sizes) beats one that eyeballs.',
+   'The parent gate exists because the fleet ships what the contract says — the owner reviews what the taste says.',
+   'One commit of preemptive fixes is cheaper than one round of owner complaints.'
+  ]},
+ {id:'skillmap',no:'06',title:'The skill map build',
+  sub:'the map of the brain · in flight',
+  status:'wip',label:'in progress',color:'var(--cs-round)',
+  stat:'building',
+  stats:[['new','SvelteKit app'],['recordify','new skill'],['—','beta deploy pending']],
+  does:'The roadmap battleplan executed: a self-hosted graph of growth — competency hubs + one node per session, studios, glossary. Includes the recordify skill and its end-to-end test.',
+  ftags:['map of the brain','recordify skill','sanitized records','d3-force + canvas','node studios','glossary'],
+  wipnote:'in flight — final numbers land when the orchestrator reports.'
+ }
 ];
 /* run log index */
 var rlhost=document.getElementById('runlog-rows');
