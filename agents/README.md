@@ -26,7 +26,7 @@ The subagent fleet used by this homelab's pi setup, versioned for reproducibilit
 
 \* scout's `low` clamps up to `high` at runtime — deepseek supports only `off`/`high`/`max`.
 
-**Fallback models:** qwen agents fall back to `deepseek-v4-pro`; flash agents fall back to `qwen3.8-max-preview` (cross-provider availability insurance).
+**Fallback models:** the fleet runs **qwen ↔ flash only** — qwen agents fall back to `deepseek-v4-flash`; flash agents fall back to `qwen3.8-max-preview` (cross-provider availability insurance; `deepseek-v4-pro` is not used, not even as fallback).
 
 ## No secrets
 
