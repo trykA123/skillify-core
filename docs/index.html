@@ -74,32 +74,42 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1
 .glow.a{width:640px;height:640px;left:-8%;top:-12%;background:oklch(78% 0.13 75 / .10)}
 .glow.b{width:560px;height:560px;right:-6%;top:22%;background:oklch(72% 0.10 240 / .10)}
 .glow.c{width:520px;height:520px;left:24%;bottom:-18%;background:oklch(72% 0.11 180 / .08)}
-.theme-toggle{position:fixed;top:18px;right:18px;z-index:10;width:2.6rem;height:2.6rem;border-radius:8px;
-  border:1px solid var(--line-strong);background:var(--bg-2);color:var(--ink);font-size:1.1rem;cursor:pointer;
-  display:grid;place-items:center;transition:transform .2s,border-color .2s,box-shadow .2s}
-.theme-toggle:hover{transform:translateY(-2px);border-color:var(--ink-faint);box-shadow:0 8px 20px -8px color-mix(in srgb,var(--ink) 30%,transparent)}
-.font-menu{position:fixed;top:18px;right:70px;z-index:11}
-.font-menu-btn{display:flex;align-items:center;gap:.55rem;
-  border:1px solid var(--line-strong);border-radius:8px;background:var(--bg-2);color:var(--ink);
-  font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.04em;
-  padding:.55rem .85rem;cursor:pointer;transition:border-color .2s,box-shadow .2s}
-.font-menu-btn:hover{border-color:var(--ink-faint);box-shadow:0 8px 20px -8px color-mix(in srgb,var(--ink) 25%,transparent)}
-.font-menu-btn .fm-chev{font-size:.58rem;color:var(--ink-faint);transition:transform .25s}
-.font-menu.open .fm-chev{transform:rotate(180deg)}
-.font-menu-list{position:absolute;top:calc(100% + 8px);right:0;min-width:255px;
-  background:var(--bg-2);border:1px solid var(--line-strong);padding:5px;
-  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%);
-  opacity:0;visibility:hidden;transform:translateY(-6px);
-  transition:opacity .22s,transform .22s,visibility .22s;
-  box-shadow:0 18px 40px -14px color-mix(in srgb,var(--ink) 35%,transparent)}
-.font-menu.open .font-menu-list{opacity:1;visibility:visible;transform:none}
-.font-menu-list button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;
-  background:none;border:0;border-radius:7px;padding:.55rem .7rem;cursor:pointer;text-align:left;transition:background .15s}
-.font-menu-list button:hover{background:color-mix(in srgb,var(--ink) 10%,transparent)}
-.font-menu-list button.on{background:color-mix(in srgb,var(--ink) 14%,transparent)}
-.font-menu-list .fm-name{font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--ink)}
-.font-menu-list button.on .fm-name::after{content:" ✓";color:var(--sk-traceify)}
-.font-menu-list .fm-hint{font-family:var(--mono);font-size:.56rem;color:var(--ink-faint);letter-spacing:.02em}
+/* unified appearance menu — theme + typeface in one native panel */
+.appear{position:fixed;top:18px;right:18px;z-index:20}
+.appear-btn{display:flex;align-items:center;gap:.6rem;
+  border:1px solid var(--line-strong);background:var(--bg-2);color:var(--ink);
+  padding:.5rem .8rem .5rem .95rem;cursor:pointer;
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);
+  transition:border-color .2s,box-shadow .2s}
+.appear-btn:hover{border-color:var(--ink-faint);box-shadow:0 8px 22px -8px color-mix(in srgb,var(--ink) 28%,transparent)}
+.appear-aa{font-family:var(--disp);font-weight:700;font-size:1.05rem;line-height:1}
+.appear-mode{font-size:.85rem;color:var(--ink-faint);line-height:1}
+.appear-chev{font-size:.55rem;color:var(--ink-faint);transition:transform .25s}
+.appear.open .appear-chev{transform:rotate(180deg)}
+.appear-panel{position:absolute;top:calc(100% + 10px);right:0;width:274px;
+  background:var(--bg-2);border:1px solid var(--line-strong);padding:14px;
+  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%);
+  opacity:0;visibility:hidden;transform:translateY(-8px);
+  transition:opacity .24s,transform .24s,visibility .24s;
+  box-shadow:0 22px 50px -16px color-mix(in srgb,var(--ink) 40%,transparent)}
+.appear.open .appear-panel{opacity:1;visibility:visible;transform:none}
+.appear-lab{font-family:var(--mono);font-size:.56rem;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px}
+.appear-themes{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.appear-themes button{display:flex;align-items:center;justify-content:center;gap:.5rem;
+  background:none;border:1px solid var(--line);border-radius:7px;color:var(--ink-soft);
+  font-family:var(--mono);font-size:.68rem;font-weight:600;padding:.5rem .4rem;cursor:pointer;
+  transition:background .15s,color .15s,border-color .15s}
+.appear-themes button:hover{border-color:var(--ink-faint);color:var(--ink)}
+.appear-themes button.on{background:color-mix(in srgb,var(--ink) 14%,transparent);border-color:var(--line-strong);color:var(--ink)}
+.appear-div{height:1px;background:var(--line);margin:13px 0}
+.appear-fonts{display:flex;flex-direction:column;gap:3px}
+.appear-fonts button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;
+  background:none;border:0;border-radius:7px;padding:.5rem .6rem;cursor:pointer;text-align:left;transition:background .15s}
+.appear-fonts button:hover{background:color-mix(in srgb,var(--ink) 10%,transparent)}
+.appear-fonts button.on{background:color-mix(in srgb,var(--ink) 14%,transparent)}
+.appear-fonts .fm-name{font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--ink)}
+.appear-fonts button.on .fm-name::after{content:" ✓";color:var(--sk-traceify)}
+.appear-fonts .fm-hint{font-family:var(--mono);font-size:.55rem;color:var(--ink-faint);letter-spacing:.02em}
 #sparks{position:fixed;inset:0;z-index:0;pointer-events:none}
 
 .wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:0 24px}
@@ -212,7 +222,6 @@ footer .fline{flex:1;height:1px;background:var(--line)}
   .dossier{grid-template-columns:1fr}
   .d-id{border-right:0;border-bottom:1px solid var(--line)}
   .d-cols{grid-template-columns:1fr}
-  .font-menu{top:64px;right:18px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -227,16 +236,28 @@ footer .fline{flex:1;height:1px;background:var(--line)}
 <div class="glow b" aria-hidden="true"></div>
 <div class="glow c" aria-hidden="true"></div>
 <canvas id="sparks" aria-hidden="true"></canvas>
-<button class="theme-toggle" id="theme-toggle" aria-label="toggle theme">☀️</button>
-<div class="font-menu" id="font-menu">
-  <button class="font-menu-btn" id="font-menu-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="font combination">
-    <span id="fm-label">Editorial</span><span class="fm-chev">▾</span>
+<div class="appear" id="appear">
+  <button class="appear-btn" id="appear-btn" aria-haspopup="true" aria-expanded="false" aria-label="appearance — theme and typeface">
+    <span class="appear-aa">Aa</span><span class="appear-mode" id="appear-mode">☾</span><span class="appear-chev">▾</span>
   </button>
-  <div class="font-menu-list" role="listbox" aria-label="font combinations">
-    <button role="option" data-font="editorial"><span class="fm-name">Editorial</span><span class="fm-hint">Fraunces · Source Sans 3 · JetBrains Mono</span></button>
-    <button role="option" data-font="grotesk"><span class="fm-name">Grotesk</span><span class="fm-hint">Bricolage Grotesque · Literata · JetBrains Mono</span></button>
-    <button role="option" data-font="technical"><span class="fm-name">Technical</span><span class="fm-hint">Space Grotesk · IBM Plex Sans · IBM Plex Mono</span></button>
-    <button role="option" data-font="hyperlegible"><span class="fm-name">Legible</span><span class="fm-hint">Atkinson Hyperlegible · JetBrains Mono</span></button>
+  <div class="appear-panel" id="appear-panel">
+    <div class="appear-sec">
+      <div class="appear-lab">theme</div>
+      <div class="appear-themes">
+        <button data-theme-choice="dark" class="on">☾ Dark</button>
+        <button data-theme-choice="light">☀ Light</button>
+      </div>
+    </div>
+    <div class="appear-div"></div>
+    <div class="appear-sec">
+      <div class="appear-lab">typeface</div>
+      <div class="appear-fonts" role="listbox" aria-label="font combinations">
+        <button role="option" data-font="editorial"><span class="fm-name">Editorial</span><span class="fm-hint">Fraunces · Source Sans 3 · JetBrains Mono</span></button>
+        <button role="option" data-font="grotesk"><span class="fm-name">Grotesk</span><span class="fm-hint">Bricolage Grotesque · Literata · JetBrains Mono</span></button>
+        <button role="option" data-font="technical"><span class="fm-name">Technical</span><span class="fm-hint">Space Grotesk · IBM Plex Sans · IBM Plex Mono</span></button>
+        <button role="option" data-font="hyperlegible"><span class="fm-name">Legible</span><span class="fm-hint">Atkinson Hyperlegible · JetBrains Mono</span></button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -513,56 +534,49 @@ function tick(){
 sizeBg();initSparks();tick();
 addEventListener('resize',function(){sizeBg();initSparks();if(reduce)tick();});
 
-/* theme toggle — dark sumi / light washi, persisted */
-var tbtn=document.getElementById('theme-toggle');
-try{ if(localStorage.getItem('skillify-guide-theme')==='light')document.documentElement.setAttribute('data-theme','light'); }catch(e){}
-function themeLabel(){return document.documentElement.getAttribute('data-theme')==='light'?'☾':'☀️';}
-tbtn.textContent=themeLabel();
-tbtn.addEventListener('click',function(){
-  var isLight=document.documentElement.getAttribute('data-theme')==='light';
-  if(isLight)document.documentElement.removeAttribute('data-theme');
-  else document.documentElement.setAttribute('data-theme','light');
-  try{localStorage.setItem('skillify-guide-theme',isLight?'dark':'light');}catch(e){}
-  tbtn.textContent=themeLabel();
-});
-
-/* font combination dropdown — persisted */
-var fmenu=document.getElementById('font-menu');
-var fbtn=document.getElementById('font-menu-btn');
-var flabel=document.getElementById('fm-label');
-var FNAMES={editorial:'Editorial',grotesk:'Grotesk',technical:'Technical',hyperlegible:'Legible'};
-try{var sf=localStorage.getItem('skillify-guide-font');if(sf&&sf!=='editorial')document.documentElement.setAttribute('data-font',sf);}catch(e){}
-function curFont(){return document.documentElement.getAttribute('data-font')||'editorial';}
-function refreshMenu(){
-  var cur=curFont();
-  flabel.textContent=FNAMES[cur]||'Editorial';
-  fmenu.querySelectorAll('[role=option]').forEach(function(b){
-    var on=(b.getAttribute('data-font')||'editorial')===cur;
+/* appearance menu — theme + typeface in one native panel, persisted */
+var appear=document.getElementById('appear');
+var abtn=document.getElementById('appear-btn');
+var amode=document.getElementById('appear-mode');
+function applyTheme(t){
+  if(t==='light')document.documentElement.setAttribute('data-theme','light');
+  else document.documentElement.removeAttribute('data-theme');
+  try{localStorage.setItem('skillify-guide-theme',t);}catch(e){}
+  amode.textContent=(t==='light')?'☀':'☾';
+  appear.querySelectorAll('[data-theme-choice]').forEach(function(b){
+    b.classList.toggle('on',b.getAttribute('data-theme-choice')===t);
+  });
+}
+function applyFont(f){
+  if(f==='editorial')document.documentElement.removeAttribute('data-font');
+  else document.documentElement.setAttribute('data-font',f);
+  try{localStorage.setItem('skillify-guide-font',f);}catch(e){}
+  appear.querySelectorAll('[data-font]').forEach(function(b){
+    var on=(b.getAttribute('data-font')||'editorial')===f;
     b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');
   });
 }
-fbtn.addEventListener('click',function(e){
+var sTheme='dark',sFont='editorial';
+try{sTheme=localStorage.getItem('skillify-guide-theme')||'dark';}catch(e){}
+try{sFont=localStorage.getItem('skillify-guide-font')||'editorial';}catch(e){}
+applyTheme(sTheme);applyFont(sFont);
+abtn.addEventListener('click',function(e){
   e.stopPropagation();
-  var open=fmenu.classList.toggle('open');
-  fbtn.setAttribute('aria-expanded',open);
+  var open=appear.classList.toggle('open');
+  abtn.setAttribute('aria-expanded',open);
 });
-fmenu.querySelectorAll('[role=option]').forEach(function(b){
-  b.addEventListener('click',function(){
-    var f=b.getAttribute('data-font')||'editorial';
-    if(f==='editorial')document.documentElement.removeAttribute('data-font');
-    else document.documentElement.setAttribute('data-font',f);
-    try{localStorage.setItem('skillify-guide-font',f);}catch(e){}
-    fmenu.classList.remove('open');fbtn.setAttribute('aria-expanded','false');
-    refreshMenu();
-  });
+appear.querySelectorAll('[data-theme-choice]').forEach(function(b){
+  b.addEventListener('click',function(){applyTheme(b.getAttribute('data-theme-choice'));});
+});
+appear.querySelectorAll('[data-font]').forEach(function(b){
+  b.addEventListener('click',function(){applyFont(b.getAttribute('data-font')||'editorial');});
 });
 document.addEventListener('click',function(e){
-  if(!fmenu.contains(e.target)){fmenu.classList.remove('open');fbtn.setAttribute('aria-expanded','false');}
+  if(!appear.contains(e.target)){appear.classList.remove('open');abtn.setAttribute('aria-expanded','false');}
 });
 document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'){fmenu.classList.remove('open');fbtn.setAttribute('aria-expanded','false');}
+  if(e.key==='Escape'){appear.classList.remove('open');abtn.setAttribute('aria-expanded','false');}
 });
-refreshMenu();
 </script>
 </body>
 </html>
