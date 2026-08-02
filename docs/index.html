@@ -275,6 +275,112 @@ html[data-theme="light"]{
 @media (max-width:860px){
   .principles{grid-template-columns:1fr}
 }
+/* ═══════════ cases tab — the field reports ═══════════ */
+:root{
+  --cs-ink:#c19552;      /* pane accent · kraft/manila */
+  --cs-rebuild:#d96a5c;  /* case 01 · signal coral */
+  --cs-seed:#97b25e;     /* case 02 · moss green */
+  --cs-tab:#6ca6d8;      /* case 03 · blueprint blue */
+  --cs-round:#b48cd8;    /* case 04 · violet */
+  --cs-live:#d8a24a;     /* in-progress pulse · amber */
+}
+html[data-theme="light"]{
+  --cs-ink:#7c5c2c;
+  --cs-rebuild:#a63e30;
+  --cs-seed:#5d7430;
+  --cs-tab:#346590;
+  --cs-round:#6e4b9a;
+  --cs-live:#8a6420;
+}
+/* active third tab button — scoped override, pure addition */
+.tabbtn[data-tab="cases"].on{border-color:var(--cs-ink);color:var(--cs-ink);box-shadow:0 0 14px color-mix(in srgb,var(--cs-ink) 35%,transparent)}
+/* run log index */
+.runlog{border:1px solid var(--line);border-radius:14px;background:var(--bg-2);padding:1.4rem;margin:0 0 2.6rem}
+.rl-row{display:grid;grid-template-columns:auto 1fr auto auto;gap:1.1rem;align-items:center;padding:.75rem .5rem;border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s,transform .15s}
+.rl-row:last-child{border-bottom:0}
+.rl-row:hover{background:color-mix(in srgb,var(--c) 8%,transparent);transform:translateX(4px)}
+.rl-no{font-family:var(--disp);font-weight:800;font-size:var(--fs-2);color:var(--c);line-height:1}
+.rl-title{font-family:var(--disp);font-weight:700;font-size:var(--fs-1);color:var(--ink);letter-spacing:-.01em}
+.rl-stat{font-family:var(--mono);font-size:var(--fs-xs);color:var(--ink-faint);letter-spacing:.05em;white-space:nowrap}
+/* status badge */
+.c-status{font-family:var(--mono);font-size:var(--fs-xs);font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:.3rem .8rem;border-radius:2px;border:1px solid;white-space:nowrap}
+.c-status.done{color:var(--sk-traceify);border-color:color-mix(in srgb,var(--sk-traceify) 50%,transparent);background:color-mix(in srgb,var(--sk-traceify) 10%,transparent)}
+.c-status.wip{color:var(--cs-live);border-color:color-mix(in srgb,var(--cs-live) 50%,transparent);background:color-mix(in srgb,var(--cs-live) 10%,transparent)}
+.c-status.wip::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cs-live);margin-right:.55rem;vertical-align:1px;animation:cs-pulse 1.6s ease-in-out infinite}
+@keyframes cs-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
+/* case dossier */
+.case{border:1px solid var(--line);border-radius:14px;background:var(--bg-2);margin:0 0 2.4rem;overflow:hidden;transition:border-color .25s,box-shadow .25s}
+.case:hover{border-color:color-mix(in srgb,var(--c) 45%,var(--line));box-shadow:0 18px 44px -24px color-mix(in srgb,var(--c) 40%,transparent)}
+.case.flash{border-color:var(--c);box-shadow:0 0 0 2px var(--c),0 20px 48px -18px color-mix(in srgb,var(--c) 50%,transparent)}
+.case-head{display:flex;align-items:flex-start;gap:1.3rem;padding:1.6rem 1.7rem 1.3rem;border-bottom:1px solid var(--line);background:linear-gradient(160deg,color-mix(in srgb,var(--c) 9%,var(--bg-2)),var(--bg-2) 60%);position:relative}
+.case-head::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c)}
+.case-no{font-family:var(--disp);font-weight:800;font-size:var(--fs-5);line-height:.9;color:var(--c)}
+.case-titles{flex:1;min-width:0}
+.case-title{font-family:var(--disp);font-weight:800;font-size:var(--fs-3);letter-spacing:-.015em;line-height:1.08}
+.case-sub{font-family:var(--mono);font-size:var(--fs-xs);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-top:.5rem}
+.case-body{padding:1.5rem 1.7rem 1.7rem}
+.case-does{font-size:var(--fs-0);color:var(--ink-soft);line-height:1.6;margin:0 0 .4rem;max-width:62rem}
+.case-does b{color:var(--ink)}
+/* run stats strip */
+.runstats{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1.3rem}
+.runstat{font-family:var(--mono);font-size:var(--fs-xs);color:var(--ink-soft);border:1px solid var(--line-strong);background:var(--bg-3);padding:.42rem .8rem;border-radius:3px;letter-spacing:.04em}
+.runstat b{color:var(--c);font-weight:700}
+/* section labels */
+.c-lab{font-family:var(--mono);font-size:var(--fs-xs);font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-faint);margin:1.5rem 0 .8rem}
+.c-lab b{color:var(--c)}
+/* the arc — key moments timeline */
+.arc{list-style:none;position:relative;padding-left:1.6rem;margin:0}
+.arc::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:linear-gradient(var(--c),color-mix(in srgb,var(--c) 15%,transparent))}
+.moment{position:relative;padding-bottom:1.15rem}
+.moment:last-child{padding-bottom:0}
+.m-marker{position:absolute;left:-1.6rem;top:.32rem;width:11px;height:11px;border-radius:50%;background:var(--bg-2);border:2px solid var(--c)}
+.moment.catch .m-marker{background:var(--c);box-shadow:0 0 10px color-mix(in srgb,var(--c) 65%,transparent)}
+.m-name{font-family:var(--mono);font-size:var(--fs-s);font-weight:700;color:var(--ink);display:flex;align-items:center;gap:.65rem;flex-wrap:wrap}
+.moment.catch .m-name{color:var(--c)}
+.m-tag{font-family:var(--mono);font-size:var(--fs-xs);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--c);border:1px solid color-mix(in srgb,var(--c) 50%,transparent);padding:2px 8px;border-radius:2px}
+.moment.catch .m-tag{background:var(--c);color:var(--bg-2);border-color:var(--c)}
+.moment p{font-size:var(--fs-s);color:var(--ink-soft);line-height:1.55;margin-top:.35rem;max-width:60rem}
+.moment p b{color:var(--ink)}
+.moment.catch p{color:var(--ink)}
+/* verification telemetry */
+.vread{display:flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;background:var(--bg-3);overflow:hidden}
+.vstat{flex:1 1 auto;padding:.9rem 1.2rem;border-right:1px solid var(--line);min-width:9rem;transition:background .15s}
+.vstat:last-child{border-right:0}
+.vstat:hover{background:color-mix(in srgb,var(--c) 7%,transparent)}
+.vstat b{display:block;font-family:var(--disp);font-weight:800;font-size:var(--fs-2);color:var(--c);line-height:1.15}
+.vstat span{font-family:var(--mono);font-size:var(--fs-xs);color:var(--ink-faint);letter-spacing:.05em}
+.flagged{font-family:var(--mono);font-size:var(--fs-xs);color:var(--ink-faint);letter-spacing:.03em;margin-top:.8rem;padding:.65rem .95rem;border-left:2px solid var(--line-strong);background:var(--bg-3);border-radius:0 4px 4px 0;line-height:1.6}
+/* lessons + rules lists */
+.lessons{list-style:none;margin:0}
+.lessons li{font-size:var(--fs-s);color:var(--ink-soft);line-height:1.55;padding-left:1.4rem;position:relative;margin-bottom:.55rem;max-width:62rem}
+.lessons li::before{content:"—";position:absolute;left:0;color:var(--c);font-weight:700}
+.lessons li b{color:var(--ink)}
+/* feature docket tags (case 04) */
+.ftags{display:flex;flex-wrap:wrap;gap:.55rem}
+.ftag{font-family:var(--mono);font-size:var(--fs-xs);color:var(--ink-soft);border:1px solid var(--line-strong);background:var(--bg-2);padding:.4rem .8rem;border-radius:3px;letter-spacing:.04em;transition:color .15s,border-color .15s,transform .15s}
+.ftag:hover{color:var(--c);border-color:color-mix(in srgb,var(--c) 50%,transparent);transform:translateY(-2px)}
+/* in-progress note */
+.wip-note{font-family:var(--mono);font-size:var(--fs-xs);color:var(--cs-live);letter-spacing:.05em;margin-top:1.3rem}
+/* side note */
+.sidenote{font-family:var(--mono);font-size:var(--fs-xs);color:var(--ink-faint);letter-spacing:.04em;margin:1.8rem 0 0;line-height:1.7;max-width:62rem}
+.sidenote b{color:var(--ink-soft)}
+/* cases responsive */
+@media (max-width:860px){
+  .tabbar{flex-wrap:wrap}
+  .tabbtn[data-tab="cases"]{font-size:var(--fs-xs);padding:.5rem .9rem}
+  .case-head{flex-wrap:wrap;gap:.9rem}
+  .case-no{font-size:var(--fs-4)}
+  .case-title{font-size:var(--fs-2)}
+  .rl-row{grid-template-columns:auto 1fr auto}
+  .rl-stat{display:none}
+  .vread{flex-direction:column}
+  .vstat{border-right:0;border-bottom:1px solid var(--line)}
+  .vstat:last-child{border-bottom:0}
+}
+/* cases reduced motion (global block already covers; explicit for clarity) */
+@media (prefers-reduced-motion:reduce){
+  .c-status.wip::before{animation:none}
+}
 </style>
 </head>
 <body>
@@ -314,6 +420,7 @@ html[data-theme="light"]{
   <nav class="tabbar" id="tabbar" role="tablist" aria-label="site sections">
     <button class="tabbtn on" data-tab="skills" role="tab" aria-selected="true" aria-controls="pane-skills">skills</button>
     <button class="tabbtn" data-tab="agents" role="tab" aria-selected="false" aria-controls="pane-agents">agents</button>
+    <button class="tabbtn" data-tab="cases" role="tab" aria-selected="false" aria-controls="pane-cases">Case studies for agent workflows</button>
   </nav>
 
   <section class="tabpane active" id="pane-skills" role="tabpanel" aria-label="skills">
@@ -441,6 +548,40 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
       <span class="fmark">skillify</span>
       <span class="fline"></span>
       <span>ten agents · one fleet · decisions escalate</span>
+    </footer>
+  </section>
+
+  <section class="tabpane" id="pane-cases" role="tabpanel" aria-label="case studies for agent workflows">
+    <header class="masthead">
+      <div>
+        <div class="kicker">skillify · <b>the field guide</b> · four real orchestrator runs</div>
+        <h1>Four runs.<br><span class="thin">Field reports.</span></h1>
+        <p class="lede">The skills tab is the method; the agents tab is the fleet. This tab is the <b>evidence</b> — four real orchestrator runs logged as they happened: what broke, who caught it, what the numbers said, and what stuck. De-identified, verified, and kept as the fleet&#8217;s institutional memory.</p>
+      </div>
+      <div class="mast-side">
+        <div><span class="pip" style="background:var(--cs-ink)"></span><b>4</b> workflows</div>
+        <div><span class="pip" style="background:var(--sk-traceify)"></span><b>3</b> complete</div>
+        <div><span class="pip" style="background:var(--cs-live)"></span><b>1</b> in progress</div>
+        <div style="margin-top:.6rem">major catches <b>4</b> · kept</div>
+      </div>
+    </header>
+
+    <section class="runlog reveal">
+      <div class="flow-head">
+        <h2>the run log</h2>
+        <span class="note">click a run to open its report · statuses as of this build</span>
+      </div>
+      <div id="runlog-rows"></div>
+    </section>
+
+    <div id="casestudies"></div>
+
+    <p class="sidenote reveal">One more record stays on file — <b>the README reconcile</b>, a process lesson (plan before you write) rather than a workflow. It is kept as a side note, not a numbered run.</p>
+
+    <footer>
+      <span class="fmark">skillify</span>
+      <span class="fline"></span>
+      <span>four runs · real catches · lessons kept</span>
     </footer>
   </section>
 
@@ -865,11 +1006,158 @@ function gotoAgent(id){
     setTimeout(function(){t.classList.remove('flash');},1900);
   }
 }
+/* ═══════════ cases tab — the field reports ═══════════ */
+var CS=[
+ {id:'rebuild',no:'01',title:'The alerts dashboard rebuild',
+  sub:'a media + scripts dashboard · rebuilt front to back',
+  status:'done',label:'complete',color:'var(--cs-rebuild)',
+  stat:'16 agents · 8 commits',
+  stats:[['16','agents · 9 worker / 7 reviewer'],['8','atomic commits'],['v1.0.10 → v1.0.18','app version']],
+  does:'A SvelteKit dashboard that began as a scripts-alerts app had outgrown itself — it was now a media + scripts dashboard with <b>too many places to check</b>. The owner called a full frontend rebuild: keep the zen aesthetic and every backend contract, rebuild the UX from scratch. Mobile-first, topbar-first navigation.',
+  moments:[
+   {name:'the protocol conflict',tag:'ruling',html:'Slice 0\u2019s acceptance (\u201ctype-check must pass\u201d) collided with the do-not-touch rule on the backend layer, which carried <b>21 pre-existing type errors</b>. The orchestrator escalated instead of guessing; the parent ruled: per-slice acceptance = zero <b>new</b> errors, baseline documented. The count fell 21 → 7 over the run.'},
+   {name:'the silent job drop',tag:'catch',big:true,html:'A reviewer caught that the jobs wall followed a date-range parameter and <b>silently dropped jobs with no runs in the window</b> — a bug a human would have found weeks later. One repair round, resolved.'},
+   {name:'the white-chart catch',tag:'catch',big:true,html:'A pre-existing color-conversion defect surfaced: charts never actually read theme colors. The proposed one-character fix would have parsed percent-form lightness <b>without scaling</b> — every chart would have rendered white. The parent verified the math, corrected the spec (percent → fraction), and authorized the minimal fix. Charts now re-color on theme change.'},
+   {name:'governance self-corrections',tag:'fix',html:'A reviewer once applied its own one-line fix — the orchestrator <b>locked reviewers to read-only</b> thereafter. A commit-policy slip (one slice committed without authorization) was caught by the parent and re-steered.'},
+   {name:'the false-premise escalation',tag:'ruling',html:'The orchestrator escalated \u201cunauthorized commits + invented version bumps\u201d — wrong on both counts (the parent had made the commits; the bumps were the repo\u2019s pre-existing commit hook). The parent proved it from git history. <b>The right behavior was still the escalation</b>, not silent acceptance.'}
+  ],
+  verify:[['21 → 7','type errors · rest = documented baseline'],['0','warnings'],['8/8','slices built green'],['0','hardcoded colors · token-only']],
+  flagged:'Not runtime-verified by the fleet — browser-level behaviors (polling, pull-to-refresh, theme transitions) flagged for a human dev-server pass.',
+  lessons:[
+   'A packet with <b>checkable acceptance criteria</b> survives seven slices without contract revision.',
+   'Reviews that verify <b>structure</b> miss <b>behavior</b> — chart and color verification must run the real parser against real tokens, at runtime.',
+   'Escalation on a <b>false premise</b> is still correct behavior; the parent\u2019s job is to verify, not to assume the premise.',
+   'One writer per tree, reviewers read-only, commits per verifiable unit — <b>the discipline is the product</b>.'
+  ]},
+ {id:'seedwatch',no:'02',title:'The torrent seed-watch watcher',
+  sub:'an automated seeding lifecycle · with a hard safety gate',
+  status:'done',label:'complete',color:'var(--cs-seed)',
+  stat:'8 agents · 97 tests',
+  stats:[['8','agents · scout / planner / 3× worker / 3× reviewer'],['97','test cases'],['30 min','systemd timer · persistent']],
+  does:'The homelab torrent client seeds downloads while the media pipeline transcodes them to <b>AV1</b>. Once the AV1 copy exists, the original is only needed for seeding obligations. The owner wanted an automated lifecycle watcher: keep seeding while obligations demand it, then delete torrent + content — <b>but only ever after the AV1 copy is verified</b>.',
+  rules:[
+   'Never delete when: no AV1 transcode exists, the torrent is not finished, or the hit-and-run minimum seed time is unmet.',
+   'Ratio ≥ 4.0 → delete · seed time > 60 days → delete.',
+   'Active leechers (≥ 2) hold deletion — resume after 3 consecutive low-leecher days.',
+   'Sole seeder → the cap extends 60 → 90 days.',
+   'Dry-run by default — nothing is deleted until an explicit flag is set.'
+  ],
+  moments:[
+   {name:'round 1 · request-changes',tag:'round',html:'Login detection was <b>dead-on-arrival</b> — the client returns HTTP 204 with an empty body, not the expected shape. And the basename matching join matched <b>0 of 300 torrents</b>: the media importer renames files on import, so names never line up.'},
+   {name:'round 2 · the byte-exact join',tag:'catch',big:true,html:'Login now accepts 204 + session cookie. The matching join switched to <b>byte-exact size</b> — the download copy is the pre-transcode hardlink inode, so the transcode record\u2019s source size round-trips to exact bytes. <b>68/68 unique matches, 0 collisions</b>, all AV1-verified on disk.'},
+   {name:'round 3 · approve-with-nits → approve',tag:'round',html:'Final fixes (hold-state prefixes, state budget preserved across subshells), then a clean approve.'}
+  ],
+  verify:[['97/97','offline tests · all branches'],['301 → 42','live dry-run candidates'],['233','held for no_av1 · the gate works'],['0','errors · 0 deletions · idempotent']],
+  lessons:[
+   '\u201cNever delete the only copy\u201d must be <b>enforced by data</b>, not assumed by policy — the AV1 gate held 233 torrents.',
+   'Matching by <b>name</b> dies the day an importer renames; matching by <b>content identity</b> (byte-exact size of the hardlinked inode) survives.',
+   'Three review rounds caught real bugs each time — <b>the loop is the product</b>.'
+  ]},
+ {id:'agentstab',no:'03',title:'The agents tab build',
+  sub:'the run that added the agents tab to this site',
+  status:'done',label:'complete',color:'var(--cs-tab)',
+  stat:'5 spawns · +316 / −0',
+  stats:[['5','spawns'],['@xhigh','planner design'],['+316 / −0','lines · pure addition']],
+  does:'The docs site needed a second tab documenting the pi-subagents fleet — ten agents, the delegation pipeline, models and fallbacks, safety principles. <b>This is the run that built it.</b> Planned at xhigh, executed by a single worker, verified read-only; its final report is in the parent\u2019s hands. These are the locked facts.',
+  moments:[
+   {name:'design at xhigh',tag:'plan',html:'The tab\u2019s layout was designed by the <b>planner at xhigh</b> before a line was written — same vars, same type scale, same dossier vocabulary as the skills tab, so the addition reads as native.'},
+   {name:'the stale-fallback catch',tag:'catch',big:true,html:'<b>One repair round, mid-pipeline</b>: the reviewer caught a stale-fallback bug — a fallback reference that no longer matched the fleet config. Fixed before it shipped.'},
+   {name:'the byte-exact landing',tag:'verify',html:'The skills pane came through <b>byte-identical</b> — the whole change landed as a pure addition: <b>+316 lines, 0 deletions</b>.'}
+  ],
+  verify:[['+316 / −0','lines · insertions only'],['1','repair round · caught a real bug'],['byte-identical','skills pane preserved'],['5','spawns · one writer']],
+  lessons:[
+   'A design pass at xhigh kept the change a <b>pure addition</b> — plan hard, then insert.',
+   'The single repair round caught a real bug mid-pipeline — <b>verification before commit</b>, every time.'
+  ]},
+ {id:'featureround',no:'04',title:'The feature round',
+  sub:'the alerts app\u2019s second round · in flight',
+  status:'wip',label:'in progress',color:'var(--cs-round)',
+  stat:'7 features · in flight',
+  stats:[['7','features on the docket'],['round 2','of the alerts app'],['—','final numbers pending']],
+  does:'The alerts dashboard\u2019s <b>second feature round</b>, currently running through the pipeline. Seven items on the docket; this report updates when the orchestrator lands it.',
+  ftags:['gain chart · 16TB axis · week/month/year','job stats page','dropdown nav','palette removal','seed-watch tab','pagination audit','4K availability fix'],
+  wipnote:'in flight — final numbers, catches, and lessons land when the orchestrator reports.'
+ }
+];
+/* run log index */
+var rlhost=document.getElementById('runlog-rows');
+CS.forEach(function(c){
+  var r=document.createElement('div');
+  r.className='rl-row';
+  r.style.setProperty('--c',c.color);
+  r.innerHTML='<span class="rl-no">'+c.no+'</span>'+
+    '<span class="rl-title">'+c.title+'</span>'+
+    '<span class="c-status '+c.status+'">'+c.label+'</span>'+
+    '<span class="rl-stat">'+c.stat+'</span>';
+  r.addEventListener('click',function(){gotoCase(c.id);});
+  rlhost.appendChild(r);
+});
+/* case studies */
+var chost=document.getElementById('casestudies');
+CS.forEach(function(c){
+  var s=document.createElement('section');
+  s.className='case reveal';
+  s.id='case-'+c.id;
+  s.style.setProperty('--c',c.color);
+  var stats=c.stats.map(function(x){return '<span class="runstat"><b>'+x[0]+'</b> '+x[1]+'</span>';}).join('');
+  var moments='';
+  if(c.moments&&c.moments.length){
+    moments='<div class="c-lab">key moments <b>· the arc of the run</b></div><ol class="arc">'+
+      c.moments.map(function(m){
+        return '<li class="moment'+(m.big?' catch':'')+'"><span class="m-marker"></span>'+
+          '<div class="m-name">'+m.name+'<span class="m-tag">'+m.tag+'</span></div>'+
+          '<p>'+m.html+'</p></li>';
+      }).join('')+'</ol>';
+  }
+  var rules='';
+  if(c.rules&&c.rules.length){
+    rules='<div class="c-lab">the rules <b>· owner-locked</b></div><ul class="lessons">'+
+      c.rules.map(function(r){return '<li>'+r+'</li>';}).join('')+'</ul>';
+  }
+  var verify='';
+  if(c.verify&&c.verify.length){
+    verify='<div class="c-lab">verification <b>· the numbers</b></div><div class="vread">'+
+      c.verify.map(function(v){return '<div class="vstat"><b>'+v[0]+'</b><span>'+v[1]+'</span></div>';}).join('')+'</div>';
+  }
+  if(c.flagged){verify+='<p class="flagged">'+c.flagged+'</p>';}
+  var lessons='';
+  if(c.lessons&&c.lessons.length){
+    lessons='<div class="c-lab">lessons <b>· what stuck</b></div><ul class="lessons">'+
+      c.lessons.map(function(l){return '<li>'+l+'</li>';}).join('')+'</ul>';
+  }
+  var ftags='';
+  if(c.ftags&&c.ftags.length){
+    ftags='<div class="c-lab">the docket <b>· seven features</b></div><div class="ftags">'+
+      c.ftags.map(function(f){return '<span class="ftag">'+f+'</span>';}).join('')+'</div>';
+  }
+  var wipnote=c.wipnote?'<p class="wip-note">'+c.wipnote+'</p>':'';
+  s.innerHTML=
+    '<header class="case-head">'+
+      '<span class="case-no">'+c.no+'</span>'+
+      '<div class="case-titles"><h2 class="case-title">'+c.title+'</h2><div class="case-sub">'+c.sub+'</div></div>'+
+      '<span class="c-status '+c.status+'">'+c.label+'</span>'+
+    '</header>'+
+    '<div class="case-body">'+
+      '<div class="runstats">'+stats+'</div>'+
+      '<p class="case-does">'+c.does+'</p>'+
+      rules+moments+ftags+verify+lessons+wipnote+
+    '</div>';
+  chost.appendChild(s);
+});
+function gotoCase(id){
+  var t=document.getElementById('case-'+id);
+  if(t){
+    t.scrollIntoView({behavior:'smooth',block:'start'});
+    t.classList.add('flash');
+    setTimeout(function(){t.classList.remove('flash');},1900);
+  }
+}
 /* ── tab switcher: skills | agents ── */
 var tabbar=document.getElementById('tabbar');
 var panes={
   skills:document.getElementById('pane-skills'),
-  agents:document.getElementById('pane-agents')
+  agents:document.getElementById('pane-agents'),
+  cases:document.getElementById('pane-cases')
 };
 function setTab(name){
   Object.keys(panes).forEach(function(k){
