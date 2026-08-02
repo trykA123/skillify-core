@@ -1070,14 +1070,18 @@ var CS=[
    'The single repair round caught a real bug mid-pipeline — <b>verification before commit</b>, every time.'
   ]},
  {id:'featureround',no:'04',title:'The feature round',
-  sub:'the alerts app\u2019s second round · in flight',
-  status:'wip',label:'in progress',color:'var(--cs-round)',
-  stat:'7 features · in flight',
-  stats:[['7','features on the docket'],['round 2','of the alerts app'],['—','final numbers pending']],
-  does:'The alerts dashboard\u2019s <b>second feature round</b>, currently running through the pipeline. Seven items on the docket; this report updates when the orchestrator lands it.',
+  sub:'the alerts app\u2019s second round · complete',
+  status:'done',label:'complete',color:'var(--cs-done)',
+  stat:'7 features · 7 commits · v1.0.25',
+  stats:[['7','features delivered'],['7','atomic commits'],['v1.0.25','deployed']],
+  does:'The alerts dashboard\u2019s <b>second feature round</b>: the tdarr gain chart (dual-axis, 16TB ceiling, week/month/year), a revived job-stats page, room nav moved into the dropdown, the command palette removed (no search), a seed-watch tab in Media, a pagination audit, and the 4K availability fix on seerr cards.',
   ftags:['gain chart · 16TB axis · week/month/year','job stats page','dropdown nav','palette removal','seed-watch tab','pagination audit','4K availability fix'],
-  wipnote:'in flight — final numbers, catches, and lessons land when the orchestrator reports.'
- }
+  catch:{h:'the year-view bug',t:'A reviewer caught that the year-view cumulative gain undercounted — bucketing dropped data. The worker fixed it in one repair round; the orchestrator re-verified the math (full-window total).'},
+  lessons:[
+   'The reviewer caught a <b>real math bug</b> in the chart bucketing — read-only review, one repair round, re-verified.',
+   'The 4K availability fix needed a <b>bounded contract-layer change</b> — is4k column + sync capture, nothing else.',
+   'End-to-end telemetry: seed-watch runs now POST into the dashboard — the fleet monitors its own watcher.'
+  ]}
 ];
 /* run log index */
 var rlhost=document.getElementById('runlog-rows');
