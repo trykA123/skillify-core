@@ -582,8 +582,8 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
       </div>
       <div class="mast-side">
         <div><span class="pip" style="background:var(--cs-ink)"></span><b>7</b> workflows</div>
-        <div><span class="pip" style="background:var(--sk-traceify)"></span><b>5</b> complete</div>
-        <div><span class="pip" style="background:var(--cs-live)"></span><b>2</b> in progress</div>
+        <div><span class="pip" style="background:var(--sk-traceify)"></span><b>6</b> complete</div>
+        <div><span class="pip" style="background:var(--cs-live)"></span><b>1</b> in progress</div>
         <div style="margin-top:.6rem">major catches <b>5</b> · kept</div>
       </div>
     </header>
@@ -1566,13 +1566,18 @@ var CS=[
   wipnote:'in flight — final numbers land when the orchestrator reports.'
  },
  {id:'charts',no:'07',title:'The charts reinvention',
-  sub:'the researcher\u2019s debut · in flight',
-  status:'wip',label:'in progress',color:'var(--cs-round)',
-  stat:'researching',
-  stats:[['debut','the researcher'],['new','chart language'],['+1','median % chart']],
-  does:'The stats/media charts were <b>"too boring, too simple, one dimensional"</b> — so the fleet\u2019s untouched researcher finally flew: a web-research brief (shadcn charts, beszel\u2019s dashboard, the modern chart landscape) feeding a new chart language for every metric, plus a median-transcode-% chart with the week/month/year filter.',
-  ftags:['researcher debut','chart language','median % chart','library decision','every metric'],
-  wipnote:'in flight — the research brief lands first, then the design, then the charts.'
+  sub:'the researcher\u2019s debut · complete',
+  status:'done',label:'complete',color:'var(--cs-done)',
+  stat:'4 commits · v1.0.40',
+  stats:[['debut','the researcher'],['+1','median % chart'],['chart.js','kept + reworked']],
+  does:'The stats/media charts were <b>"too boring, too simple, one dimensional"</b> — so the fleet\u2019s untouched researcher finally flew (~30 sources, 15 kept): a pattern language for every chart surface plus a <b>median-transcode-% chart</b> (median/Q1/Q3 of saved_pct, week/month/year, 50% threshold, amber-below segments). Library verdict: keep chart.js, rework the wrapper.',
+  ftags:['researcher debut','chart language','median % chart','external tooltips','chip legends','reduced-motion'],
+  catch:{h:'the annoying pass',t:'The parent gate reviewed in the owner\u2019s place and found what the owner would have found: a #999 fallback literal and off-scale 0.58/0.66rem labels in new code — fixed preemptively before the owner saw them.'},
+  lessons:[
+   'The researcher\u2019s debut delivered a library verdict + a pattern catalog — <b>research first, design second, build third</b>.',
+   '"Sophisticated" is a list of measurable details (tooltip anatomy, grid hairlines, gradient discipline), not a vibe.',
+   'The annoying pass exists because the fleet ships what the contract says — the owner reviews what the taste says.'
+  ]
  }
 ];
 /* run log index */
