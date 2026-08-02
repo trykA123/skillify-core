@@ -171,6 +171,62 @@ const TOPIC_INFERENCE = {
   }
 };
 
+/** Curated gists — replace sanitizeNote placeholder artifacts ([name], a path)
+ * with natural, still-sanitized one-liners (I1 gate re-run on the result). */
+const CURATED = {
+  "Round 1: the [name] div inside this div [name] it's too short height wise — intent in sentence one":
+    'Round 1 named the problem element precisely in the opening sentence — intent led the ask',
+  'after the orchestrator finishes the [name] app, please rebuild the container — intent + sequencing in one line':
+    'Queued the rebuild after the current app work — intent and sequencing in one line',
+  'we will only use [name] and flash now, ds pro will not be used even as fallback — hard limit stated before any work':
+    'Narrowed the model set to two and banned the fallback — hard limit before any work started',
+  'Feedback always scored + ordered by concept, critical first (TABLE 9.9/10 → [name] too short)':
+    'Feedback scored and ordered, critical first — the top issue named with its score',
+  'keep the [name] concept, but from zero — when clash was possible, what wins was stated':
+    'Kept the winning concept but rebuilt from zero — the clash resolved by naming what wins',
+  'Keep the [name]/sumi-e, but with different UX/UI layout — what wins stated when theme and rebuild clashed':
+    'Kept the theme direction but changed the layout — what wins stated when two directions clashed',
+  'Same-day delta: by round 4, this div class [name], this span [name], screenshots ata path*.png':
+    'Same-day delta: by round 4 the fix was named at DOM level with screenshots attached',
+  'course correction with exact paths: I meant this one from here:a path and also that progress.html — zero ambig':
+    'Course correction named the exact reference — zero ambiguity, no round-trip',
+  'In the section class=[name] reveal can you add more space between the nodes fnode? the text that you increased':
+    'Named the section and the nodes when asking for spacing — precise locator, instant fix',
+  'show me what [name] has as thinking options — ground-truth ask before accepting the level table':
+    'Asked for ground truth on the model options before accepting the capability table',
+  'how is it that I used 300M tokens with 1.44$? I am using [name] oficial api — challenged the cost model with h':
+    'Challenged the cost model with the observed bill — the correction was worth an order of magnitude',
+  'center this span [name] to be under the arrows (this is the main div [name]) — DOM-level specificity':
+    'Centered the element under the arrows — DOM-level specificity',
+  'can we implement in [name] or in autobrr — specific tools named, capabilities probed per tool':
+    'Named two candidate tools and probed each capability — specific, not generic',
+  "this div [name], if it's a flex... — inspected the actual markup before asking":
+    "Inspected the actual markup before asking — the question was about the real layout",
+  "Here I don't know how to answer on the leecher threshold — the data was one API call away in her own [name] (num_leechs); asked instead of traced":
+    'The answer was one call away in her own tooling — asked instead of traced, the one gap this session',
+  'checked her own [name] usage dashboard before questioning the pricing claim — traced her data first, then chal':
+    'Checked her own usage dashboard before questioning the pricing claim — traced first, then challenged',
+  'workflow recap ([name]/[name] hardlink -> [name] -> av1) was accurate from memory — built on known, correctly':
+    'Workflow recap was accurate from memory — built on known ground truth',
+  'Does this also recreate the [name].html? — artifact-aware: knows what exists and what should regenerate':
+    'Asked whether the artifact would regenerate — artifact-aware',
+  'follow the design of this a path — picked the right reference artifact for the redesign job':
+    'Followed the proven reference artifact for the redesign — the right artifact picked',
+  '[name]/autobrr spec: numbered workflow (1-5) + numbered requests (1.1-1.4) with tunables flagged (value needs':
+    'Numbered spec with numbered requests and tunables flagged — zero handoff friction',
+  "I know this is a huge ask\u2026 Do you think it's feasable? For UX/UI, layout and design have [name]-3.8-max-xhigh":
+    'Scoped the ask honestly before requesting — the strongest setting requested knowingly for design work'
+};
+
+function curate(note) {
+  // match by prefix — the map keys are stable starts of the placeholder notes
+  const keys = Object.keys(CURATED).sort((a, b) => b.length - a.length);
+  for (const k of keys) {
+    if (note.startsWith(k)) return CURATED[k];
+  }
+  return note;
+}
+
 // ── load raw progress.json ───────────────────────────────────────────────────
 const raw = JSON.parse(fs.readFileSync(PROGRESS, 'utf8'));
 const history = raw.history ?? [];
@@ -217,7 +273,7 @@ for (const s of sessions) {
       for (const e of evidenceByComp[c]) {
         evidence.push({
           competency: c,
-          note: sanitizeNote(e.note),
+          note: curate(sanitizeNote(e.note)),
           valence: e.valence
         });
       }
@@ -321,7 +377,7 @@ let changed = 0;
 for (const c of KNOWN) {
   if (!sanitized.competencies[c]) continue;
   for (const e of sanitized.competencies[c].evidence) {
-    const clean = sanitizeNote(e.note);
+    const clean = curate(sanitizeNote(e.note));
     if (clean !== e.note) {
       e.note = clean;
       changed++;
