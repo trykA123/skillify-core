@@ -78,8 +78,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1
 .appear{position:fixed;top:18px;right:30px;z-index:20}
 .appear-btn{display:flex;align-items:center;gap:.6rem;
   border:1px solid var(--line-strong);background:var(--bg-2);color:var(--ink);
-  padding:.5rem .8rem .5rem .95rem;cursor:pointer;
-  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);
+  padding:.5rem .8rem .5rem .95rem;cursor:pointer;border-radius:9px;
   transition:border-color .2s,box-shadow .2s}
 .appear-btn:hover{border-color:var(--ink-faint);box-shadow:0 8px 22px -8px color-mix(in srgb,var(--ink) 28%,transparent)}
 .appear-aa{font-family:var(--disp);font-weight:700;font-size:1.05rem;line-height:1}
@@ -87,8 +86,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1
 .appear-chev{font-size:.55rem;color:var(--ink-faint);transition:transform .25s}
 .appear.open .appear-chev{transform:rotate(180deg)}
 .appear-panel{position:absolute;top:calc(100% + 10px);right:0;width:274px;
-  background:var(--bg-2);border:1px solid var(--line-strong);padding:14px;
-  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%);
+  background:var(--bg-2);border:1px solid var(--line-strong);padding:14px;border-radius:12px;
   opacity:0;visibility:hidden;transform:translateY(-8px);
   transition:opacity .24s,transform .24s,visibility .24s;
   box-shadow:0 22px 50px -16px color-mix(in srgb,var(--ink) 40%,transparent)}
