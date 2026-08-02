@@ -582,8 +582,8 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
       </div>
       <div class="mast-side">
         <div><span class="pip" style="background:var(--cs-ink)"></span><b>7</b> workflows</div>
-        <div><span class="pip" style="background:var(--sk-traceify)"></span><b>6</b> complete</div>
-        <div><span class="pip" style="background:var(--cs-live)"></span><b>1</b> in progress</div>
+        <div><span class="pip" style="background:var(--sk-traceify)"></span><b>7</b> complete</div>
+        <div><span class="pip" style="background:var(--cs-live)"></span><b>0</b> in progress</div>
         <div style="margin-top:.6rem">major catches <b>5</b> · kept</div>
       </div>
     </header>
@@ -1557,13 +1557,18 @@ var CS=[
    'One commit of preemptive fixes is cheaper than one round of owner complaints.'
   ]},
  {id:'skillmap',no:'06',title:'The skill map build',
-  sub:'the map of the brain · in flight',
-  status:'wip',label:'in progress',color:'var(--cs-round)',
-  stat:'building',
-  stats:[['new','SvelteKit app'],['recordify','new skill'],['—','beta deploy pending']],
-  does:'The roadmap battleplan executed: a self-hosted graph of growth — competency hubs + one node per session, studios, glossary. Includes the recordify skill and its end-to-end test.',
-  ftags:['map of the brain','recordify skill','sanitized records','d3-force + canvas','node studios','glossary'],
-  wipnote:'in flight — final numbers land when the orchestrator reports.'
+  sub:'the map of the brain · complete',
+  status:'done',label:'complete',color:'var(--cs-done)',
+  stat:'deployed · v1.0.1',
+  stats:[['24','nodes on the map'],['71%','fullness'],['zenauth','edge']],
+  does:'The roadmap battleplan executed: a self-hosted graph of growth — competency hubs + one node per session, four-lens studios, glossary, d3-force in a worker + canvas renderer. recordify became the 10th skill; the beta deploys behind zenauth.',
+  ftags:['map of the brain','recordify skill','I1 privacy gate','d3-force + canvas','node studios','zenauth edge'],
+  catch:{h:'the I1 saga',t:'The S2 privacy review found real verbatim speech in stored records — and the parent\u2019s own pushes had swept them to the private remote. Repo verified private, fix-forward ruled, and the gate rebuilt stronger: scanRecord + a verbatim-speech leak class (27 flags, 0 false hits) + paraphrase-first. Regenerated records re-landed gate=0, probe zero. The gate caught its own breach before deployment.'},
+  lessons:[
+   'The privacy gate is only as good as its ability to fail loudly — it failed, we fixed the gate, not the records.',
+   'An oracle consulted before the build caught a gitignore landmine the planner missed.',
+   'Deploying behind the homelab edge (zenauth) is the pattern; auth beyond the edge stays out of scope.'
+  ]
  },
  {id:'charts',no:'07',title:'The charts reinvention',
   sub:'the researcher\u2019s debut · complete',
