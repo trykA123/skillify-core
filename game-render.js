@@ -311,7 +311,7 @@ tr.lead { box-shadow: inset 3px 0 0 var(--seal); }
 tr.lead td.rank { color: var(--seal); }
 td.name { font-weight: 700; font-size: 1rem; }
 td.name .role { display: block; font-family: var(--mono); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); font-weight: 400; margin-top: .15rem; }
-td.oneliner { font-size: .8rem; color: var(--ink-soft); min-width: 12rem; }
+td.oneliner { font-size: 1rem; color: var(--ink-soft); min-width: 12rem; }
 td.oneliner .v { font-family: var(--mono); font-size: .64rem; }
 .v.pos { color: var(--green); }
 .v.neg { color: var(--seal); }
