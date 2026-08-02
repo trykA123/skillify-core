@@ -427,6 +427,7 @@ html[data-theme="light"]{
     <button class="tabbtn on" data-tab="skills" role="tab" aria-selected="true" aria-controls="pane-skills">skills</button>
     <button class="tabbtn" data-tab="agents" role="tab" aria-selected="false" aria-controls="pane-agents">agents</button>
     <button class="tabbtn" data-tab="cases" role="tab" aria-selected="false" aria-controls="pane-cases">Case studies for agent workflows</button>
+    <button class="tabbtn" data-tab="ledger" role="tab" aria-selected="false" aria-controls="pane-ledger">the ledger</button>
   </nav>
 
   <section class="tabpane active" id="pane-skills" role="tabpanel" aria-label="skills">
@@ -604,6 +605,439 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
       <span class="fline"></span>
       <span>seven runs · real catches · lessons kept</span>
     </footer>
+  </section>
+
+    <section class="tabpane" id="pane-ledger" role="tabpanel" aria-label="the fleet ledger">
+    <style>
+/* fleet ledger — scoped under .ledger for embedding into docs/index.html */
+
+.ledger{
+  --bg:oklch(15% 0.02 260);--bg-2:oklch(18% 0.022 260);--bg-3:oklch(21% 0.024 260);
+  --ink:oklch(94% 0.01 250);--ink-soft:oklch(74% 0.015 250);--ink-faint:oklch(62% 0.02 250);
+  --line:oklch(94% 0.01 250 / .12);--line-strong:oklch(94% 0.01 250 / .26);
+  --ag-orchestrator:#d8a24a;--ag-scout:#7ba05a;--ag-context-builder:#4aa8a0;
+  --ag-planner:#5b8ab5;--ag-worker:#5a9ec5;--ag-reviewer:#b58ab0;
+  --ag-oracle:#9d8ac9;--ag-advisor:#9d8ac9;--ag-researcher:#d97a4a;--ag-delegate:#8fa0b5;
+  --disp:'Bricolage Grotesque',ui-sans-serif,system-ui,sans-serif;
+  --body:'Source Sans 3',ui-sans-serif,system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --fs-xs:.64rem;--fs-s:.8rem;--fs-0:1rem;--fs-1:1.25rem;--fs-2:1.5625rem;
+  --fs-3:1.953rem;--fs-4:2.441rem;--fs-5:3.052rem;--fs-6:3.815rem;
+  color-scheme:dark;background:var(--bg);color:var(--ink);
+  font-family:var(--body);line-height:1.6;min-height:100vh;
+}
+html[data-theme="light"] .ledger{
+  --bg:oklch(97% 0.006 250);--bg-2:oklch(99% 0.004 250);--bg-3:oklch(94% 0.008 250);
+  --ink:oklch(20% 0.02 250);--ink-soft:oklch(42% 0.02 250);--ink-faint:oklch(46% 0.02 250);
+  --line:oklch(20% 0.02 250 / .14);--line-strong:oklch(20% 0.02 250 / .3);
+  --ag-orchestrator:#8a6420;--ag-scout:#55702e;--ag-context-builder:#20655e;
+  --ag-planner:#37597e;--ag-worker:#2f6186;--ag-reviewer:#755170;
+  --ag-oracle:#5c4a92;--ag-advisor:#5c4a92;--ag-researcher:#a34d1e;--ag-delegate:#4f5f75;
+  color-scheme:light;
+}
+.ledger .wrap{max-width:56rem;margin:0 auto;padding:0 1.5rem}
+.ledger .ltheme{position:fixed;top:1.1rem;right:1.9rem;z-index:20;font-family:var(--mono);
+  font-size:var(--fs-xs);font-weight:700;letter-spacing:.1em;border:1px solid var(--line-strong);
+  background:var(--bg-2);color:var(--ink-soft);padding:.5rem .85rem;border-radius:9px;cursor:pointer;
+  transition:border-color .2s,color .2s}
+.ledger .ltheme:hover{border-color:var(--ink-faint);color:var(--ink)}
+/* embedded into docs/index.html: the site's own appearance menu owns theming */
+.ledger.ledger-inline{min-height:0}
+.ledger.ledger-inline .ltheme{display:none}
+.ledger .masthead{display:grid;grid-template-columns:1fr auto;gap:2.5rem;align-items:end;padding:4.2rem 0 2.2rem}
+.ledger .kicker{font-family:var(--mono);font-size:var(--fs-xs);letter-spacing:.34em;text-transform:uppercase;color:var(--ink-faint)}
+.ledger .kicker b{color:var(--ag-orchestrator)}
+.ledger h1{font-family:var(--disp);font-weight:800;letter-spacing:-.025em;line-height:.98;
+  font-size:clamp(var(--fs-5),8vw,var(--fs-6));margin:.7rem 0 .9rem}
+.ledger h1 .thin{font-weight:500;color:var(--ink-soft)}
+.ledger .lede{font-size:var(--fs-1);color:var(--ink-soft);max-width:36rem}
+.ledger .lede b{color:var(--ink)}
+.ledger .mast-side{text-align:right;font-family:var(--mono);font-size:var(--fs-xs);color:var(--ink-faint);letter-spacing:.1em;line-height:2}
+.ledger .mast-side b{color:var(--ink);font-size:1rem}
+.ledger .panel{border:1px solid var(--line);border-radius:14px;background:var(--bg-2);
+  padding:1.4rem 1.5rem;margin-bottom:1.2rem}
+.ledger .flow-head{display:flex;align-items:baseline;gap:1rem;margin-bottom:1rem}
+.ledger .flow-head h2{font-family:var(--mono);font-size:var(--fs-xs);font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft)}
+.ledger .flow-head .note{font-family:var(--mono);font-size:var(--fs-xs);color:var(--ink-faint);letter-spacing:.08em;margin-left:auto;text-align:right}
+.ledger .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.2rem}
+.ledger .kpi{border:1px solid var(--line);border-radius:12px;background:var(--bg-2);padding:1rem 1.2rem}
+.ledger .kpi .k-lab{font-family:var(--mono);font-size:var(--fs-xs);font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint)}
+.ledger .kpi .k-num{font-family:var(--disp);font-weight:800;font-size:var(--fs-3);line-height:1.15;margin-top:.3rem;color:var(--ink)}
+.ledger .kpi .k-sub{font-family:var(--mono);font-size:var(--fs-xs);color:var(--ink-faint);margin-top:.2rem}
+.ledger .lbar{display:grid;grid-template-columns:11rem 1fr 7rem;align-items:center;gap:1rem;padding:.5rem 0}
+.ledger .lbar .lb-name{font-family:var(--mono);font-size:var(--fs-s);font-weight:700;color:var(--c,#d8a24a);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ledger .lbar .lb-track{height:1.1rem;border-radius:3px;background:var(--bg-3);border:1px solid var(--line);overflow:hidden}
+.ledger .lbar .lb-fill{height:100%;border-radius:3px;background:var(--c,#d8a24a);opacity:.85;transition:opacity .2s}
+.ledger .lbar:hover .lb-fill{opacity:1}
+.ledger .lbar .lb-pct{font-family:var(--mono);font-size:var(--fs-s);color:var(--ink-soft);text-align:right;white-space:nowrap}
+.ledger .lbar .lb-pct b{color:var(--ink);font-weight:700}
+.ledger .cold-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.ledger .cold h3{font-family:var(--mono);font-size:var(--fs-xs);font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--ag-researcher);margin-bottom:.6rem}
+.ledger .cold ul{list-style:none}
+.ledger .cold li{font-family:var(--mono);font-size:var(--fs-s);color:var(--ink-soft);padding:.3rem 0;border-bottom:1px solid var(--line)}
+.ledger .cold li:last-child{border-bottom:0}
+.ledger .cold li b{color:var(--ink)}
+.ledger .issue{display:flex;align-items:baseline;gap:.8rem;padding:.55rem 0;border-bottom:1px solid var(--line);font-size:var(--fs-s);color:var(--ink-soft)}
+.ledger .issue:last-child{border-bottom:0}
+.ledger .issue .sev{font-family:var(--mono);font-size:var(--fs-xs);font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:.15rem .6rem;border-radius:3px;border:1px solid}
+.ledger .issue .sev.high{color:var(--ag-researcher);border-color:color-mix(in srgb,var(--ag-researcher) 55%,transparent)}
+.ledger .issue .sev.medium{color:var(--ag-orchestrator);border-color:color-mix(in srgb,var(--ag-orchestrator) 55%,transparent)}
+.ledger .issue .sev.low{color:var(--ink-faint);border-color:var(--line-strong)}
+.ledger .issue b{color:var(--ink)}
+.ledger .ltable{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:var(--fs-xs);min-width:56rem}
+.ledger .ltable th{font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);
+  text-align:right;padding:.45rem .5rem;border-bottom:1px solid var(--line-strong);white-space:nowrap}
+.ledger .ltable th:first-child,.ledger .ltable td:first-child{text-align:left}
+.ledger .ltable td{padding:.45rem .5rem;border-bottom:1px solid var(--line);color:var(--ink-soft);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ledger .ltable td.rname{color:var(--ink);font-weight:700}
+.ledger .ltable td .dot{display:inline-block;width:.5rem;height:.5rem;border-radius:2px;margin-right:.4rem;vertical-align:.05rem}
+.ledger .ltable tbody tr:hover{background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.ledger .ltable tr:last-child td{border-bottom:0}
+.ledger .tbl-scroll{overflow-x:auto}
+.ledger .spark{display:flex;align-items:flex-end;gap:.35rem;height:7rem;padding-top:.5rem}
+.ledger .spark .s-bar{flex:1;background:color-mix(in srgb,var(--ag-orchestrator) 40%,transparent);border-radius:2px 2px 0 0;position:relative;min-width:0}
+.ledger .spark .s-bar.full{background:var(--ag-orchestrator)}
+.ledger .spark .s-bar:hover{outline:1px solid var(--ag-orchestrator)}
+.ledger .spark-labs{display:flex;gap:.35rem;font-family:var(--mono);font-size:var(--fs-xs);color:var(--ink-faint);margin-top:.35rem}
+.ledger .spark-labs span{flex:1;text-align:center}
+.ledger footer{margin:3.6rem 0 4rem;display:flex;align-items:center;gap:1rem;font-family:var(--mono);font-size:var(--fs-xs);color:var(--ink-faint);letter-spacing:.12em;flex-wrap:wrap}
+.ledger footer .fmark{font-family:var(--disp);font-weight:800;font-size:1rem;color:var(--ink-soft)}
+.ledger footer .fline{flex:1;height:1px;background:var(--line)}
+@media (max-width:860px){
+  .ledger .masthead{grid-template-columns:1fr}
+  .ledger .mast-side{text-align:left}
+  .ledger .kpis{grid-template-columns:1fr 1fr}
+  .ledger .cold-grid{grid-template-columns:1fr}
+  .ledger .lbar{grid-template-columns:8rem 1fr 5rem;gap:.6rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .ledger *,.ledger *::before,.ledger *::after{animation:none!important;transition:none!important}
+}
+
+
+    </style>
+<div class="ledger ledger-inline">
+  <button class="ltheme" id="ledger-theme" aria-label="toggle light or dark theme">☾ dark</button>
+  <div class="wrap">
+    <header class="masthead">
+      <div>
+        <div class="kicker">skillify · <b>the fleet ledger</b></div>
+        <h1>The fleet,<br><span class="thin">called and counted.</span></h1>
+        <p class="lede">Every subagent spawn across the fleet — <b>share of calls per agent</b>, cold spots, and issues worth surfacing. A call is one spawn; management actions (status, steer, get) are not calls.</p>
+      </div>
+      <div class="mast-side">
+        <div><b>252</b> calls</div>
+        <div><b>74</b> runs</div>
+        <div><b>82</b> escalations</div>
+        <div><b>63</b> repair rounds</div>
+      </div>
+    </header>
+
+    <div class="kpis">
+      <div class="kpi"><div class="k-lab">calls</div><div class="k-num">252</div><div class="k-sub">subagent spawns</div></div>
+      <div class="kpi"><div class="k-lab">runs</div><div class="k-num">74</div><div class="k-sub">session files</div></div>
+      <div class="kpi"><div class="k-lab">escalations</div><div class="k-num">82</div><div class="k-sub">supervisor requests</div></div>
+      <div class="kpi"><div class="k-lab">repair rounds</div><div class="k-num">63</div><div class="k-sub">worker→reviewer</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="flow-head"><h2>call share · per agent</h2><span class="note">hotspot at the top · sorted by calls</span></div>
+      <div style="overflow-x:auto">
+        <table class="ltable">
+          <thead><tr><th>agent</th><th style="text-align:right">calls</th><th style="text-align:right">share</th></tr></thead>
+          <tbody><tr style="--c:var(--ag-worker)">
+      <td class="rname"><span class="dot" style="background:var(--ag-worker)"></span>worker</td>
+      <td style="text-align:right">125</td>
+      <td style="text-align:right"><b style="color:var(--ag-worker)">49.60%</b></td>
+      
+    </tr>
+<tr style="--c:var(--ag-reviewer)">
+      <td class="rname"><span class="dot" style="background:var(--ag-reviewer)"></span>reviewer</td>
+      <td style="text-align:right">64</td>
+      <td style="text-align:right"><b style="color:var(--ag-reviewer)">25.40%</b></td>
+      
+    </tr>
+<tr style="--c:var(--ag-planner)">
+      <td class="rname"><span class="dot" style="background:var(--ag-planner)"></span>planner</td>
+      <td style="text-align:right">35</td>
+      <td style="text-align:right"><b style="color:var(--ag-planner)">13.89%</b></td>
+      
+    </tr>
+<tr style="--c:var(--ag-orchestrator)">
+      <td class="rname"><span class="dot" style="background:var(--ag-orchestrator)"></span>orchestrator</td>
+      <td style="text-align:right">9</td>
+      <td style="text-align:right"><b style="color:var(--ag-orchestrator)">3.57%</b></td>
+      
+    </tr>
+<tr style="--c:var(--ag-oracle)">
+      <td class="rname"><span class="dot" style="background:var(--ag-oracle)"></span>oracle</td>
+      <td style="text-align:right">7</td>
+      <td style="text-align:right"><b style="color:var(--ag-oracle)">2.78%</b></td>
+      
+    </tr>
+<tr style="--c:var(--ag-scout)">
+      <td class="rname"><span class="dot" style="background:var(--ag-scout)"></span>scout</td>
+      <td style="text-align:right">7</td>
+      <td style="text-align:right"><b style="color:var(--ag-scout)">2.78%</b></td>
+      
+    </tr>
+<tr style="--c:var(--ag-researcher)">
+      <td class="rname"><span class="dot" style="background:var(--ag-researcher)"></span>researcher</td>
+      <td style="text-align:right">5</td>
+      <td style="text-align:right"><b style="color:var(--ag-researcher)">1.98%</b></td>
+      
+    </tr>
+<tr style="--c:var(--ag-advisor)">
+      <td class="rname"><span class="dot" style="background:var(--ag-advisor)"></span>advisor</td>
+      <td style="text-align:right">0</td>
+      <td style="text-align:right"><b style="color:var(--ag-advisor)">0.00%</b></td>
+      
+    </tr>
+<tr style="--c:var(--ag-context-builder)">
+      <td class="rname"><span class="dot" style="background:var(--ag-context-builder)"></span>context-builder</td>
+      <td style="text-align:right">0</td>
+      <td style="text-align:right"><b style="color:var(--ag-context-builder)">0.00%</b></td>
+      
+    </tr>
+<tr style="--c:var(--ag-delegate)">
+      <td class="rname"><span class="dot" style="background:var(--ag-delegate)"></span>delegate</td>
+      <td style="text-align:right">0</td>
+      <td style="text-align:right"><b style="color:var(--ag-delegate)">0.00%</b></td>
+      
+    </tr></tbody>
+        </table>
+      </div>
+      <div style="margin-top:1rem"><div class="lbar" style="--c:var(--ag-worker)">
+      <div class="lb-name">worker</div>
+      <div class="lb-track"><div class="lb-fill" style="width:49.6%"></div></div>
+      <div class="lb-pct"><b>49.60%</b> · 125</div>
+    </div>
+<div class="lbar" style="--c:var(--ag-reviewer)">
+      <div class="lb-name">reviewer</div>
+      <div class="lb-track"><div class="lb-fill" style="width:25.4%"></div></div>
+      <div class="lb-pct"><b>25.40%</b> · 64</div>
+    </div>
+<div class="lbar" style="--c:var(--ag-planner)">
+      <div class="lb-name">planner</div>
+      <div class="lb-track"><div class="lb-fill" style="width:13.9%"></div></div>
+      <div class="lb-pct"><b>13.89%</b> · 35</div>
+    </div>
+<div class="lbar" style="--c:var(--ag-orchestrator)">
+      <div class="lb-name">orchestrator</div>
+      <div class="lb-track"><div class="lb-fill" style="width:3.6%"></div></div>
+      <div class="lb-pct"><b>3.57%</b> · 9</div>
+    </div>
+<div class="lbar" style="--c:var(--ag-oracle)">
+      <div class="lb-name">oracle</div>
+      <div class="lb-track"><div class="lb-fill" style="width:2.8%"></div></div>
+      <div class="lb-pct"><b>2.78%</b> · 7</div>
+    </div>
+<div class="lbar" style="--c:var(--ag-scout)">
+      <div class="lb-name">scout</div>
+      <div class="lb-track"><div class="lb-fill" style="width:2.8%"></div></div>
+      <div class="lb-pct"><b>2.78%</b> · 7</div>
+    </div>
+<div class="lbar" style="--c:var(--ag-researcher)">
+      <div class="lb-name">researcher</div>
+      <div class="lb-track"><div class="lb-fill" style="width:2%"></div></div>
+      <div class="lb-pct"><b>1.98%</b> · 5</div>
+    </div></div>
+    </div>
+
+    <div class="panel">
+      <div class="flow-head"><h2>cold spots</h2><span class="note">never-used · barely-used</span></div>
+      <div class="cold-grid"><div class="cold">
+      <h3>unused · zero calls</h3>
+      <ul><li>advisor</li><li>context-builder</li><li>delegate</li></ul>
+    </div>
+    <div class="cold">
+      <h3>underused · under 5% share</h3>
+      <ul><li>none</li></ul>
+    </div></div>
+    </div>
+
+    <div class="panel">
+    <div class="flow-head"><h2>surfaced issues</h2><span class="note">severity · what to look at</span></div>
+    <div class="issue"><span class="sev high">high</span><span>advisor — zero calls in the window</span></div><div class="issue"><span class="sev high">high</span><span>context-builder — zero calls in the window</span></div><div class="issue"><span class="sev high">high</span><span>delegate — zero calls in the window</span></div><div class="issue"><span class="sev medium">medium</span><span>session 4 · run 1 — 14 escalations</span></div><div class="issue"><span class="sev medium">medium</span><span>session 4 · run 3 — 10 escalations</span></div><div class="issue"><span class="sev medium">medium</span><span>session 4 · run 12 — 9 escalations</span></div><div class="issue"><span class="sev medium">medium</span><span>session 4 · run 11 — 8 escalations</span></div><div class="issue"><span class="sev medium">medium</span><span>session 4 · run 10 — 7 escalations</span></div><div class="issue"><span class="sev low">low</span><span>+16 more runs with escalations</span></div><div class="issue"><span class="sev medium">medium</span><span>session 4 · run 12 — 7 consecutive worker→reviewer rounds (repair cluster)</span></div><div class="issue"><span class="sev medium">medium</span><span>session 4 · run 11 — 7 consecutive worker→reviewer rounds (repair cluster)</span></div><div class="issue"><span class="sev medium">medium</span><span>session 4 · run 3 — 7 consecutive worker→reviewer rounds (repair cluster)</span></div><div class="issue"><span class="sev medium">medium</span><span>session 4 · run 10 — 6 consecutive worker→reviewer rounds (repair cluster)</span></div><div class="issue"><span class="sev medium">medium</span><span>session 4 · run 9 — 5 consecutive worker→reviewer rounds (repair cluster)</span></div><div class="issue"><span class="sev low">low</span><span>+9 more repair clusters</span></div><div class="issue"><span class="sev low">low</span><span>session 1 · run 1 — longest run, 1550 records (median 77.5)</span></div>
+  </div>
+
+    <div class="panel">
+      <div class="flow-head"><h2>per-run agent mix</h2><span class="note">row-normalized % · most recent 25 of 45 runs with calls</span></div>
+      <div class="tbl-scroll"><table class="ltable">
+        <thead><tr><th>run</th><th style="color:var(--ag-worker)">worker</th><th style="color:var(--ag-reviewer)">reviewer</th><th style="color:var(--ag-planner)">planner</th><th style="color:var(--ag-orchestrator)">orchestrator</th><th style="color:var(--ag-oracle)">oracle</th><th style="color:var(--ag-scout)">scout</th><th style="color:var(--ag-researcher)">researcher</th><th style="color:var(--ag-advisor)">advisor</th><th style="color:var(--ag-context-builder)">context-builder</th><th style="color:var(--ag-delegate)">delegate</th><th>calls</th></tr></thead>
+        <tbody><tr>
+      <td class="rname">session 5 · run 1</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">2</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 69</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">2</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 68</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">2</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 66</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">3</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 65</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">2</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 64</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">3</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 58</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">10</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 57</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">11</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 56</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">7</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 55</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">5</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 54</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">15</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 53</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">2</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 52</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">1</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 51</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">10</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 50</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">4</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 49</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">2</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 48</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">1</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 47</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">4</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 44</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">2</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 43</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">1</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 42</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">3</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 39</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">4</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 38</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">2</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 37</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">1</td>
+    </tr>
+<tr>
+      <td class="rname">session 4 · run 36</td>
+      <td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td><td>undefined</td>
+      <td style="color:var(--ink)">4</td>
+    </tr></tbody>
+      </table></div>
+    </div>
+
+    <div class="panel">
+    <div class="flow-head"><h2>activity · last 14 days</h2><span class="note">UTC days · today marked, partial</span></div>
+    <div class="spark"><div class="s-bar " style="height:0%" title="2026-07-20 · 0 calls"></div><div class="s-bar " style="height:0%" title="2026-07-21 · 0 calls"></div><div class="s-bar " style="height:0%" title="2026-07-22 · 0 calls"></div><div class="s-bar " style="height:0%" title="2026-07-23 · 0 calls"></div><div class="s-bar " style="height:0%" title="2026-07-24 · 0 calls"></div><div class="s-bar " style="height:0%" title="2026-07-25 · 0 calls"></div><div class="s-bar " style="height:0%" title="2026-07-26 · 0 calls"></div><div class="s-bar " style="height:0%" title="2026-07-27 · 0 calls"></div><div class="s-bar " style="height:0%" title="2026-07-28 · 0 calls"></div><div class="s-bar " style="height:0%" title="2026-07-29 · 0 calls"></div><div class="s-bar " style="height:0%" title="2026-07-30 · 0 calls"></div><div class="s-bar " style="height:0%" title="2026-07-31 · 0 calls"></div><div class="s-bar " style="height:0%" title="2026-08-01 · 0 calls"></div><div class="s-bar full" style="height:100%" title="2026-08-02 · 252 calls · today, partial"></div></div>
+    <div class="spark-labs"><span>07/20</span><span></span><span>07/22</span><span></span><span>07/24</span><span></span><span>07/26</span><span></span><span>07/28</span><span></span><span>07/30</span><span></span><span>08/01</span><span>·</span></div>
+  </div>
+
+    <footer>
+      <span class="fmark">skillify</span>
+      <span class="fline"></span>
+      <span>pi agent session logs — every subagent call recorded per run · median run 77.5 records · generated 2026-08-02</span>
+    </footer>
+  </div>
+</div>
+    <script>
+
+
+(function(){
+  var btn=document.getElementById('ledger-theme');
+  function label(){
+    if(!btn)return;
+    var light=document.documentElement.getAttribute('data-theme')==='light';
+    btn.textContent=light?'☀ light':'☾ dark';
+  }
+  if(btn){
+    btn.addEventListener('click',function(){
+      var light=document.documentElement.getAttribute('data-theme')==='light';
+      if(light)document.documentElement.removeAttribute('data-theme');
+      else document.documentElement.setAttribute('data-theme','light');
+      try{
+        var t=light?'dark':'light';
+        localStorage.setItem('skillify-guide-theme',t);
+        localStorage.setItem('skillify-ledger-theme',t);
+      }catch(e){}
+      label();
+    });
+  }
+  try{
+    var saved=localStorage.getItem('skillify-guide-theme')||localStorage.getItem('skillify-ledger-theme');
+    if(saved==='light')document.documentElement.setAttribute('data-theme','light');
+  }catch(e){}
+  label();
+})();
+
+
+    </script>
   </section>
 
 </div>
@@ -1213,7 +1647,8 @@ var tabbar=document.getElementById('tabbar');
 var panes={
   skills:document.getElementById('pane-skills'),
   agents:document.getElementById('pane-agents'),
-  cases:document.getElementById('pane-cases')
+  cases:document.getElementById('pane-cases'),
+  ledger:document.getElementById('pane-ledger')
 };
 function setTab(name){
   Object.keys(panes).forEach(function(k){
