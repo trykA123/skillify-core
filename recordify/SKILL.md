@@ -50,47 +50,56 @@ evidence:
 
 ## Sanitization — the privacy gate (I1, non-negotiable)
 
-Store the **pattern + a sanitized gist**. NEVER store:
+Store the **pattern + a sanitized gist**. **Paraphrase first:** every evidence
+`note` is rewritten by you, at capture time, into a third-person gist that keeps
+the lesson's meaning. `sanitizeNote` is a last-mile de-identifier only — it does
+NOT paraphrase for you, and a note that still needs it is a note you must
+re-write by hand before gating.
 
-1. **Verbatim conversation quotes** — paraphrase to the lesson. "The user said 'it
-   feels too powerful'" becomes "The felt effect was named first, then the fix."
-2. **File paths / URLs** — `/tmp/…`, `/mnt/…`, `http(s)://`, `file://`, `~/` →
-   "a screenshot was attached", "the local config".
-3. **Project / repo / product names** — `shortcuts`, `spectrum`, `alerts`,
-   `tdarr`, `deepseek`, `github`, … → their generic category ("a dashboard app").
-4. **Code / DOM identifiers** — class names, function names, DOM ids (`jb-row`,
-   `sy`, `spectrum-card`, `deriveRating`) → their role ("a row container", "the
+NEVER store:
+
+1. **Verbatim conversation quotes** — paraphrase to the lesson. A raw remark
+   about how a theme feels becomes "the felt effect was named first, then the fix."
+2. **File paths / URLs** — any filesystem path or link (the sanitizer's PATH and
+   URL patterns) → "a screenshot was attached", "the local config".
+3. **Project / repo / product names** — e.g. `example-app`, `my-media-server` →
+   their generic category ("a web app").
+4. **Code / DOM identifiers** — class names, function names, DOM ids (e.g.
+   `my-row`, `navItem`, `render-score`) → their role ("a row container", "the
    rating function").
 5. **Personal identifiers** — names, emails, handles, IPs, hex tokens, UUIDs.
 
-**The gate is automated, not a hope.** Run the sanitizer over the record's
-free-text fields (evidence notes, narrative, what-worked/what-didn't bullets —
-not the YAML serialization, whose quote-wrapped scalars would false-positive):
+**The gate is automated, not a hope.** `recordify/sanitize.mjs` exports
+`scanRecord(md)` — the frontmatter-AWARE gate. It scans only the free text that
+carries meaning (every `evidence[].note` value, the title, the body prose) and
+NEVER the raw YAML syntax, whose quote-wrapped scalars would false-positive:
 
 ```bash
-# from the skillify repo — check every staged record's text fields
+# from the skillify repo — gate every staged record (frontmatter-aware)
 bun -e "
-import { detectLeaks } from './recordify/sanitize.mjs';
+import { scanRecord } from './recordify/sanitize.mjs';
 import fs from 'node:fs';
+let bad = 0;
 for (const f of process.argv.slice(1)) {
-  const text = fs.readFileSync(f, 'utf8')
-    .split(/\r?\n/)
-    .filter((l) => !/^(id|date|skill|competencies_touched|outcome|artifact):/.test(l))
-    .join('\n');
-  const leaks = detectLeaks(text);
-  if (leaks.length) { console.error('LEAKS in ' + f + ':\\n' + leaks.join('\\n')); process.exit(1); }
-  console.log('clean: ' + f);
+  const leaks = scanRecord(fs.readFileSync(f, 'utf8'));
+  if (leaks.length) { console.error('LEAKS in ' + f + ':\n' + leaks.join('\n')); bad++; }
+  else console.log('clean: ' + f);
 }
+process.exit(bad ? 1 : 0);
 " data/records/*.md
 ```
 
-Or check a single note: `bun -e "import {sanitizeNote} from './recordify/sanitize.mjs'; console.log(sanitizeNote(process.argv[1]))" "…"`.
+Or gate a single note (`detectLeaks` includes the verbatim-speech class):
+`bun -e "import {detectLeaks} from './recordify/sanitize.mjs'; console.log(detectLeaks(process.argv[1]))" "…"`.
 
-**If `detectLeaks` returns anything, the record is refused.** Fix the note (use
-`sanitizeNote` to get a clean gist, then review it for meaning) and re-check. The
-test suite (`bun test recordify/sanitize.test.mjs`) is the contract — if a new
-identifier family appears in real sessions, add it to `IDENTIFIERS` in
-`sanitize.mjs` with a test case.
+**If `scanRecord` — or `detectLeaks` on any single note — returns anything, the
+record is refused.** Paraphrase the offending note into a clean third-person gist
+and re-gate; do not ship it. The test suite (`bun test recordify/sanitize.test.mjs`)
+is the contract. `detectLeaks` flags quoted spans, paths, URLs, emails, IPs, hex
+tokens, known identifiers, and verbatim speech (first/second person, imperatives,
+direct questions, chat markers, typo tells, gendered/personal descriptors). If a
+new identifier family appears in real sessions, add it to the identifier blocklist
+with a test case.
 
 ## The workflow
 
@@ -98,8 +107,9 @@ identifier family appears in real sessions, add it to `IDENTIFIERS` in
    alone.
 2. Extract: the pattern practiced, the evidence (dated, per competency, honest
    valence), the outcome, the artifact.
-3. Build the record from the format above. Every evidence `note` is a sanitized
-   gist (`sanitizeNote` + judgment — the gist must keep its meaning).
+3. Build the record from the format above. Every evidence `note` is a
+   third-person gist you wrote by hand (meaning intact); `sanitizeNote` is the
+   last-mile de-identifier, not the paraphrase.
 4. Run the gate (above). Refuse-to-write on any leak.
 5. Write `<id>.md` to RECORDS_DIR. If the skill map app is up, its compiler picks
    the record up on the next boot (or `RECORDS_DIR` is a live mount — the map
@@ -118,7 +128,8 @@ quality, calibration). `evidence[].competency` must be one of these.
 ## Final Gate
 
 - [ ] Record written at commit/push or explicit done — never fabricated
-- [ ] `detectLeaks` clean on the WHOLE record file (quotes, paths, names, identifiers)
+- [ ] Every note paraphrased to a third-person gist (sanitizeNote is last-mile only)
+- [ ] `scanRecord(md)` clean on the record (notes + title + body; YAML-aware)
 - [ ] Schema-valid frontmatter (id/date/skill/competencies_touched/evidence)
 - [ ] Evidence honest valence — negative entries are growth, not stains
 - [ ] One-line signal to the user about what moved

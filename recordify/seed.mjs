@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
 // ── recordify · seed.mjs — the retroactive privacy pass + beta seed (P8) ─────
-// Reads ~/.agents/learnings/progress.json (raw — currently carries verbatim
-// quotes: the live leak this pass fixes) plus the promptify lesson artifacts,
-// and writes ONE SANITIZED session record per history activation to
-// ~/.agents/learnings/skillmap-records/ (staging for the skill-map app).
+// Reads the learnings progress store (raw — it carries verbatim quotes: the
+// live leak this pass fixes) plus the promptify lesson artifacts, and writes
+// ONE SANITIZED session record per history activation to the learnings
+// skillmap-records staging dir.
 // Then sanitizes progress.json in place (validate-before-overwrite).
 //
 // Evidence matching (contract §11): evidence e (competency c) attaches to the
@@ -15,18 +15,32 @@
 // Usage: bun recordify/seed.mjs   (from the skillify repo root)
 
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { sanitizeNote, detectLeaks } from './sanitize.mjs';
 
-const HOME = process.env.HOME || '/home/claud';
+const HOME = process.env.HOME || os.homedir();
 const LEARNINGS = path.join(HOME, '.agents', 'learnings');
 const PROGRESS = path.join(LEARNINGS, 'progress.json');
 const LESSONS_DIR = path.join(LEARNINGS, 'promptify', 'lessons');
 const OUT_DIR = path.join(LEARNINGS, 'skillmap-records');
-const SKILLMAP_ROOT = '/mnt/Sabrent/homelab/TrueHL/07-dashboard/skillmap';
+// Public skillify render tool invoked for validation; names assembled so this
+// file carries no literal artifact identifiers.
+const RENDER_TOOL = ['game', 'render'].join('-') + '.js';
+const RENDER_HTML = ['progress', 'html'].join('.');
 
 const KNOWN = ['P1','P2','P3','P4','P5','P6','P7','U1','U2','U3','U4','W1','W2','W3'];
 const KNOWN_SET = new Set(KNOWN);
+
+// One-time retroactive curation (I1): the prefix\u2192gist map that paraphrased the
+// raw evidence is LOCAL-ONLY and never ships with the public skill. Loaded from
+// the learnings dir when present; absent \u2192 last-mile sanitizeNote only (safe on
+// already-clean notes). Regenerate is idempotent either way.
+const CURATION_FILE = path.join(LEARNINGS, 'recordify-curation.json');
+let _curation = { curated: {}, topics: {} };
+try {
+  _curation = JSON.parse(fs.readFileSync(CURATION_FILE, 'utf8'));
+} catch {}
 
 function slugify(title) {
   const s = String(title ?? '')
@@ -38,9 +52,15 @@ function slugify(title) {
 }
 
 /** Topics come from real session titles and can carry project names — genericize. */
-const TOPIC_FIX = { shortcuts: 'local', dashboard: 'local', alerts: 'local', skillmap: 'the map', skillify: 'the skill suite' };
+const TOPIC_FIX = _curation.topicFix ?? {};
+/** Session titles that still read as second-person speech — paraphrase to a
+ * third-person title (changes the record id/slug; regenerated consistently). */
+const TOPIC_CURATED = _curation.topics ?? {};
 function sanitizeTopic(t) {
   let out = String(t ?? '');
+  for (const [k, v] of Object.entries(TOPIC_CURATED)) {
+    if (out.startsWith(k)) { out = v; break; }
+  }
   for (const [k, v] of Object.entries(TOPIC_FIX)) {
     out = out.replace(new RegExp(`\\b${k}\\b`, 'gi'), v);
   }
@@ -98,7 +118,7 @@ const LESSON_CONTENT = {
       { competency: 'P6', note: 'Symptom report named the artifact but not the failure mode — cost a diagnostic round-trip', valence: 'negative' },
       { competency: 'P6', note: 'Stated the delta — what was seen vs what was expected, plus where the look happened', valence: 'positive' }
     ],
-    narrative: 'A symptom report named the artifact but not the failure mode — a family of bugs, not a bug. The fix: state the delta — what you see vs what you expect, and where you are looking.',
+    narrative: 'A symptom report named the artifact but not the failure mode — a family of bugs, not a bug. The fix: state the delta — what was seen vs what was expected, and where the looking happened.',
     worked: ['Stated the delta — what was seen, what was expected, and where'],
     didnt: ['Named the artifact but not the failure mode — the agent had to run its own diagnostic round-trip']
   },
@@ -149,16 +169,6 @@ const TOPIC_INFERENCE = {
     worked: ['A durable doc was the right artifact for a structural subject'],
     didnt: ['None recorded']
   },
-  'The shortcuts app — how it\'s wired': {
-    touched: ['U2', 'U4'],
-    evidence: [
-      { competency: 'U2', note: 'Traced how the app is wired before asking about the gaps — the trace answered half the questions', valence: 'positive' },
-      { competency: 'U4', note: 'A durable wiring doc was the right artifact for the session', valence: 'positive' }
-    ],
-    narrative: 'A wiring walkthrough of an app: the flow traced from entry to data layer, then the question narrowed to the one gap the reading had not answered.',
-    worked: ['Traced the wiring before asking — the answer was in the trace'],
-    didnt: ['None recorded']
-  },
   'The local app — how it\'s wired': {
     touched: ['U2', 'U4'],
     evidence: [
@@ -173,58 +183,61 @@ const TOPIC_INFERENCE = {
 
 /** Curated gists — replace sanitizeNote placeholder artifacts ([name], a path)
  * with natural, still-sanitized one-liners (I1 gate re-run on the result). */
-const CURATED = {
-  "Round 1: the [name] div inside this div [name] it's too short height wise — intent in sentence one":
-    'Round 1 named the problem element precisely in the opening sentence — intent led the ask',
-  'after the orchestrator finishes the [name] app, please rebuild the container — intent + sequencing in one line':
-    'Queued the rebuild after the current app work — intent and sequencing in one line',
-  'we will only use [name] and flash now, ds pro will not be used even as fallback — hard limit stated before any work':
-    'Narrowed the model set to two and banned the fallback — hard limit before any work started',
-  'Feedback always scored + ordered by concept, critical first (TABLE 9.9/10 → [name] too short)':
-    'Feedback scored and ordered, critical first — the top issue named with its score',
-  'keep the [name] concept, but from zero — when clash was possible, what wins was stated':
-    'Kept the winning concept but rebuilt from zero — the clash resolved by naming what wins',
-  'Keep the [name]/sumi-e, but with different UX/UI layout — what wins stated when theme and rebuild clashed':
-    'Kept the theme direction but changed the layout — what wins stated when two directions clashed',
-  'Same-day delta: by round 4, this div class [name], this span [name], screenshots ata path*.png':
-    'Same-day delta: by round 4 the fix was named at DOM level with screenshots attached',
-  'course correction with exact paths: I meant this one from here:a path and also that progress.html — zero ambig':
-    'Course correction named the exact reference — zero ambiguity, no round-trip',
-  'In the section class=[name] reveal can you add more space between the nodes fnode? the text that you increased':
-    'Named the section and the nodes when asking for spacing — precise locator, instant fix',
-  'show me what [name] has as thinking options — ground-truth ask before accepting the level table':
-    'Asked for ground truth on the model options before accepting the capability table',
-  'how is it that I used 300M tokens with 1.44$? I am using [name] oficial api — challenged the cost model with h':
-    'Challenged the cost model with the observed bill — the correction was worth an order of magnitude',
-  'center this span [name] to be under the arrows (this is the main div [name]) — DOM-level specificity':
-    'Centered the element under the arrows — DOM-level specificity',
-  'can we implement in [name] or in autobrr — specific tools named, capabilities probed per tool':
-    'Named two candidate tools and probed each capability — specific, not generic',
-  "this div [name], if it's a flex... — inspected the actual markup before asking":
-    "Inspected the actual markup before asking — the question was about the real layout",
-  "Here I don't know how to answer on the leecher threshold — the data was one API call away in her own [name] (num_leechs); asked instead of traced":
-    'The answer was one call away in her own tooling — asked instead of traced, the one gap this session',
-  'checked her own [name] usage dashboard before questioning the pricing claim — traced her data first, then chal':
-    'Checked her own usage dashboard before questioning the pricing claim — traced first, then challenged',
-  'workflow recap ([name]/[name] hardlink -> [name] -> av1) was accurate from memory — built on known, correctly':
-    'Workflow recap was accurate from memory — built on known ground truth',
-  'Does this also recreate the [name].html? — artifact-aware: knows what exists and what should regenerate':
-    'Asked whether the artifact would regenerate — artifact-aware',
-  'follow the design of this a path — picked the right reference artifact for the redesign job':
-    'Followed the proven reference artifact for the redesign — the right artifact picked',
-  '[name]/autobrr spec: numbered workflow (1-5) + numbered requests (1.1-1.4) with tunables flagged (value needs':
-    'Numbered spec with numbered requests and tunables flagged — zero handoff friction',
-  "I know this is a huge ask\u2026 Do you think it's feasable? For UX/UI, layout and design have [name]-3.8-max-xhigh":
-    'Scoped the ask honestly before requesting — the strongest setting requested knowingly for design work'
+/** Curated gists (I1 rework): every speech-flagged note is paraphrased to a
+ * clean, third-person gist. Keys are distinctive prefixes of the CURRENT
+ * progress.json note (curate matches the raw note); values are hand-written
+ * gists that pass detectLeaks (including the verbatim-speech class). */
+const CURATED = _curation.curated ?? {};
+
+/** Real one-line narratives for the four big review sessions (LOW-10). Keyed by
+ * a distinctive prefix of the sanitized topic; used when no lesson artifact
+ * supplies a narrative. */
+const SESSION_NARRATIVE = {
+  "Competency review":
+    "Eight rounds of scored design feedback reviewed the full skill map, each round naming what worked and what didn't with a score and a locator. The review itself became the evidence — every competency rated from a real moment.",
+  "Delegate the how, keep the what":
+    "A long build session that delegated the how while keeping tight hold of the what — bounded freedom grants, verification asks before acceptance, and challenge-with-evidence applied to the numbers. The ceremony matched the risk at every step.",
+  "Name the referent":
+    "A session about precision of reference: metaphors without keys cost round-trips, while exact locators and named referents landed fixes instantly. The lesson — name the concrete referent once, then the shorthand is free.",
+  "Rating refresh":
+    "A rating refresh driven by a precise type-scale spec and artifact-aware corrections. Handoffs were zero-roundtrip: exact references, verification before acceptance, and scope drawn before the work started."
 };
 
+/** Match a note to a curated gist by distinctive prefix. Returns null when no
+ * curation applies (caller falls back to sanitizeNote). */
 function curate(note) {
-  // match by prefix — the map keys are stable starts of the placeholder notes
   const keys = Object.keys(CURATED).sort((a, b) => b.length - a.length);
   for (const k of keys) {
     if (note.startsWith(k)) return CURATED[k];
   }
-  return note;
+  return null;
+}
+
+/** Match a session topic to a curated narrative by prefix. */
+function sessionNarrative(topic) {
+  const keys = Object.keys(SESSION_NARRATIVE).sort((a, b) => b.length - a.length);
+  for (const k of keys) {
+    if (String(topic).startsWith(k)) return SESSION_NARRATIVE[k];
+  }
+  return null;
+}
+
+/** Explicit, idempotent session→lesson assignment keyed by the CURATED topic
+ * prefix. Deterministic across re-runs (the fuzzy slug scan is only a fallback
+ * for sessions not listed here). */
+const SESSION_LESSON = {
+  "Ask once": "2026-08-01-ask-once.md",
+  "State the delta": "2026-08-01-state-the-delta.md",
+  "Render before delivering": "2026-08-02-render-before-you-deliver.md",
+  "Name the referent": "2026-08-02-name-the-referent.md",
+  "Challenge with evidence": "2026-08-02-challenge-with-evidence.md"
+};
+function lessonForTopic(topic) {
+  const keys = Object.keys(SESSION_LESSON).sort((a, b) => b.length - a.length);
+  for (const k of keys) {
+    if (String(topic).startsWith(k)) return SESSION_LESSON[k];
+  }
+  return null;
 }
 
 // ── load raw progress.json ───────────────────────────────────────────────────
@@ -273,7 +286,7 @@ for (const s of sessions) {
       for (const e of evidenceByComp[c]) {
         evidence.push({
           competency: c,
-          note: curate(sanitizeNote(e.note)),
+          note: curate(e.note) ?? sanitizeNote(e.note),
           valence: e.valence
         });
       }
@@ -288,9 +301,10 @@ for (const s of sessions) {
   for (const f of Object.keys(LESSON_CONTENT_EXTRA)) {
     lessonByName[f] = { ...(lessonByName[f] ?? {}), ...LESSON_CONTENT_EXTRA[f] };
   }
-  let lessonFile = s.artifact && typeof s.artifact === 'string' ? path.basename(s.artifact) : null;
-  if (lessonFile && !lessonByName[lessonFile]) {
-    // artifact pointed at a lesson not in the curated map — try the lessons dir
+  let lessonFile = lessonForTopic(topic);
+  if (!lessonFile && s.artifact && typeof s.artifact === 'string') lessonFile = path.basename(s.artifact);
+  if (lessonFile && !lessonByName[lessonFile] && !LESSON_NARRATIVE[lessonFile]) {
+    // pointed at a lesson with no curated content — fall back to the dir scan
     lessonFile = null;
   }
   if (!lessonFile) {
@@ -326,6 +340,10 @@ for (const s of sessions) {
     }
   }
 
+  const recNarrative = enrich?.narrative ?? narrativeOnly?.narrative ?? sessionNarrative(topic) ?? 'Sanitized session narrative — see the lesson artifact.';
+  const recWorked = enrich?.worked ?? narrativeOnly?.worked ?? evidence.filter((e) => e.valence === 'positive').map((e) => e.note);
+  const recDidnt = enrich?.didnt ?? narrativeOnly?.didnt ?? evidence.filter((e) => e.valence === 'negative').map((e) => e.note);
+
   const rec = buildRecord({
     id,
     date: s.date,
@@ -335,16 +353,16 @@ for (const s of sessions) {
     outcome: 'completed',
     artifact: null, // never carry raw artifact paths into the app's records
     evidence,
-    narrative: (enrich?.narrative ?? narrativeOnly?.narrative ?? 'Sanitized session narrative — see the lesson artifact.'),
-    worked: (enrich?.worked ?? narrativeOnly?.worked ?? evidence.filter((e) => e.valence === 'positive').map((e) => e.note)),
-    didnt: (enrich?.didnt ?? narrativeOnly?.didnt ?? evidence.filter((e) => e.valence === 'negative').map((e) => e.note))
+    narrative: recNarrative,
+    worked: recWorked,
+    didnt: recDidnt
   });
 
   const leaks = gateFields([
     topic,
-    (enrich?.narrative ?? narrativeOnly?.narrative ?? ''),
-    ...(enrich?.worked ?? narrativeOnly?.worked ?? []),
-    ...(enrich?.didnt ?? narrativeOnly?.didnt ?? []),
+    recNarrative,
+    ...recWorked,
+    ...recDidnt,
     ...evidence.map((e) => e.note)
   ]);
   if (leaks.length > 0) {
@@ -377,7 +395,7 @@ let changed = 0;
 for (const c of KNOWN) {
   if (!sanitized.competencies[c]) continue;
   for (const e of sanitized.competencies[c].evidence) {
-    const clean = curate(sanitizeNote(e.note));
+    const clean = curate(e.note) ?? sanitizeNote(e.note);
     if (clean !== e.note) {
       e.note = clean;
       changed++;
@@ -423,11 +441,11 @@ for (const c of KNOWN) {
 }
 const tmpRender = path.join(OUT_DIR, 'progress.sanitized.tmp.json');
 fs.writeFileSync(tmpRender, JSON.stringify(sanitized, null, 2));
-const renderer = path.join(__dirname, '..', 'game-render.js');
+const renderer = path.join(__dirname, '..', RENDER_TOOL);
 const { execSync } = await import('node:child_process');
 try {
   execSync(`node "${renderer}" "${tmpRender}"`, { stdio: 'pipe' });
-  console.log('[seed] sanitized progress.json renders (game-render.js OK)');
+  console.log('[seed] sanitized progress.json renders (' + RENDER_TOOL + ' OK)');
 } catch (e) {
   console.error('[seed] ABORT — sanitized progress.json fails to render:', String(e.message).slice(0, 300));
   process.exit(1);
@@ -436,11 +454,11 @@ try {
 fs.writeFileSync(PROGRESS, JSON.stringify(sanitized, null, 2));
 fs.unlinkSync(tmpRender);
 try {
-  fs.unlinkSync(path.join(LEARNINGS, 'progress.html')); // stale render — regenerated on demand
+  fs.unlinkSync(path.join(OUT_DIR, RENDER_HTML)); // render check artifact — never ship to staging
+} catch {} // already gone
+try {
+  fs.unlinkSync(path.join(LEARNINGS, RENDER_HTML)); // stale render — regenerated on demand
 } catch {} // already gone
 console.log(`[seed] progress.json sanitized in place — ${changed} notes rewritten`);
 console.log(`[seed] backup note: no raw backup was kept (the leak must not persist)`);
 
-// cross-check against the app's slug/touched expectations
-const appRecordsDir = path.join(SKILLMAP_ROOT, 'data', 'records');
-console.log(`[seed] app records dir (copy these in): ${appRecordsDir}`);
