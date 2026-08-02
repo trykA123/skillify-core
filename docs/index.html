@@ -269,6 +269,11 @@ html[data-theme="light"]{
 .principle .p-lab{font-family:var(--mono);font-size:var(--fs-xs);font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--ag-orchestrator);margin-bottom:.55rem}
 .principle p{font-size:var(--fs-s);color:var(--ink-soft);line-height:1.55}
 .principle p b{color:var(--ink)}
+.principle details{margin-top:.7rem;border-top:1px solid var(--line-soft);padding-top:.6rem;font-size:var(--fs-s)}
+.principle details summary{cursor:pointer;font-family:var(--mono);font-size:var(--fs-xs);font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ag-context-builder)}
+.principle details[open] summary{margin-bottom:.45rem}
+.principle details ul{margin:0;padding-left:1.15rem;color:var(--ink-soft);line-height:1.65}
+.principle details li{margin-bottom:.25rem}
 /* parent/user node in the agents flow */
 .fnode-parent rect{fill:var(--bg-3);stroke:var(--ink-faint);stroke-dasharray:4 5}
 .fnode-parent .fname{fill:var(--ink-soft)}
@@ -540,6 +545,21 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
         <div class="principle"><div class="p-lab">repair loop, capped</div><p>worker → reviewer runs up to <b>3 rounds</b>. If still unresolved, the conductor escalates to the parent instead of settling silently.</p></div>
         <div class="principle"><div class="p-lab">acceptance by evidence</div><p>The reviewer verifies from <b>code, tests, docs, or requirements</b> — never guessing. “Did the worker actually edit files? Did the findings get addressed?”</p></div>
         <div class="principle"><div class="p-lab">no secrets in the fleet</div><p>Model names and skill names are versioned; <b>no keys, tokens, passwords, or auth URLs</b> ever live in agent files or fleet config.</p></div>
+        <div class="principle"><div class="p-lab">the parent gate · review in my place</div><p>Before anything ships, the parent reviews every diff <b>the way the owner would</b> — then changes what the owner would complain about, preemptively. The owner's taste, applied by the strongest model at review time.</p>
+        <details><summary>the owner's taste checklist</summary>
+        <ul>
+          <li>1.250 type scale @ 20px — zero px, zero off-scale sizes, anywhere</li>
+          <li>WCAG AA contrast in <b>both</b> themes (washi + sumi)</li>
+          <li>vertical centering; text always fits its container</li>
+          <li>mobile-first: ≤ 6 rows per page, then paginate — no infinite scroll</li>
+          <li>topbar-first navigation; no bottom tabs</li>
+          <li>no search — the palette stays dead</li>
+          <li>stats live where they belong (telemetry with its domain)</li>
+          <li>zen/sumi-e language: oklch tokens only, no hardcoded colors</li>
+          <li>honest numbers — 2 decimals, real names, nothing misleading</li>
+          <li>order over sprawl: tabs, collapsibles, fewer places to check</li>
+        </ul>
+        </details></div>
       </div>
     </section>
 
