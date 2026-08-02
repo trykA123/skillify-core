@@ -225,6 +225,56 @@ footer .fline{flex:1;height:1px;background:var(--line)}
   *,*::before,*::after{animation:none!important;transition:none!important}
   .reveal{opacity:1;transform:none}
 }
+/* ═══════════ agents tab — the pi-subagents fleet ═══════════ */
+:root{
+  --ag-orchestrator:#d8a24a;--ag-scout:#7ba05a;--ag-context-builder:#4aa8a0;
+  --ag-planner:#5b8ab5;--ag-worker:#5a9ec5;--ag-reviewer:#b58ab0;
+  --ag-oracle:#9d8ac9;--ag-advisor:#9d8ac9;--ag-researcher:#d97a4a;--ag-delegate:#8fa0b5;
+}
+html[data-theme="light"]{
+  --ag-orchestrator:#8a6420;--ag-scout:#55702e;--ag-context-builder:#20655e;
+  --ag-planner:#37597e;--ag-worker:#2f6186;--ag-reviewer:#755170;
+  --ag-oracle:#5c4a92;--ag-advisor:#5c4a92;--ag-researcher:#a34d1e;--ag-delegate:#4f5f75;
+}
+/* tab switcher */
+.tabbar{display:flex;gap:.6rem;padding:1.4rem 0 0;align-items:center}
+.tabbtn{font-family:var(--mono);font-size:var(--fs-s);font-weight:700;padding:.55rem 1.3rem;border-radius:3px;cursor:pointer;
+  border:1px solid var(--line-strong);background:var(--bg-2);color:var(--ink-soft);
+  transition:transform .18s,border-color .18s,color .18s,box-shadow .18s}
+.tabbtn:hover{transform:translateY(-2px);color:var(--ink)}
+.tabbtn.on{border-color:var(--ag-orchestrator);color:var(--ag-orchestrator);box-shadow:0 0 14px color-mix(in srgb,var(--ag-orchestrator) 35%,transparent)}
+/* panes */
+.tabpane{display:none}
+.tabpane.active{display:block}
+/* models table */
+.atable-shell{border:1px solid var(--line);border-radius:14px;background:var(--bg-2);padding:1.4rem;margin:0 0 1.2rem;overflow-x:auto}
+.atable{width:100%;border-collapse:collapse;font-size:var(--fs-s);min-width:760px}
+.atable th{font-family:var(--mono);font-size:var(--fs-xs);font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);text-align:left;padding:.5rem .7rem;border-bottom:1px solid var(--line-strong)}
+.atable td{padding:.6rem .7rem;border-bottom:1px solid var(--line);color:var(--ink-soft);vertical-align:top;line-height:1.45}
+.atable tr:last-child td{border-bottom:0}
+.atable .a-name{font-family:var(--mono);font-weight:700;color:var(--c);white-space:nowrap}
+.atable .a-model,.atable .a-think,.atable .a-fb,.atable .a-skills{font-family:var(--mono);font-size:var(--fs-xs)}
+.atable tbody tr{transition:background .15s}
+.atable tbody tr:hover{background:color-mix(in srgb,var(--c) 7%,transparent)}
+.table-note{font-size:var(--fs-s);color:var(--ink-faint);margin-top:.9rem;line-height:1.5}
+.table-note code,.principle code{font-family:var(--mono);font-size:var(--fs-xs);color:var(--ink-soft)}
+.table-note b{color:var(--ink-soft)}
+/* escalation & safety */
+.safety{margin:0 0 1.2rem}
+.principles{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
+.principle{border:1px solid var(--line);border-radius:12px;background:var(--bg-2);padding:1.1rem 1.2rem;
+  transition:transform .2s,border-color .2s,box-shadow .2s}
+.principle:hover{transform:translateY(-3px);border-color:var(--line-strong);box-shadow:0 14px 34px -20px color-mix(in srgb,var(--ag-orchestrator) 40%,transparent)}
+.principle .p-lab{font-family:var(--mono);font-size:var(--fs-xs);font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--ag-orchestrator);margin-bottom:.55rem}
+.principle p{font-size:var(--fs-s);color:var(--ink-soft);line-height:1.55}
+.principle p b{color:var(--ink)}
+/* parent/user node in the agents flow */
+.fnode-parent rect{fill:var(--bg-3);stroke:var(--ink-faint);stroke-dasharray:4 5}
+.fnode-parent .fname{fill:var(--ink-soft)}
+/* agents responsive */
+@media (max-width:860px){
+  .principles{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -261,6 +311,12 @@ footer .fline{flex:1;height:1px;background:var(--line)}
 
 <div class="wrap">
 
+  <nav class="tabbar" id="tabbar" role="tablist" aria-label="site sections">
+    <button class="tabbtn on" data-tab="skills" role="tab" aria-selected="true" aria-controls="pane-skills">skills</button>
+    <button class="tabbtn" data-tab="agents" role="tab" aria-selected="false" aria-controls="pane-agents">agents</button>
+  </nav>
+
+  <section class="tabpane active" id="pane-skills" role="tabpanel" aria-label="skills">
   <header class="masthead">
     <div>
       <div class="kicker">skillify · <b>the field guide</b> · harness-agnostic agent skills</div>
@@ -314,6 +370,79 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
     <span class="fline"></span>
     <span>nine skills · one pipeline · MIT</span>
   </footer>
+  </section>
+
+  <section class="tabpane" id="pane-agents" role="tabpanel" aria-label="agents">
+    <header class="masthead">
+      <div>
+        <div class="kicker">skillify · <b>the field guide</b> · the pi-subagents fleet</div>
+        <h1>Ten agents.<br><span class="thin">One pipeline.</span></h1>
+        <p class="lede">A fleet of specialist subagents that <b>plan, build, and verify</b> under a conductor. Recon maps the ground, planning writes the packet, a single worker writes the code, and a reviewer judges it against intent — with decisions escalated to a human instead of guessed.</p>
+      </div>
+      <div class="mast-side">
+        <div><span class="pip" style="background:#d8a24a"></span><b>1</b> conductor</div>
+        <div><span class="pip" style="background:#5b8ab5"></span><b>5</b> pipeline</div>
+        <div><span class="pip" style="background:#9d8ac9"></span><b>4</b> support</div>
+        <div style="margin-top:.6rem">agents <b>10</b> · one fleet</div>
+      </div>
+    </header>
+
+    <section class="flow-shell reveal">
+      <div class="flow-head">
+        <h2>the delegation pipeline</h2>
+        <span class="note">click a node to jump to its dossier · dashed = advisory / escalation · delegate (ad-hoc) not shown</span>
+      </div>
+      <svg id="aflow" viewBox="0 0 1380 420" preserveAspectRatio="xMidYMid meet" aria-label="the pi-subagents delegation pipeline"></svg>
+    </section>
+
+    <section class="atable-shell reveal">
+      <div class="flow-head">
+        <h2>the fleet — models &amp; fallbacks</h2>
+        <span class="note">from agents/fleet-config.json · defaultModel deepseek/deepseek-v4-flash</span>
+      </div>
+      <table class="atable">
+        <thead>
+          <tr><th>agent</th><th>model</th><th>thinking</th><th>skills</th><th>fallback</th></tr>
+        </thead>
+        <tbody>
+          <tr style="--c:var(--ag-orchestrator)"><td class="a-name">orchestrator</td><td class="a-model">deepseek/deepseek-v4-flash</td><td class="a-think">high</td><td class="a-skills">rtk-first</td><td class="a-fb">qwen-token-plan/qwen3.8-max-preview</td></tr>
+          <tr style="--c:var(--ag-scout)"><td class="a-name">scout</td><td class="a-model">deepseek/deepseek-v4-flash</td><td class="a-think">low*</td><td class="a-skills">caveman, rtk-first</td><td class="a-fb">qwen-token-plan/qwen3.8-max-preview</td></tr>
+          <tr style="--c:var(--ag-context-builder)"><td class="a-name">context-builder</td><td class="a-model">deepseek/deepseek-v4-flash</td><td class="a-think">high</td><td class="a-skills">undumbify, domain-modeling, rtk-first</td><td class="a-fb">qwen-token-plan/qwen3.8-max-preview</td></tr>
+          <tr style="--c:var(--ag-planner)"><td class="a-name">planner</td><td class="a-model">qwen-token-plan/qwen3.8-max-preview</td><td class="a-think">medium</td><td class="a-skills">undumbify, shapeify, explorify</td><td class="a-fb">deepseek/deepseek-v4-flash</td></tr>
+          <tr style="--c:var(--ag-worker)"><td class="a-name">worker</td><td class="a-model">deepseek/deepseek-v4-flash</td><td class="a-think">high</td><td class="a-skills">shipify, ponytail, traceify, prototype, shadcn, caveman-commit, rtk-first</td><td class="a-fb">qwen-token-plan/qwen3.8-max-preview</td></tr>
+          <tr style="--c:var(--ag-reviewer)"><td class="a-name">reviewer</td><td class="a-model">qwen-token-plan/qwen3.8-max-preview</td><td class="a-think">medium</td><td class="a-skills">reviewify, code-review, ponytail-review, ponytail-audit, ponytail-debt, caveman-review, rtk-first</td><td class="a-fb">deepseek/deepseek-v4-flash</td></tr>
+          <tr style="--c:var(--ag-oracle)"><td class="a-name">oracle</td><td class="a-model">qwen-token-plan/qwen3.8-max-preview</td><td class="a-think">xhigh</td><td class="a-skills">grilling, domain-modeling, codebase-design, rtk-first</td><td class="a-fb">deepseek/deepseek-v4-flash</td></tr>
+          <tr style="--c:var(--ag-advisor)"><td class="a-name">advisor</td><td class="a-model">qwen-token-plan/qwen3.8-max-preview</td><td class="a-think">xhigh</td><td class="a-skills">grilling, domain-modeling, codebase-design, rtk-first</td><td class="a-fb">deepseek/deepseek-v4-flash</td></tr>
+          <tr style="--c:var(--ag-researcher)"><td class="a-name">researcher</td><td class="a-model">deepseek/deepseek-v4-flash</td><td class="a-think">high</td><td class="a-skills">research</td><td class="a-fb">qwen-token-plan/qwen3.8-max-preview</td></tr>
+          <tr style="--c:var(--ag-delegate)"><td class="a-name">delegate</td><td class="a-model">inherits (deepseek/deepseek-v4-flash)</td><td class="a-think">inherits</td><td class="a-skills">rtk-first</td><td class="a-fb">inherits</td></tr>
+        </tbody>
+      </table>
+      <p class="table-note"><b>*</b> scout’s <code>low</code> clamps up to <code>high</code> at runtime — deepseek supports only <code>off</code>/<code>high</code>/<code>max</code>. Fallbacks are cross-provider availability insurance: <b>qwen</b> agents fall back to <code>deepseek-v4-flash</code>; <b>flash</b> agents fall back to <code>qwen3.8-max-preview</code>. <code>delegate</code> inherits the parent model. No credentials live in the fleet config — runtime secrets stay out of agent files entirely.</p>
+    </section>
+
+    <section class="safety reveal">
+      <div class="flow-head">
+        <h2>escalation &amp; safety</h2>
+        <span class="note">how the fleet stays honest</span>
+      </div>
+      <div class="principles">
+        <div class="principle"><div class="p-lab">one writer per tree</div><p>One <b>worker</b> at a time per working directory — never parallel writers on the same tree. Atomic per-slice commits keep every change small and revertible.</p></div>
+        <div class="principle"><div class="p-lab">decisions escalate</div><p>Product, architecture, and safety decisions go up via <b>contact_supervisor</b> (<code>need_decision</code>). The conductor never decides them itself; children never decide silently.</p></div>
+        <div class="principle"><div class="p-lab">dry-run by default</div><p><b>planner</b>, <b>reviewer</b>, and <b>oracle</b> are read-only — they plan, judge, and check without touching a file. Only the worker writes.</p></div>
+        <div class="principle"><div class="p-lab">repair loop, capped</div><p>worker → reviewer runs up to <b>3 rounds</b>. If still unresolved, the conductor escalates to the parent instead of settling silently.</p></div>
+        <div class="principle"><div class="p-lab">acceptance by evidence</div><p>The reviewer verifies from <b>code, tests, docs, or requirements</b> — never guessing. “Did the worker actually edit files? Did the findings get addressed?”</p></div>
+        <div class="principle"><div class="p-lab">no secrets in the fleet</div><p>Model names and skill names are versioned; <b>no keys, tokens, passwords, or auth URLs</b> ever live in agent files or fleet config.</p></div>
+      </div>
+    </section>
+
+    <div id="adossiers"></div>
+
+    <footer>
+      <span class="fmark">skillify</span>
+      <span class="fline"></span>
+      <span>ten agents · one fleet · decisions escalate</span>
+    </footer>
+  </section>
 
 </div>
 
@@ -574,6 +703,193 @@ document.addEventListener('click',function(e){
 });
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){appear.classList.remove('open');abtn.setAttribute('aria-expanded','false');}
+});
+/* ═══════════ agents tab — the pi-subagents fleet ═══════════ */
+var AG=[
+ {id:'orchestrator',emoji:'🎛️',mode:'conductor',fam:'conductor',color:'var(--ag-orchestrator)',no:'01',x:500,y:100,w:160,flow:true,
+  does:'The pipeline conductor — the “boss.” Plans and delegates across scout, context-builder, planner, worker, reviewer, oracle, and researcher; verifies each result; iterates until the build request is satisfied. Never executes the work itself — the parent session and user remain the final decision authority.',
+  when:['Multi-step build requests','Work that needs recon → plan → build → verify','When you want delegation, not direct execution'],
+  model:'deepseek-v4-flash',thinking:'high',skills:['rtk-first'],
+  wiring:'delegates to <b>scout · context-builder · planner · worker · reviewer · oracle · researcher</b> · escalates to parent'},
+ {id:'scout',emoji:'🏃',mode:'recon',fam:'pipeline',color:'var(--ag-scout)',no:'02',x:20,y:200,w:160,flow:true,
+  does:'Fast codebase recon that returns compressed context for handoff. Maps entry points, key types, data flow, likely-change files, constraints, and risks — the minimum context another agent needs to act. Moves fast, doesn\u2019t guess.',
+  when:['The build target is unfamiliar','Before planning, when you need a map','Quick orientation in a new area'],
+  model:'deepseek-v4-flash',thinking:'low*',skills:['caveman','rtk-first'],
+  wiring:'feeds <b>planner</b> · output: context.md'},
+ {id:'context-builder',emoji:'📦',mode:'intent',fam:'pipeline',color:'var(--ag-context-builder)',no:'03',x:20,y:310,w:170,flow:true,
+  does:'Requirements-to-context. Analyzes the request against the codebase, gathers high-value context, and produces a structured handoff — context plus a meta-prompt — complete enough that the next agent doesn\u2019t rediscover the same ground.',
+  when:['Deeper analysis than scout provides','Intent extraction + meta-prompt authoring','Before planning a complex change'],
+  model:'deepseek-v4-flash',thinking:'high',skills:['undumbify','domain-modeling','rtk-first'],
+  wiring:'feeds <b>planner</b> · output: context.md'},
+ {id:'planner',emoji:'🗺️',mode:'planning',fam:'pipeline',color:'var(--ag-planner)',no:'04',x:300,y:255,w:160,flow:true,
+  does:'Turns requirements and code context into a concrete implementation plan — a Worker Packet with goal, slices (files / changes / acceptance), dependencies, and risks. Read-only: never edits code. Names exact files; prefers small, ordered, actionable tasks.',
+  when:['Clear intent that needs a plan','Multi-step or risky work','Before dispatching to worker'],
+  model:'qwen3.8-max-preview',thinking:'medium',skills:['undumbify','shapeify','explorify'],
+  wiring:'fed by <b>scout · context-builder</b> · feeds <b>worker</b> · read-only'},
+ {id:'worker',emoji:'🔨',mode:'implementation',fam:'pipeline',color:'var(--ag-worker)',no:'05',x:580,y:255,w:160,flow:true,
+  does:'The single writer thread. Executes the assigned task or approved direction with narrow, coherent edits — the smallest correct change, following existing patterns, verified with evidence. Escalates unapproved decisions instead of improvising.',
+  when:['An approved plan or packet to execute','A slice to build','Work that must stay green'],
+  model:'deepseek-v4-flash',thinking:'high',skills:['shipify','ponytail','traceify','prototype','shadcn','caveman-commit','rtk-first'],
+  wiring:'fed by <b>planner</b> · feeds <b>reviewer</b> · repair loop with reviewer'},
+ {id:'reviewer',emoji:'⚖️',mode:'verification',fam:'pipeline',color:'var(--ag-reviewer)',no:'06',x:860,y:255,w:160,flow:true,
+  does:'Disciplined review specialist. Inspects diffs, plans, proposed solutions, codebase health, and PRs — reporting findings with evidence, never guessing. Verifies the implementation matches intent using read-only inspection (git diff, tests).',
+  when:['After worker completes a slice','Before merging anything risky','Validating a plan or proposed solution'],
+  model:'qwen3.8-max-preview',thinking:'medium',skills:['reviewify','code-review','ponytail-review','ponytail-audit','ponytail-debt','caveman-review','rtk-first'],
+  wiring:'fed by <b>worker</b> · replan → <b>planner</b> · repair loop with worker'},
+ {id:'oracle',emoji:'🔮',mode:'decision-consistency',fam:'support',color:'var(--ag-oracle)',no:'07',x:860,y:100,w:160,flow:true,
+  does:'High-context decision-consistency oracle. Reconstructs inherited decisions and constraints from the forked context, spots drift and contradictions, and prevents hidden or conflicting decisions. Protects consistency over novelty. Read-only — never edits.',
+  when:['Big forks in the road','Before a pivot','When the main agent may be drifting'],
+  model:'qwen3.8-max-preview',thinking:'xhigh',skills:['grilling','domain-modeling','codebase-design','rtk-first'],
+  wiring:'consulted by <b>orchestrator</b> · recommends, never decides · read-only'},
+ {id:'advisor',emoji:'💡',mode:'decision-consistency · alias',fam:'support',color:'var(--ag-advisor)',no:'08',flow:false,
+  does:'Compatibility alias for oracle — the same decision-consistency role and prompt, listed separately so both names resolve. Kept in sync with oracle.',
+  when:['Same as oracle','When a harness expects the “advisor” name'],
+  model:'qwen3.8-max-preview',thinking:'xhigh',skills:['grilling','domain-modeling','codebase-design','rtk-first'],
+  wiring:'alias of <b>oracle</b>'},
+ {id:'researcher',emoji:'📡',mode:'web research',fam:'support',color:'var(--ag-researcher)',no:'09',x:1120,y:310,w:160,flow:true,
+  does:'Autonomous web researcher. Breaks a question into two to four angles, searches, evaluates, and synthesizes a focused, well-sourced brief. Prefers primary sources, official docs, and direct evidence; drops stale or SEO-heavy results.',
+  when:['External facts are needed','APIs, libraries, or best practices','Time-sensitive developments'],
+  model:'deepseek-v4-flash',thinking:'high',skills:['research'],
+  wiring:'consulted by <b>orchestrator · context-builder</b> · output: research.md'},
+ {id:'delegate',emoji:'📎',mode:'generic child',fam:'support',color:'var(--ag-delegate)',no:'10',flow:false,
+  does:'Lightweight generic subagent that inherits the parent model. Executes an assigned task directly with a strict tool allowlist — no default reads, no attached role. The minimal delegation primitive for ad-hoc work.',
+  when:['Simple, self-contained tasks','Ad-hoc delegation','When no specialist fits'],
+  model:'inherits',thinking:'inherits',skills:['rtk-first'],
+  wiring:'spawned by <b>orchestrator</b> for ad-hoc work'}
+];
+var AGFAM={
+ conductor:{name:'the conductor',sub:'plans · delegates · verifies · escalates',color:'var(--ag-orchestrator)'},
+ pipeline:{name:'the pipeline',sub:'recon → plan → build → verify',color:'var(--ag-planner)'},
+ support:{name:'the support bench',sub:'decisions · research · ad-hoc',color:'var(--ag-oracle)'}
+};
+var AFLOWS=[
+ ['orchestrator','parent','escalate · need_decision','dashed'],
+ ['orchestrator','scout','recon','solid'],
+ ['orchestrator','oracle','decision check','dashed'],
+ ['orchestrator','researcher','web research','dashed',1050,205],
+ ['scout','planner','context','solid'],
+ ['context-builder','planner','intent','solid'],
+ ['planner','worker','packet','solid'],
+ ['worker','reviewer','report','solid'],
+ ['reviewer','planner','replan','dashed',660,170],
+ ['reviewer','worker','repair · max 3','dashed',800,370]
+];
+var PARENT={id:'parent',x:470,y:14,w:240,h:46};
+function agById(id){ if(id==='parent')return PARENT; for(var i=0;i<AG.length;i++)if(AG[i].id===id)return AG[i]; }
+function agCenter(a){ return {x:a.x+(a.w||160)/2, y:a.y+31}; }
+var aflow=document.getElementById('aflow');
+/* edges first (under the nodes) */
+AFLOWS.forEach(function(f){
+  var a=agById(f[0]),b=agById(f[1]);
+  var A=agCenter(a),B=agCenter(b);
+  var cx=(f[4]!=null)?f[4]:(A.x+B.x)/2;
+  var cy=(f[5]!=null)?f[5]:((A.y+B.y)/2+((B.y>A.y)?-26:26));
+  var d='M '+A.x+' '+A.y+' Q '+cx+' '+cy+' '+B.x+' '+B.y;
+  var col=(b.id==='parent')?'var(--ink-faint)':b.color;
+  var p=el('path',{d:d,'class':'fedge'+(f[3]==='solid'?' flow-anim':''),opacity:f[3]==='solid'?0.55:0.3});
+  p.style.stroke=col;
+  if(f[3]==='dashed')p.setAttribute('stroke-dasharray','4 6');
+  aflow.appendChild(p);
+  if(f[2]){
+    var lx=0.25*A.x+0.5*cx+0.25*B.x;
+    var ly=0.25*A.y+0.5*cy+0.25*B.y+((f[5]!=null&&f[5]>(A.y+B.y)/2)?16:-8);
+    var t=el('text',{x:lx,y:ly,'text-anchor':'middle','class':'fedge-label',opacity:.75});
+    t.style.fill=col;t.textContent=f[2];aflow.appendChild(t);
+  }
+});
+/* agent nodes */
+AG.forEach(function(a){
+  if(!a.flow)return;
+  var g=el('g',{'class':'fnode','data-id':a.id});
+  g.style.setProperty('--nc',a.color);
+  var w=a.w||160;
+  g.appendChild(el('rect',{x:a.x,y:a.y,width:w,height:62,rx:9}));
+  var em=el('text',{x:a.x+13,y:a.y+26,'font-size':16});em.textContent=a.emoji;g.appendChild(em);
+  var nm=el('text',{x:a.x+36,y:a.y+27,'class':'fname'});nm.textContent=a.id;g.appendChild(nm);
+  var md=el('text',{x:a.x+13,y:a.y+47,'class':'fmode'});md.textContent=a.mode;g.appendChild(md);
+  g.addEventListener('click',function(){gotoAgent(a.id);});
+  aflow.appendChild(g);
+});
+/* parent / user — the humans at the top of the chain */
+var pg=el('g',{'class':'fnode-parent'});
+pg.appendChild(el('rect',{x:PARENT.x,y:PARENT.y,width:PARENT.w,height:PARENT.h,rx:9}));
+var pt=el('text',{x:PARENT.x+PARENT.w/2,y:PARENT.y+20,'text-anchor':'middle','class':'fname'});pt.textContent='parent / user';pg.appendChild(pt);
+var ps=el('text',{x:PARENT.x+PARENT.w/2,y:PARENT.y+37,'text-anchor':'middle','class':'fmode'});ps.style.fill='var(--ink-faint)';ps.textContent='final decision authority';pg.appendChild(ps);
+aflow.appendChild(pg);
+/* agent dossiers, grouped by family */
+var ahost=document.getElementById('adossiers');
+['conductor','pipeline','support'].forEach(function(fk){
+  var f=AGFAM[fk];
+  var agents=AG.filter(function(a){return a.fam===fk;});
+  var fh=document.createElement('div');
+  fh.className='family reveal';
+  fh.style.setProperty('--fc',f.color);
+  fh.innerHTML='<span class="fno">'+f.name.split(' ')[0]+'</span><div><h2>'+f.name+'</h2><div class="fsub">'+f.sub+'</div></div><span class="fline"></span>';
+  ahost.appendChild(fh);
+  agents.forEach(function(a){
+    var d=document.createElement('article');
+    d.className='dossier reveal';
+    d.id='da-'+a.id;
+    d.style.setProperty('--c',a.color);
+    var when=a.when.map(function(w){return '<li>'+w+'</li>';}).join('');
+    var sk=a.skills.map(function(s){return '<span class="cmd">'+s+'</span>';}).join('');
+    d.innerHTML=
+      '<div class="d-id">'+
+        '<span class="d-no">'+a.no+'</span>'+
+        '<div class="d-emoji">'+a.emoji+'</div>'+
+        '<h3>'+a.id+'</h3>'+
+        '<span class="d-mode">'+a.mode+'</span>'+
+      '</div>'+
+      '<div class="d-body">'+
+        '<p class="d-does">'+a.does+'</p>'+
+        '<div class="d-cols">'+
+          '<div class="d-block"><div class="d-lab">reach for it when</div><ul>'+when+'</ul></div>'+
+          '<div class="d-block">'+
+            '<div class="d-lab">model · thinking</div>'+
+            '<div class="d-io"><b>'+a.model+'</b> · '+a.thinking+'</div>'+
+            '<div class="d-lab" style="margin-top:.9rem">attached skills</div>'+
+            '<div class="d-invoke">'+sk+'</div>'+
+            '<div class="d-lab" style="margin-top:.9rem">wiring</div>'+
+            '<div class="d-conn">'+a.wiring+'</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    ahost.appendChild(d);
+  });
+});
+function gotoAgent(id){
+  var t=document.getElementById('da-'+id);
+  if(t){
+    t.scrollIntoView({behavior:'smooth',block:'center'});
+    t.classList.add('flash');
+    setTimeout(function(){t.classList.remove('flash');},1900);
+  }
+}
+/* ── tab switcher: skills | agents ── */
+var tabbar=document.getElementById('tabbar');
+var panes={
+  skills:document.getElementById('pane-skills'),
+  agents:document.getElementById('pane-agents')
+};
+function setTab(name){
+  Object.keys(panes).forEach(function(k){
+    panes[k].classList.toggle('active',k===name);
+  });
+  tabbar.querySelectorAll('.tabbtn').forEach(function(b){
+    var on=b.getAttribute('data-tab')===name;
+    b.classList.toggle('on',on);
+    b.setAttribute('aria-selected',on?'true':'false');
+  });
+  window.scrollTo(0,0);
+  /* safety net: re-arm any reveals in the newly shown pane that lack .in */
+  if(io){
+    panes[name].querySelectorAll('.reveal:not(.in)').forEach(function(x){io.observe(x);});
+  }else{
+    panes[name].querySelectorAll('.reveal').forEach(function(x){x.classList.add('in');});
+  }
+}
+tabbar.querySelectorAll('.tabbtn').forEach(function(b){
+  b.addEventListener('click',function(){setTab(b.getAttribute('data-tab'));});
 });
 </script>
 </body>
