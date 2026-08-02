@@ -18,9 +18,9 @@ user's stated priorities and anti-examples.
 | User explicitly says "quick review" or "just tell me what's wrong" | **Solo** |
 | User explicitly says "formal review" or "write it up for the team" | **Full** |
 
-**Solo mode:** Findings + fixes. No ADRs. No glossary. No "What Works" section unless
-something is genuinely surprising. The output is a punch list the builder acts on
-immediately.
+**Solo mode:** Findings + fixes. No ADRs. No glossary. No coverage matrix. No "What
+Works" section unless something is genuinely surprising. The output is a punch list the
+builder acts on immediately.
 
 **Full mode:** Complete review report with ADRs, glossary entries, coverage matrix.
 The output is a document a stranger can act on without asking follow-up questions.
@@ -47,7 +47,8 @@ If you can't reconstruct intent from available evidence → that's F1 at Blockin
 
 ## 3. Review Through Lenses
 
-Apply each lens once. Skip lenses with no surface in the diff.
+Select the 3–4 lenses with real surface in this diff. Go deep on those — not shallow
+on all nine. State which lenses you skipped and why (one line).
 
 | Lens | Question |
 |------|----------|
@@ -61,7 +62,11 @@ Apply each lens once. Skip lenses with no surface in the diff.
 | Priority alignment | Does the implementation respect the stated priority ordering? |
 | Anti-example check | Does it produce anything the user said it must NOT be? |
 
-Trace at least one realistic failure path end-to-end.
+Selection heuristic: Requirement fit + Invariant safety are always in (they're the
+contract). Pick 1–2 more from the rest based on what the diff actually touches. A
+one-file internal helper doesn't need Security + Contracts + Data integrity.
+
+Trace at least one realistic failure path end-to-end through the selected lenses.
 
 ## 4. Grade Findings
 
@@ -151,7 +156,14 @@ follow-up — don't block the review on documentation ceremony.
 
 ### Follow-ups
 <out-of-boundary observations, or None>
+
+**Skill map signal:** <one evidence entry, or "none">
 ```
+
+The skill map signal is passive harvesting (game-layer.md). One honest phrase about the
+input quality: was the intent clear enough to review against? Did the packet's
+requirements make the review trivial, or did ambiguity cause findings? Format:
+`"P5 positive: scope boundaries were explicit, zero out-of-scope code"` or `"none"`.
 
 ### Full mode:
 

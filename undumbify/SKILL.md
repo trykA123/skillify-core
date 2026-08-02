@@ -25,32 +25,47 @@ conversation already established and only probe the gaps.
 ## The Six Dimensions
 
 Extract these from the user's input + context. These are what you need to make good
-judgment calls during implementation:
+judgment calls during implementation.
 
-### 1. Constraints (hard limits)
+**Plain-language aliases** — use these when talking to the user; keep the formal names
+for the Intent Brief output only:
+
+| Formal name | Ask the user… |
+|-------------|---------------|
+| Constraints | "What's off the table?" |
+| Anti-examples | "What should this NOT look like?" |
+| Priority ordering | "When things clash, what wins?" |
+| Feeling of done | "How will you know it's right?" |
+| Pushback permission | "Can I tell you 'no'?" |
+| Existing knowledge | "What do you already know?" |
+
+A junior doesn't need to know what "anti-examples" means — they answer the plain
+question naturally.
+
+### 1. Constraints — *"What's off the table?"*
 What kills options? Tech, time, budget, compatibility, physical limits.
 Not preferences — things that make an approach literally impossible.
 
-### 2. Anti-examples (what it must NOT be)
+### 2. Anti-examples — *"What should this NOT look like?"*
 High-signal negation. "Not corporate." "Not like Spotify." "Don't make it feel heavy."
 Each anti-example eliminates a region of possibility space.
 
-### 3. Priority ordering (what wins when things clash)
+### 3. Priority ordering — *"When things clash, what wins?"*
 Speed vs polish. Simplicity vs power. Consistency vs novelty.
 When two requirements conflict during implementation, this resolves it silently.
 Format: `X > Y > Z` (most important first).
 
-### 4. Feeling of done (the gestalt target)
+### 4. Feeling of done — *"How will you know it's right?"*
 Not acceptance criteria — the *experience* of completion.
 "I'll know it's right when..." / "It should feel like..."
 This guides the 100 micro-decisions no checklist can enumerate.
 
-### 5. Pushback permission (collaborator or yes-machine?)
+### 5. Pushback permission — *"Can I tell you 'no'?"*
 Can the agent say "I think that's wrong because..."?
 Some users want execution; others want a thinking partner.
 Default: collaborator (push back with evidence, not authority).
 
-### 6. Existing knowledge (what to skip explaining)
+### 6. Existing knowledge — *"What do you already know?"*
 What does the user already understand? Prevents over/under-explaining.
 "I know React well, skip basics" vs "I'm a backend dev, explain frontend concepts."
 
@@ -81,6 +96,7 @@ current_state: <what exists now, from evidence>
 target_state: <observable change>
 assumptions: <labeled defaults for dimensions not confirmed>
 risks: <what could go wrong, from evidence>
+skill_map_signal: <one honest line about input quality, e.g. "asked 3 questions → constraints were buried", or "none">
 topology: single-agent | subagent
 ```
 

@@ -1,6 +1,6 @@
 ---
 name: explainify
-description: Teaches you what code does and how its parts communicate — at your level, in your repo. Saves knowledge docs, glossary, and wiring diagrams; gamified progress shared with promptify. Use when you ask about code, a module, a flow, or want the connections mapped.
+description: Teaches you what code does and how its parts communicate — at your level, in your repo. Saves knowledge docs, glossary, and wiring diagrams; skill-map progress shared with promptify. Use when you ask about code, a module, a flow, or want the connections mapped.
 disable-model-invocation: true
 argument-hint: "code to explain, or a wiring question"
 ---
@@ -20,11 +20,14 @@ The codebase is the curriculum. Every question becomes a durable, browsable arti
 - Something is broken → traceify
 - Planning a change → orientify, then shapeify
 - "Is this code good?" → reviewify
-- The question is answerable in one line — answer it; don't build a lesson. The game is anti-grind
+- The question is answerable in one line — answer it; don't build a lesson. The map is anti-grind
 
-## The Game
+## The Skill Map
 
-Shared with promptify — one progression, `~/.agents/learnings/progress.json` + `progress.html`, spec in **game-layer.md (promptify skill folder)**. Same rules: +10 XP per completed activation, streak, level, badges, regenerate the dashboard, one line to the user.
+Shared with promptify — one competency-based progression, `~/.agents/learnings/progress.json`
++ `progress.html`, spec in **game-layer.md (skillify repo root)**. Same rules: identify
+competencies touched (usually U1–U4), append honest evidence, regenerate the dashboard,
+one line of signal to the user. No XP, no streaks — the bars moving is the reward.
 
 ## Process
 
@@ -32,28 +35,44 @@ Shared with promptify — one progression, `~/.agents/learnings/progress.json` +
 
 - Profile: `~/.agents/learnings/explainify/profile.md` (create from `seeds/profile.md` on first run) — level, known terms, preferences
 - `docs/learnings/` index in this repo — what's already taught (update, don't duplicate)
-- The game layer
-- Prefer rtk-wrapped reads (`rtk read`, `rtk rg`) for compact, filtered views
+- The skill map (`progress.json`)
+- If your harness offers compact/filtered read wrappers, prefer them; otherwise read the code directly
 
 ### 2. Read The Code In Scope
 
 The actual code — never the assumption. Read the symbols in the question, their callers, their tests, their config. Follow one concrete path end-to-end.
 
-### 3. Teach At Their Level
+### 3. Teach At Their Level (chat-first)
 
 - **What it does** — plain language, 2–3 sentences; analogies only when they illuminate
 - **The wiring** — how parts communicate: calls, events, data flow, imports, config; one path traced with real line references
 - Real examples only. If the profile says skip basics — skip them.
 
-### 4. Save The Artifacts
+**Default: teach in chat, done.** The explanation lives in the conversation. No file,
+no HTML, no diagram. The user asked a question, you answered it well. That's the job.
+
+### 4. Escalate To Artifacts (only when earned)
+
+Produce durable artifacts ONLY when:
+
+- The explanation spans **3+ modules** (chat can't hold the wiring in working memory)
+- The user explicitly asks for a durable artifact ("save this", "make a doc", "diagram it")
+- The same module gets asked about **again** (it's a knowledge gap worth filling permanently)
+
+When escalating:
 
 - **Knowledge doc**: `docs/learnings/<slug>.md` — one doc per module/flow, **updated in place** (merged, dated), never one doc per question (anti-sprawl)
 - **Glossary**: repo terms that earn definitional weight — a competent engineer wouldn't guess them, and misreading costs real time. 1–3 per activation
-- **HTML page** (required when connections are central): single-file, inline CSS, **inline SVG wiring diagram** — boxes = modules, arrows = communication, real names (see html-template.md)
+- **HTML page** (when connections are central AND the user wants it): single-file, inline CSS, **mermaid wiring diagram** — nodes = modules, labeled edges = communication, real names (see html-template.md)
 
-### 5. Update The Game
+If none of the escalation criteria fire: skip this step entirely. Update the profile
+(one dated observation), move on.
 
-+10 XP, streak, level, badges, regenerate `progress.html`. One line to the user.
+### 5. Update The Skill Map
+
+Identify competencies touched, append evidence (honest valence), append history,
+render `progress.html` (when Node is available) via `node <skillify-root>/game-render.js <progress.json>`.
+One line of signal to the user.
 
 ## Artifact Templates
 
@@ -67,7 +86,7 @@ The actual code — never the assumption. Read the symbols in the question, thei
 <3 lines, plain language>
 
 ## The wiring
-<the path through the system: who calls whom, what flows where>
+<the path through the system: who calls whom, what flows where — add a `mermaid` flowchart block when it clarifies; renders in GitHub/Obsidian>
 
 ## Key symbols
 <name — what it is — where>
@@ -83,9 +102,12 @@ The actual code — never the assumption. Read the symbols in the question, thei
 
 `<term> — <definition> — <where it appears, one line>`
 
-### Wiring diagram (inside HTML pages)
+### Wiring diagram
 
-SVG, inline: one box per module (real names), arrows labeled with the communication (call / event / data), the traced path highlighted. One diagram max per page.
+Mermaid source, not hand-drawn SVG — the executor writes declarative text (`A -->|call| B`), not coordinates, so the diagram is robust to generate and greppable against the code. One node per module (real names), edges labeled with the communication (call / event / data), the traced path highlighted with a `classDef`. One diagram max per artifact.
+
+- **Knowledge doc:** a fenced `mermaid` block — renders natively in GitHub / Obsidian, degrades to readable source elsewhere.
+- **HTML page:** the same source inside `<pre class="mermaid">`, rendered by the mermaid library; offline it stays readable (see html-template.md).
 
 ### Profile
 
@@ -93,18 +115,18 @@ Same shape as promptify's: level, known terms, preferences (depth, diagrams yes/
 
 ## Completion Criterion
 
-The user can explain the thing back (or asks a sharper follow-up) AND the artifacts exist: knowledge doc saved or updated, glossary updated, game updated. No artifacts, no XP.
+The user can explain the thing back (or asks a sharper follow-up) AND the skill map was updated with honest evidence. Artifacts (doc, diagram) only when escalation criteria were met.
 
 ## Final Gate
 
-- [ ] Profile, learnings index, and game loaded
+- [ ] Profile, learnings index, and skill map loaded
 - [ ] Real code read — one path traced end-to-end
 - [ ] Taught at their level: what + wiring, real examples
-- [ ] Knowledge doc saved or updated in place
-- [ ] Glossary updated with weighted terms
-- [ ] HTML + diagram produced when connections were central
-- [ ] Game updated; one line to the user
-- [ ] Nothing modified outside `docs/learnings/` and the game layer
+- [ ] Knowledge doc saved/updated ONLY if escalation fired — otherwise chat-only declared
+- [ ] Glossary updated with weighted terms (when escalated)
+- [ ] HTML + diagram produced only when connections were central AND the user wanted it
+- [ ] Skill map updated; one line of signal to the user
+- [ ] Nothing modified outside `docs/learnings/` and the skill map
 
 ## Topology Behavior
 

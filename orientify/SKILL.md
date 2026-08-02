@@ -21,7 +21,29 @@ You can't have intent about a codebase you don't understand. Before explorify (d
 - Mid-debug (traceify owns that loop — don't stop to orient)
 - Exploring options (explorify) — orientation is not ideation
 
-## Process
+## Quick Orient (small scope)
+
+If ANY of these hold, produce a **5-line brief** instead of the full process:
+
+- The repo has <20 meaningful source files
+- You already have a recent orientify brief for this repo
+- The user's question is narrow ("where does X live?" / "what calls Y?")
+
+```markdown
+**Shape:** <one line — what the system is, entry → exit>
+**Entry:** <where things start>
+**Flow:** <the one path, 2-3 hops>
+**Seams:** <where modules meet, one line>
+**Watch out:** <one landmine, or "none spotted">
+```
+
+Done. No full scan, no hot-spot analysis, no deletion test. If the quick brief reveals
+hidden complexity (more modules than expected, unclear boundaries), escalate to the full
+process below.
+
+---
+
+## Full Process
 
 ### 1. Scan
 
@@ -29,7 +51,7 @@ You can't have intent about a codebase you don't understand. Before explorify (d
 - Entry points: main, index, handlers, CLI, config — where things start
 - Hot spots: `git log --oneline` walked back — what keeps changing (skip when no git history; note it)
 - Dependencies and test layout — what it leans on, how it proves itself
-- Prefer rtk-wrapped commands (`rtk git log`, `rtk tree`, `rtk read`, `rtk rg`) when available — compact output, same truth
+- If your harness offers compact-output wrappers (for git log, tree, read, search), prefer them — same truth, less noise; otherwise run the commands directly
 
 ### 2. Trace One Flow End-To-End
 

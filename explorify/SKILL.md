@@ -23,6 +23,25 @@ decision.
 - Something broke and needs fixing → `traceify`
 - The plan exists and needs execution → `shipify`
 
+## Quick Explore (small possibility space)
+
+If the desire is narrow and the options are obviously few — a binary fork, "button or
+link", a question with two real answers — skip the full ceremony. Produce **two
+options, three lines each**:
+
+```markdown
+### Option A: <name>
+<core idea> · <trade-off> · <why it might be wrong>
+
+### Option B: <name>
+<core idea> · <trade-off> · <why it might be wrong>
+```
+
+No axes analysis, no sketches, no Direction Brief — just ask "A or B?" If the user
+can't choose, or asks "what else is there?", the space wasn't small: escalate to the
+full process below. Quick Explore is a shortcut with the same safety valve as every
+other lite path — it escalates the moment it stops fitting.
+
 ## 1. Capture The Seed
 
 Extract from the user's input (and conversation history) only what constrains the space:

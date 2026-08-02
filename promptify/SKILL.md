@@ -1,6 +1,6 @@
 ---
 name: promptify
-description: Teaches you to think, speak, and prompt more concisely — by debriefing your real conversations. One concrete improvement per session, saved as a lesson + glossary, with gamified progress. Use after a discussion, or to coach a draft prompt.
+description: Teaches you to think, speak, and prompt more concisely — by debriefing your real conversations. One concrete improvement per session; progress tracked on an evidence-based skill map, not gamification. Use after a discussion, or to coach a draft prompt.
 disable-model-invocation: true
 argument-hint: "a discussion to debrief, or a prompt to sharpen"
 ---
@@ -19,17 +19,28 @@ Your words are the curriculum. Not generic prompt tips — YOUR phrasing, your h
 
 - Mid-flow: don't stop momentum to teach unless asked
 - User wants content, not coaching (a rewrite is fine; a lecture is not)
-- Trivial exchanges — one good prompt doesn't need a lesson. The game is anti-grind: XP only for genuine lessons
+- Trivial exchanges — one good prompt doesn't need a lesson. The map is anti-grind: evidence only for genuine moments
 
-## The Game
+## The Skill Map
 
-Promptify shares the **game layer** with explainify: one progression — XP, levels, streaks, badges — tracked in `~/.agents/learnings/progress.json` and rendered as `progress.html`. The full spec (schema, level ladder, badge criteria, dashboard layout) lives in **game-layer.md in the promptify skill folder** — follow it exactly. Every completed activation: append history, update counters, recompute level/streak/badges, regenerate the dashboard, and tell the user one line ("+10 XP — Level 2: Tinkerer — new badge: Streak 3").
+Promptify shares the **skill map** with explainify: a competency-based progression tracked
+in `~/.agents/learnings/progress.json` and rendered as `progress.html`. The full spec
+(competencies, rating scale, evidence rules, dashboard layout) lives in **game-layer.md
+at the skillify repo root** — follow it exactly.
+
+Every activation: identify which competencies were touched (usually 1–3), append honest
+evidence (positive or negative — both are valuable), append history, regenerate the
+dashboard, and tell the user one line of signal:
+- "P1 → developing: you led with intent today. 3 more to reliable."
+- "P6 gap: re-stated what the agent already knew. Trim next time."
+
+No XP. No streaks. No badges. The bars moving IS the reward.
 
 ## Process
 
 ### 1. Load The Player
 
-Read `~/.agents/learnings/promptify/profile.md` (create from `seeds/profile.md` on first run), `glossary.md`, and the game layer. Profile = who you're teaching: level, goals, known terms, observed habits, preferences.
+Read `~/.agents/learnings/promptify/profile.md` (create from `seeds/profile.md` on first run), `glossary.md`, and the skill map (`progress.json`). Profile = who you're teaching: level, goals, known terms, observed habits, preferences.
 
 ### 2. Harvest The Conversation
 
@@ -61,13 +72,28 @@ A lesson fits in one screen. Two strong patterns? Teach the better one, note the
 - **Glossary**: add 1–3 terms max per session, only terms with real definitional weight; each entry uses the session's real example
 - **Profile**: update habits (dated observations), adjust level if evidence says so
 
-### 5. Update The Game
+### 5. Update The Skill Map
 
-Per game-layer.md: +10 XP, streak, level, badges, then render the dashboard with `node <promptify-skill-folder>/game-render.js <progress.json>`. One line to the user.
+Per game-layer.md: identify competencies touched, append evidence (honest valence),
+append history, then render (when Node is available) with `node <skillify-root>/game-render.js <progress.json>`.
+One line to the user — the signal, not ceremony.
 
-## Quick Mode
+## Default: Quick Mode
 
-When the moment is small — a one-line prompt fix, a short exchange, a coaching nudge — declare **quick mode**: teach chat-only, no lesson file, no HTML. Still update the profile (one dated habit line) and still award +10 XP, with the history artifact set to `null`. Say it in the game line: 'quick lesson — chat only'. The full ceremony returns when the lesson earns it; quick mode exists so small moments stay cheap instead of being skipped.
+Quick mode is the **default**, not the exception. Most teaching moments are small — a
+one-line fix, a reframe, a nudge. Teach chat-only, no lesson file, no HTML. Still update
+the profile (one dated habit line) and the skill map (evidence entry, history with
+artifact `null`). Say it in the signal line: 'quick lesson — chat only'.
+
+### Escalate to full ceremony ONLY when:
+
+- The user has repeated the same pattern 3+ times (it's a habit, not a slip)
+- The lesson involves a multi-move improvement (not a one-line fix)
+- The user explicitly asks for a durable artifact ("save this", "write it up")
+- The pattern is fundamental enough that re-teaching it later would waste real time
+
+When escalating: lesson file, optional HTML, glossary, the works. But the bar is high.
+A skill that teaches conciseness must itself be concise.
 
 ## Artifact Templates
 
@@ -117,18 +143,18 @@ When the moment is small — a one-line prompt fix, a short exchange, a coaching
 
 ## Completion Criterion
 
-The user can state the fix in their own words (or tries it in their next message) AND the artifacts exist: lesson saved, glossary updated, game updated — or quick mode was declared (chat-only, artifact null). No artifacts, no XP — the game never rewards talk.
+The user can state the fix in their own words (or tries it in their next message) AND the skill map has honest evidence for the competencies touched. Full artifacts (lesson, glossary) only when escalation criteria were met. Quick mode: chat-only, evidence still recorded, artifact null.
 
 ## Final Gate
 
-- [ ] Profile and game layer loaded before teaching
+- [ ] Profile and skill map loaded before teaching
 - [ ] Pattern checked against the lessons index + glossary — no re-teaching
 - [ ] One pattern taught — real words, one screen, one fix
 - [ ] Lesson saved (md; html when encouraged) — or quick mode declared (artifact null)
-- [ ] Glossary updated with 1–3 weighted terms
+- [ ] Glossary updated with 1–3 weighted terms (when escalated)
 - [ ] Profile updated with dated observations
-- [ ] Game updated: +10 XP, streak, level, badges, dashboard regenerated
-- [ ] User told one line: XP, level, badges, streak
+- [ ] Skill map updated: evidence appended (honest valence); dashboard rendered when Node is available
+- [ ] User told one line: which competency moved, or which gap was exposed
 - [ ] No invented examples; no lecture without a lesson
 
 ## Topology Behavior

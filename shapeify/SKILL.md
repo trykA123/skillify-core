@@ -20,7 +20,40 @@ reasoning. Every dependency, decision, and success condition must be explicit.
   the exact location is unknown.
 - One authoritative instruction per change. Later sections reference by ID.
 
-## 1. Normalize Input
+## 0. Choose Packet Weight
+
+Before building anything, decide which mode fits:
+
+| Mode | Criteria | Output |
+|------|----------|--------|
+| **Lite** | ≤5 steps, ≤3 files, single slice, no irreversible transitions, no public contract changes | Lite Packet (below) |
+| **Full** | >5 steps, >3 files, multi-slice, irreversible transitions, public contracts, or subagent dispatch | Full Worker Packet (step 2) |
+
+When in doubt: lite. You can always escalate mid-execution if a step reveals hidden
+complexity (shipify will send a Revision Request).
+
+### Lite Packet
+
+```markdown
+## Lite Packet
+**Outcome:** <one paragraph — what exists when done>
+**Steps:**
+1. <step> — `file` → `symbol` — verify: <command/observation>
+2. ...
+**Done when:** <observable check that proves the outcome>
+**Risks:** <one line each, or "none">
+**Out of scope:** <tempting adjacent work, one line>
+```
+
+That's it. No Risk Register table, no Assumptions section, no Revision Log, no plan
+folder. The lite packet IS the plan. Shipify executes it directly.
+
+If a lite packet fails mid-execution (two consecutive failures, wrong assumption),
+shipify escalates: either a local fix, or a request to re-shape as Full.
+
+---
+
+## 1. Normalize Input (Full Mode)
 
 Accept an undumbify Intent Brief or a direct request:
 
@@ -64,11 +97,10 @@ One paragraph: what exists when this is done.
 - Priority ordering: <X > Y > Z — resolves conflicts during execution>
 - Anti-examples: <what the implementation must NOT produce>
 
-### Confirmed Facts
-- <fact> — <evidence source>
-
-### Assumptions
-- <assumption> — consequence if false — how to verify during execution
+### Evidence — tagged, never blurred
+- [FACT] <fact> — <evidence source>
+- [ASSUMPTION] <assumption> — consequence if false — how to verify during execution
+- [DECISION] <decision> — <why, and what it rules out>
 
 ### Risk Register
 | Slice | Risk | Likelihood | Impact | Mitigation |

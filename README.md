@@ -52,6 +52,49 @@ When debugging, follow: /path/to/skillify/traceify/SKILL.md
 
 No install needed — the SKILL.md files ARE the prompts.
 
+## Start Here
+
+New to skillify? Don't install all nine at once.
+
+1. **Day one:** `traceify` + `undumbify`. Debug something broken, sharpen a vague idea.
+   These two deliver value immediately with zero pipeline commitment.
+2. **When you're planning multi-step work:** add `shapeify` + `shipify`. Now you have
+   the plan → execute loop with adaptive granularity.
+3. **When you want the full pipeline:** add `orientify`, `explorify`, `reviewify`.
+   Now you have the complete cognitive arc: map → diverge → converge → plan → build → judge.
+4. **When you want to learn:** add `promptify` + `explainify`. The teaching cluster.
+   These grow on you — they're a long game, not a quick win.
+
+## The Ceremony Dial
+
+Every skill respects a simple rule: **complexity of ceremony matches complexity of work.**
+
+- "Add a dark mode toggle" → just do it. No pipeline, no packet, no review.
+- "Refactor auth across 6 services" → full pipeline earns its keep.
+- "What does this function do?" → answer in chat. No knowledge doc, no HTML, no diagram.
+- "Map how these 5 services communicate" → that earns a wiring diagram.
+
+If a skill feels like a tax form for a simple task, you're using the wrong weight.
+Each skill has a lite/quick path — use it. The full ceremony exists for when it matters.
+
+### The override
+
+The user can say **"just do it"** (or "skip the pipeline", "no ceremony", "yolo") at
+any point. This is a system-level override that ALL skills respect:
+
+- Skip undumbify's questions — infer from context, state assumptions in one line.
+- Skip shapeify's packet — execute directly, verify at the end.
+- Skip reviewify — ship it, review later if asked.
+- Skip explainify's artifacts — answer in chat, one paragraph.
+- Skip orientify's scan — read the one file they pointed at, answer.
+
+The override doesn't disable judgment — it disables *ceremony*. You still think, still
+verify, still flag risks. You just don't produce artifacts, ask structured questions,
+or emit formatted reports. The work happens; the paperwork doesn't.
+
+This override is also the correct default for tasks that are obviously small. You don't
+need the user to say "just do it" for a one-line fix — recognize it yourself and skip.
+
 ## The Skills
 
 | Skill | Cognitive mode | Trigger |
@@ -79,7 +122,7 @@ flowchart TD
     traceify["🩺 traceify<br/><i>abductive</i>"]
     promptify["🗣️ promptify<br/><i>coaching</i>"]
     explainify["🧠 explainify<br/><i>teaching</i>"]
-    game["🎮 game layer<br/><i>progress.json + html</i>"]
+    game["📊 skill map<br/><i>progress.json + html</i>"]
 
     orientify -->|codebase brief| explorify
     explorify -->|chosen direction| undumbify
@@ -115,7 +158,7 @@ flowchart TD
 **Legend:**
 - 🟡 Standalone entry points (orientify, explorify, traceify)
 - 🔵 Build pipeline (undumbify → shapeify → shipify → reviewify)
-- 🟠/🟢 Teaching cluster (promptify, explainify) sharing the 🎮 game layer
+- 🟠/🟢 Teaching cluster (promptify, explainify) sharing the 📊 skill map
 - Feedback loops: shipify can revise the plan cheaply; reviewify can trigger replan
 
 ## Topology Awareness
@@ -156,6 +199,8 @@ IDs flow through the pipeline without renaming:
 ```
 skillify/
 ├── README.md
+├── game-layer.md          ← skill map spec (shared by promptify + explainify)
+├── game-render.js         ← skill map renderer (Node.js, shared)
 ├── install.sh
 ├── orientify/SKILL.md
 ├── explorify/SKILL.md
@@ -166,8 +211,6 @@ skillify/
 ├── traceify/SKILL.md
 ├── promptify/
 │   ├── SKILL.md
-│   ├── game-layer.md
-│   ├── game-render.js
 │   ├── html-template.md
 │   └── seeds/
 └── explainify/

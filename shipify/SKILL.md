@@ -13,7 +13,20 @@ validate it, and when it's wrong, report precisely what's wrong.
 
 ## 1. Validate The Packet
 
-Before editing, confirm the packet has:
+**Packet-less mode (the "just do it" override):** if there is no packet — the user
+invoked the override, or the task is obviously small — don't block on validation. Build
+a **micro-packet** inline and execute against it:
+
+```markdown
+**Outcome:** <what exists when done>
+**Steps:** <the few things you'll do>
+**Done when:** <the observable check you'll run at the end>
+```
+
+This is the shipify-side shape of "skip the packet." The discipline below (baseline,
+per-step verification, deviation control) still applies — only the artifact is lighter.
+
+**With a packet:** before editing, confirm the packet has:
 - Outcome + scope boundaries
 - R* requirements and I* invariants
 - P* steps with locations, dependencies, verify commands, granularity tags
@@ -110,6 +123,25 @@ residual risk.
 
 ## 6. Emit Completion Report
 
+### Single-agent mode (lean):
+
+Four lines. The user was in the room — they saw it happen.
+
+```markdown
+**Done:** <outcome — Implemented | Partial | Blocked>
+**Deviations:** <what changed from the plan, or "none">
+**Follow-ups:** <out-of-scope observations, or "none">
+**Skill map signal:** <one evidence entry for the user's communication, or "none">
+```
+
+The skill map signal is passive harvesting for the promptify/explainify skill map
+(game-layer.md). Note ONE honest observation about the user's input quality — did the
+packet work first try because their intent was clear? Did a Revision Request happen
+because scope was under-specified? Format: `"P1 positive: intent was one line, first-try
+result"` or `"none"`. Never lecture, never block on this — one phrase, move on.
+
+### Subagent / plan-folder mode (full):
+
 ```markdown
 ## Completion Report
 
@@ -135,6 +167,9 @@ Implemented | Partial | Blocked
 
 ### Follow-ups
 <out-of-scope opportunities, or None>
+
+### Skill Map Signal
+<one evidence entry for the user's communication quality, or "None">
 ```
 
 Keep it factual. Never claim a check ran when it didn't.

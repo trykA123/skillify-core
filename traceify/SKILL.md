@@ -37,6 +37,13 @@ Gather what's observable BEFORE forming hypotheses:
 If the user's report is thin, ask ONE question: "What's the smallest thing I can do to
 see this myself?"
 
+**If it's intermittent ("I can't repro it"):** don't force a hypothesis yet. Widen the
+timeline (first occurrence, not just the latest), capture the **conditions envelope**
+— input, persisted state, concurrency, environment, timing — and reach for
+instrumentation (logs, traces, metrics) before bisecting. A bug you can't summon is a
+data-gathering problem first and a diagnosis problem second: get a reliable trigger,
+then form hypotheses.
+
 ## 2. Form Ranked Hypotheses
 
 Generate 2-4 hypotheses ranked by likelihood. Use these heuristics for ranking:
@@ -138,6 +145,7 @@ step 2 with new evidence. Do NOT stack workarounds.
 **Verification:** <how you confirmed it's fixed>
 **Regression guard:** <test/assertion added, or "none — too costly, here's why">
 **Residual risk:** <related issues noticed but not fixed, or None>
+**Skill map signal:** <one honest line, e.g. "resolved in 2 hypotheses → clean symptom description", or "none">
 ```
 
 ## Topology Behavior
