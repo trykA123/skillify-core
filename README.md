@@ -1,12 +1,12 @@
 # skillify
 
-Nine interlocking skills for AI-assisted work. Harness-agnostic — works with Qwen Code,
+Ten interlocking skills for AI-assisted work. Harness-agnostic — works with Qwen Code,
 Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown.
 
 ## What's Inside
 
-- **Nine skills** — `orientify`, `explorify`, `undumbify`, `shapeify`, `shipify`,
-  `reviewify`, `traceify`, `promptify`, `explainify`. Each folder holds one `SKILL.md` — the skills ARE the prompts. Catalog below.
+- **Ten skills** — `orientify`, `explorify`, `undumbify`, `shapeify`, `shipify`,
+  `reviewify`, `traceify`, `promptify`, `explainify`, `recordify`. Each folder holds one `SKILL.md` — the skills ARE the prompts. Catalog below.
 - **The fleet** — [`agents/`](agents/README.md): orchestrator + 9 builtin snapshots + `fleet-config.json`. No credentials.
 - **Docs** — [`docs/index.html`](docs/index.html) (skill map) + [`docs/html/`](docs/html/) — 17 standalone HTML artifacts.
 
@@ -22,10 +22,11 @@ Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown
 | `traceify` | Abductive — infer cause from symptoms | "Something broke" |
 | `promptify` | Coaching — teach prompt craft from your real conversations | "Debrief that" |
 | `explainify` | Teaching — explain code and its wiring at your level | "What does this do?" |
+| `recordify` | Recording — capture a sanitized session record | "Record this session" |
 
 They chain: `orientify → explorify → undumbify → shapeify → shipify → reviewify`
 (map → diverge → converge → plan → build → judge). `traceify` is the debug entry;
-`promptify` + `explainify` harvest into the game layer. Ceremony scales with the work — every skill has a lite path; "just do it" overrides.
+`promptify` + `explainify` harvest into the game layer; `recordify` writes the sanitized session records that feed the skill map. Ceremony scales with the work — every skill has a lite path; "just do it" overrides.
 
 ## Install
 ### Option 1: `npx skills` (recommended, uses symlinks by default)
@@ -74,6 +75,7 @@ When debugging, follow: /path/to/skillify/traceify/SKILL.md
 ## The Game Layer
 - **Spec:** [`game-layer.md`](game-layer.md) — single source of truth for both teaching skills.
 - **Runtime data:** `~/.agents/learnings/progress.json` — lives outside this repo.
+- **Session records:** `recordify` writes sanitized session records (git-native, the skill-map app's source of truth) at commit/push or an explicit "done".
 - **Dashboard:** [`docs/html/progress.html`](docs/html/progress.html) — a render, never hand-edited.
 ```bash
 node game-render.js                     # default: reads ~/.agents/learnings/progress.json
@@ -100,7 +102,7 @@ skillify/
 ├── agents/                # fleet — see agents/README.md
 ├── docs/                  # skill map + html/ artifacts
 ├── orientify/  explorify/  undumbify/  shapeify/  shipify/
-└── reviewify/  traceify/  promptify/  explainify/
+└── reviewify/  traceify/  promptify/  explainify/  recordify/
 ```
 
 ## No Secrets

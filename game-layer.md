@@ -187,3 +187,13 @@ Same as before:
 - `null` for chat-only moments
 
 The renderer verifies every link before emitting it.
+
+## Records (recordify)
+
+`recordify` persists each session as a **sanitized session record** — the durable,
+git-native source of truth for the skill-map app. It fires at commit/push or an
+explicit "done", and follows the same evidence rules as this spec (honest valence,
+dated, per-competency). The privacy gate is non-negotiable: records store the
+pattern + a sanitized gist — never verbatim speech, file paths, project names, or
+identifiers. The skill-map app compiles the records into its graph; ratings are
+still derived from evidence, never stored as truth.
