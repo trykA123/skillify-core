@@ -1,0 +1,113 @@
+{
+  "defaultModel": "deepseek/deepseek-v4-flash",
+  "agentOverrides": {
+    "planner": {
+      "model": "qwen-token-plan/qwen3.8-max-preview",
+      "fallbackModels": [
+        "deepseek/deepseek-v4-pro"
+      ],
+      "thinking": "medium",
+      "skills": [
+        "undumbify",
+        "shapeify",
+        "explorify"
+      ]
+    },
+    "worker": {
+      "model": "deepseek/deepseek-v4-flash",
+      "fallbackModels": [
+        "qwen-token-plan/qwen3.8-max-preview"
+      ],
+      "thinking": "high",
+      "skills": [
+        "shipify",
+        "ponytail",
+        "traceify",
+        "prototype",
+        "shadcn",
+        "caveman-commit",
+        "rtk-first"
+      ]
+    },
+    "reviewer": {
+      "model": "qwen-token-plan/qwen3.8-max-preview",
+      "fallbackModels": [
+        "deepseek/deepseek-v4-pro"
+      ],
+      "thinking": "medium",
+      "skills": [
+        "reviewify",
+        "code-review",
+        "ponytail-review",
+        "ponytail-audit",
+        "ponytail-debt",
+        "caveman-review",
+        "rtk-first"
+      ]
+    },
+    "researcher": {
+      "model": "deepseek/deepseek-v4-flash",
+      "fallbackModels": [
+        "qwen-token-plan/qwen3.8-max-preview"
+      ],
+      "thinking": "high",
+      "skills": [
+        "research"
+      ]
+    },
+    "scout": {
+      "model": "deepseek/deepseek-v4-flash",
+      "fallbackModels": [
+        "qwen-token-plan/qwen3.8-max-preview"
+      ],
+      "thinking": "low",
+      "skills": [
+        "caveman",
+        "rtk-first"
+      ]
+    },
+    "context-builder": {
+      "model": "deepseek/deepseek-v4-flash",
+      "fallbackModels": [
+        "qwen-token-plan/qwen3.8-max-preview"
+      ],
+      "thinking": "high",
+      "skills": [
+        "undumbify",
+        "domain-modeling",
+        "rtk-first"
+      ]
+    },
+    "oracle": {
+      "model": "qwen-token-plan/qwen3.8-max-preview",
+      "fallbackModels": [
+        "deepseek/deepseek-v4-pro"
+      ],
+      "thinking": "xhigh",
+      "skills": [
+        "grilling",
+        "domain-modeling",
+        "codebase-design",
+        "rtk-first"
+      ]
+    },
+    "advisor": {
+      "model": "qwen-token-plan/qwen3.8-max-preview",
+      "fallbackModels": [
+        "deepseek/deepseek-v4-pro"
+      ],
+      "thinking": "xhigh",
+      "skills": [
+        "grilling",
+        "domain-modeling",
+        "codebase-design",
+        "rtk-first"
+      ]
+    },
+    "delegate": {
+      "skills": [
+        "rtk-first"
+      ]
+    }
+  }
+}
