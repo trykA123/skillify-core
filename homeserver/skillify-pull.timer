@@ -1,0 +1,11 @@
+[Unit]
+Description=skillify-core 10-min pull timer (ingest gate)
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=10min
+Persistent=true
+Unit=skillify-pull.service
+
+[Install]
+WantedBy=timers.target
