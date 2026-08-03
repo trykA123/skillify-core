@@ -41,12 +41,20 @@ const HEX = /\b[0-9a-fA-F]{16,}\b|\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}
 // from recordify-curation.json when present — it never ships with the public
 // skill. Add a new real identifier to that local file (with a test), not here.
 const BASE_IDENTIFIERS = ['example-app', 'my-class', 'sample-config.json', 'demo-widget'];
+const CURATION_FILE = path.join(process.env.HOME || '/root', '.agents', 'learnings', 'recordify-curation.json');
 let LOCAL_IDENTIFIERS = [];
 try {
-  const _cf = path.join(process.env.HOME || '/root', '.agents', 'learnings', 'recordify-curation.json');
-  LOCAL_IDENTIFIERS = JSON.parse(fs.readFileSync(_cf, 'utf8')).identifiers ?? [];
-} catch {}
-const IDENTIFIERS = [...BASE_IDENTIFIERS, ...LOCAL_IDENTIFIERS];;
+  LOCAL_IDENTIFIERS = JSON.parse(fs.readFileSync(CURATION_FILE, 'utf8')).identifiers ?? [];
+} catch (e) {
+  if (fs.existsSync(CURATION_FILE)) {
+    // Fail CLOSED: the local blocklist exists but is unreadable/corrupt — a
+    // privacy gate must never silently run without its blocklist (2026-08-03).
+    console.error(`sanitize: FAIL-CLOSED — ${CURATION_FILE} unreadable/corrupt (${e.message})`);
+    process.exit(1);
+  }
+  // Missing file = known state (fresh install / CI) → synthetic base list only.
+}
+const IDENTIFIERS = [...BASE_IDENTIFIERS, ...LOCAL_IDENTIFIERS];
 
 const IDENTIFIER_RE = new RegExp(
   '\\b(' +
