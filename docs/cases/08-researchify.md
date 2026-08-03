@@ -1,21 +1,29 @@
 # Case 08 — The researchify skill
 
-**Status:** 🔄 in progress · **Fleet:** scout, context-builder, planner, worker, reviewer · **Result:** pending
+**Status:** ✅ complete · **Fleet:** 6 delegations (scout, context-builder, planner, oracle, worker, reviewer — the bench-warmers' night) · **Result:** the 11th skill, fully conformed
 
-## The brief
+## The skill
 
-The researcher gets its own skill: **researchify** — the eleventh in the set. Web research
-and given documents, a strict sourcing hierarchy (official docs first; popularity a
-tiebreaker, never a validator), corroboration before non-official claims become findings,
-a hard security gate (never execute fetched code), and 5–10 ranked findings per research,
-each with sources and a confidence label.
+researchify — web research + given documents → 5–10 ranked findings with confidence. Sourcing hierarchy (official docs first; stars are a tiebreaker, never a validator; 2+ independent sources for non-official), a **security hygiene gate** (never execute fetched code, pinned versions/checksums, flag suspicious content), and a **conditional oracle consult** (when findings feed a decision or conflict with established choices). Written in the house SKILL.md style, wired to the researcher agent.
 
-## The scope
+## The build
 
-- The skill itself — `researchify/SKILL.md`
-- Repo conformance — installer, README catalog, fleet config, game-layer boundary note
-- The docs — flow-map node + handoff edges, router chips, counters, this case
+Six agents flew — including the three bench-warmers in one run: scout (recon), context-builder (the deep pack — its first flight), planner (the packet, which corrected two geometry numbers), oracle (decision-consistency, approve with zero must-fixes), worker (3 commits, self-caught a comma bug), reviewer (approved, byte-identity + coordinate audit re-run).
 
-## Report
+## The placement
 
-Completes when the run lands.
+researchify landed at **(x:520, y:250)** — the parent's guessed row failed the audit on every candidate (documented: column-40 cuts undumbify, y:350 collides with labels), so the planner's call put it beside traceify on the entry row. Two dashed handoff edges: explorify → researchify ("ecosystem") and researchify → shapeify ("evidence"). Coral color `#dd7457`/`#8f3a24` — the one warm hue absent from the ten existing skills, AA in both themes.
+
+## Verification
+
+bash -n install.sh ✓ · node --check both inline JS ✓ · byte-identity of agents/ledger panes (zero hunks) ✓ · coordinate audit (disjoint rects, labels ≥54px apart, curves sampled at 200 t-steps with no third-node intersection) ✓ · counter sweep: "ten ways" → zero, "eleven" → 9 hits ✓ · secrets scan clean ✓
+
+## Lessons
+
+- The bench-warmers' night: context-builder and oracle flew for the first time and both earned their keep (the deep pack made the worker's job mechanical; the oracle verified all 8 decision points).
+- "The planner's call, documented" beats "the parent's guess, unverified" — the geometry audit rejected the parent's row and the planner's alternative passed four independent audits.
+- Stars are a tiebreaker, never a validator — and the same rule applies to the map: popularity is not correctness.
+
+## Artifacts
+
+- 3 commits (`85886fa` → `6d7a70e`), researchify/SKILL.md, docs 11th node, fleet-config updated
