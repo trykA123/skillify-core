@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>skillify — eleven ways to think</title>
-<meta name="description" content="skillify — eleven cognitive skills that chain into a pipeline for AI-assisted work. What each does, when to reach for it, how to invoke it.">
+<title>skillify — twelve ways to think</title>
+<meta name="description" content="skillify — twelve cognitive skills that chain into a pipeline for AI-assisted work. What each does, when to reach for it, how to invoke it.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
@@ -25,7 +25,7 @@
   /* skill colors — dark theme (all AA+ on the dark ground) */
   --sk-orientify:#d8a24a;--sk-explorify:#d97a4a;--sk-traceify:#7ba05a;
   --sk-undumbify:#4aa8a0;--sk-shapeify:#5b8ab5;--sk-shipify:#5a9ec5;
-  --sk-reviewify:#b58ab0;--sk-promptify:#d9944a;--sk-explainify:#4ab5a0;--sk-recordify:#9d8bc7;--sk-researchify:#dd7457;
+  --sk-reviewify:#b58ab0;--sk-promptify:#d9944a;--sk-explainify:#4ab5a0;--sk-recordify:#9d8bc7;--sk-researchify:#dd7457;--sk-librify:#c9707e;
   --disp:'Fraunces',Georgia,serif;
   --body:'Source Sans 3',ui-sans-serif,system-ui,sans-serif;
   --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
@@ -53,7 +53,7 @@ html[data-theme="light"]{
   /* skill colors — light theme (darkened to AA on the light ground) */
   --sk-orientify:#8a6420;--sk-explorify:#a34d1e;--sk-traceify:#55702e;
   --sk-undumbify:#20655e;--sk-shapeify:#37597e;--sk-shipify:#2f6186;
-  --sk-reviewify:#755170;--sk-promptify:#8d5b16;--sk-explainify:#1c6a58;--sk-recordify:#5c4a86;--sk-researchify:#8f3a24;
+  --sk-reviewify:#755170;--sk-promptify:#8d5b16;--sk-explainify:#1c6a58;--sk-recordify:#5c4a86;--sk-researchify:#8f3a24;--sk-librify:#90404e;
 }
 /* font combinations — Editorial is the :root default; each swaps display / body / mono */
 html[data-font="grotesk"]{--disp:'Bricolage Grotesque',ui-sans-serif,system-ui,sans-serif;--body:'Literata',Georgia,serif}
@@ -178,6 +178,8 @@ svg#flow{width:100%;height:auto;display:block}
 .d-id .d-mode{display:inline-block;font-family:var(--mono);font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;
   color:var(--c);border:1px solid color-mix(in srgb,var(--c) 50%,transparent);padding:3px 10px;border-radius:2px}
 .d-id .d-no{position:absolute;top:1.1rem;right:1.2rem;font-family:var(--disp);font-weight:800;font-size:1rem;color:var(--ink-faint);opacity:.55}
+.timeline{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.35rem 1rem;margin-top:.9rem}
+.tl-step{font-family:var(--mono);font-size:var(--fs-xs);letter-spacing:.04em}
 .d-body{padding:1.4rem 1.7rem}
 .d-does{font-size:1rem;color:var(--ink);line-height:1.55;margin-bottom:1rem}
 .d-does b{color:var(--c)}
@@ -288,6 +290,7 @@ html[data-theme="light"]{
   --cs-seed:#97b25e;     /* case 02 · moss green */
   --cs-tab:#6ca6d8;      /* case 03 · blueprint blue */
   --cs-round:#b48cd8;    /* case 04 · violet */
+  --cs-librarian:#c9707e;/* case 09 · card-catalog rose */
   --cs-live:#d8a24a;     /* in-progress pulse · amber */
 }
 html[data-theme="light"]{
@@ -296,6 +299,7 @@ html[data-theme="light"]{
   --cs-seed:#5d7430;
   --cs-tab:#346590;
   --cs-round:#6e4b9a;
+  --cs-librarian:#90404e;
   --cs-live:#8a6420;
 }
 /* active third tab button — scoped override, pure addition */
@@ -434,15 +438,17 @@ html[data-theme="light"]{
   <header class="masthead">
     <div>
       <div class="kicker">skillify · <b>the field guide</b> · harness-agnostic agent skills</div>
-      <h1>Eleven ways<br><span class="thin">to think.</span></h1>
-      <p class="lede">Eleven cognitive skills that chain into a <b>pipeline for AI-assisted work</b>. Each one is a mode of thinking; together they're a method — map it, explore it, sharpen it, plan it, build it, judge it. And when it breaks, fix it. When you're done, learn from it.</p>
+      <h1>Twelve ways<br><span class="thin">to think.</span></h1>
+      <p class="lede">Twelve cognitive skills that chain into a <b>pipeline for AI-assisted work</b>. Each one is a mode of thinking; together they're a method — map it, explore it, sharpen it, plan it, build it, judge it. And when it breaks, fix it. When you're done, learn from it.</p>
     </div>
     <div class="mast-side">
       <div><span class="pip" style="background:#d8a24a"></span><b>4</b> entry points</div>
       <div><span class="pip" style="background:#5b8ab5"></span><b>4</b> build pipeline</div>
       <div><span class="pip" style="background:#b58ab0"></span><b>3</b> teaching cluster</div>
-      <div style="margin-top:.6rem">skills <b>11</b> · one method</div>
+      <div><span class="pip" style="background:var(--sk-librify)"></span><b>1</b> library</div>
+      <div style="margin-top:.6rem">skills <b>12</b> · one method</div>
     </div>
+    <div id="skill-timeline" class="timeline" aria-label="skill creation timeline"></div>
   </header>
 
   <!-- the living flow -->
@@ -476,13 +482,13 @@ html[data-theme="light"]{
 
 <span class="c"># or just reference a skill directly — the SKILL.md files ARE the prompts</span>
 When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span></pre>
-    <p class="i-note">Once installed, invoke a skill by its <b>slash command</b> (<b>/traceify</b>, <b>/shapeify</b>, …) or just say its trigger phrase and the right skill picks itself up. Five skills — <b>orientify</b>, <b>promptify</b>, <b>explainify</b>, <b>recordify</b>, <b>researchify</b> — wait for an explicit call.</p>
+    <p class="i-note">Once installed, invoke a skill by its <b>slash command</b> (<b>/traceify</b>, <b>/shapeify</b>, …) or just say its trigger phrase and the right skill picks itself up. Six skills — <b>orientify</b>, <b>promptify</b>, <b>explainify</b>, <b>recordify</b>, <b>researchify</b>, <b>librify</b> — wait for an explicit call.</p>
   </section>
 
   <footer>
     <span class="fmark">skillify</span>
     <span class="fline"></span>
-    <span>eleven skills · one pipeline · MIT</span>
+    <span>twelve skills · one pipeline · MIT</span>
   </footer>
   </section>
 
@@ -576,13 +582,13 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
   <section class="tabpane" id="pane-cases" role="tabpanel" aria-label="case studies for agent workflows">
     <header class="masthead">
       <div>
-        <div class="kicker">skillify · <b>the field guide</b> · eight real orchestrator runs</div>
-        <h1>Eight runs.<br><span class="thin">Field reports.</span></h1>
-        <p class="lede">The skills tab is the method; the agents tab is the fleet. This tab is the <b>evidence</b> — eight real orchestrator runs logged as they happened: what broke, who caught it, what the numbers said, and what stuck. De-identified, verified, and kept as the fleet&#8217;s institutional memory.</p>
+        <div class="kicker">skillify · <b>the field guide</b> · nine real orchestrator runs</div>
+        <h1>Nine runs.<br><span class="thin">Field reports.</span></h1>
+        <p class="lede">The skills tab is the method; the agents tab is the fleet. This tab is the <b>evidence</b> — nine real orchestrator runs logged as they happened: what broke, who caught it, what the numbers said, and what stuck. De-identified, verified, and kept as the fleet&#8217;s institutional memory.</p>
       </div>
       <div class="mast-side">
-        <div><span class="pip" style="background:var(--cs-ink)"></span><b>8</b> workflows</div>
-        <div><span class="pip" style="background:var(--sk-traceify)"></span><b>8</b> complete</div>
+        <div><span class="pip" style="background:var(--cs-ink)"></span><b>9</b> workflows</div>
+        <div><span class="pip" style="background:var(--sk-traceify)"></span><b>9</b> complete</div>
         <div><span class="pip" style="background:var(--cs-live)"></span><b>0</b> in progress</div>
         <div style="margin-top:.6rem">major catches <b>5</b> · kept</div>
       </div>
@@ -603,7 +609,7 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
     <footer>
       <span class="fmark">skillify</span>
       <span class="fline"></span>
-      <span>eight runs · real catches · lessons kept</span>
+      <span>nine runs · real catches · lessons kept</span>
     </footer>
   </section>
 
@@ -1043,7 +1049,7 @@ html[data-theme="light"] .ledger{
 </div>
 
 <script>
-/* ── the eleven skills ── */
+/* ── the twelve skills ── */
 var SK=[
  {id:'orientify',emoji:'🧭',mode:'cartographic',fam:'entry',color:'var(--sk-orientify)',no:'01',x:40,y:96,
   does:'Maps a codebase you don\u2019t know <b>before</b> you touch it — vocabulary, architecture, hot spots, seams, landmines — into one Codebase Brief. Touch nothing, see everything.',
@@ -1099,12 +1105,19 @@ var SK=[
   does:'Researches the web <b>and given documents</b> — data, points of interest, fundamentals — by a strict sourcing hierarchy: official documentation first, popularity a tiebreaker, never a validator. Non-official claims need <b>corroboration</b>; fetched code is never executed. Returns 5–10 ranked findings, each with sources and a confidence flag.',
   when:['“Research this”','“What does the ecosystem say?”','Before a decision that turns on external facts'],
   invoke:'/researchify',trig:'“research this” · “what does the ecosystem say?”',explicit:true,
-  io:'a question + sources <b>→</b> a ranked findings brief',conn:'feeds <b>shapeify</b> · escalates decision-bearing findings to the <b>oracle</b>'}
+  io:'a question + sources <b>→</b> a ranked findings brief',conn:'feeds <b>shapeify</b> · escalates decision-bearing findings to the <b>oracle</b>'},
+ {id:'librify',emoji:'📚',mode:'curatorial',fam:'memory',color:'var(--sk-librify)',no:'12',x:520,y:350,
+  does:'Compiles the fleet’s verified lessons into <b>the library</b> (Shoin) — evidence-linked, valenced (what worked <b>and</b> what failed), sanitized entries you can look up. Recall is bounded: top-k summaries, flagged, never full dumps. Write-only librarian; agents read, never self-publish.',
+  when:['“Check the library”','“What did we learn about X?”','Post-run compile · owner feedback capture'],
+  invoke:'/librify',trig:'“check the library” · “what did we learn about X?”',explicit:true,
+  io:'verified artifacts + feedback <b>→</b> curated entries · a query <b>→</b> top-k summaries',
+  conn:'harvests <b>recordify · researchify</b> · feeds <b>context-builder → shapeify</b> (bounded lookup)'}
 ];
 var FAM={
  entry:{name:'the entry points',sub:'standalone · start anywhere',color:'var(--sk-orientify)'},
  pipe:{name:'the build pipeline',sub:'undumbify → shapeify → shipify → reviewify',color:'var(--sk-shapeify)'},
- teach:{name:'the teaching cluster',sub:'about you, not the work · debrief → explain → record',color:'var(--sk-reviewify)'}
+ teach:{name:'the teaching cluster',sub:'about you, not the work · debrief → explain → record',color:'var(--sk-reviewify)'},
+ memory:{name:'the library',sub:'institutional memory · harvest → recall',color:'var(--sk-librify)'}
 };
 /* the handoffs: [from, to, label, kind] */
 var FLOWS=[
@@ -1114,7 +1127,8 @@ var FLOWS=[
  ['traceify','undumbify','root cause','dashed'],
  ['shipify','promptify','harvest','dashed'],['promptify','explainify','skill map','dashed'],
  ['promptify','recordify','record','dashed'],['explainify','recordify','','dashed'],
- ['explorify','researchify','ecosystem','dashed'],['researchify','shapeify','evidence','dashed']
+ ['explorify','researchify','ecosystem','dashed'],['researchify','shapeify','evidence','dashed'],
+ ['recordify','librify','shelve','dashed'],['researchify','librify','','dashed']
 ];
 /* situation → skill, for the router */
 var ROUTES=[
@@ -1122,7 +1136,8 @@ var ROUTES=[
  ['I don\u2019t know what I want yet','explorify'],['it\u2019s vague — sharpen it','undumbify'],
  ['plan this','shapeify'],['build this','shipify'],['review this','reviewify'],
  ['what does this do?','explainify'],['debrief that','promptify'],['record a session','recordify'],
- ['research this','researchify'],['what does the ecosystem say','researchify']
+ ['research this','researchify'],['what does the ecosystem say','researchify'],
+ ['check the library','librify'],['what did we learn about X','librify']
 ];
 
 var NS='http://www.w3.org/2000/svg';
@@ -1193,9 +1208,19 @@ function gotoSkill(id){
   setTimeout(function(){ lightChip(id,false); },1600);
 }
 
+/* the creation timeline — 1st skill created → 12th, derived from SK.no */
+var ORD=['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','11th','12th'];
+(function(){
+ var tl=document.getElementById('skill-timeline');
+ if(!tl)return;
+ tl.innerHTML=SK.map(function(s){
+  var i=parseInt(s.no,10);
+  return '<span class="tl-step" style="color:'+s.color+'" title="'+ORD[i-1]+' skill created — '+s.id+'">'+ORD[i-1]+' · '+s.id+'</span>';
+ }).join('');
+})();
 /* dossiers, grouped by family */
 var host=document.getElementById('dossiers');
-var order=['entry','pipe','teach'];
+var order=['entry','pipe','teach','memory'];
 order.forEach(function(fk){
   var f=FAM[fk];
   var skills=SK.filter(function(s){return s.fam===fk;});
@@ -1212,7 +1237,7 @@ order.forEach(function(fk){
     var when=s.when.map(function(w){return '<li>'+w+'</li>';}).join('');
     d.innerHTML=
       '<div class="d-id">'+
-        '<span class="d-no">'+s.no+'</span>'+
+        '<span class="d-no" title="'+ORD[parseInt(s.no,10)-1]+' skill created — '+s.id+'">'+ORD[parseInt(s.no,10)-1]+'</span>'+
         '<div class="d-emoji">'+s.emoji+'</div>'+
         '<h3>'+s.id+'</h3>'+
         '<span class="d-mode">'+s.mode+'</span>'+
@@ -1602,6 +1627,23 @@ var CS=[
    'The bench-warmers\u2019 night: context-builder and oracle flew and both earned their keep.',
    'Stars are a tiebreaker, never a validator — the skill says it, and the map obeys it.',
    'A documented planner call beats an unverified parent guess.'
+  ]},
+ {id:'librarian',no:'09',title:'The librarian',
+  sub:'the fleet\u2019s memory · the 12th skill',
+  status:'done',label:'complete',color:'var(--cs-librarian)',
+  stat:'4 agents · design + conformance',
+  stats:[['12','skills in the house'],['4','agents flew'],['rose','#c9707e']],
+  does:'The fleet forgets — every run rediscovers what a previous run already learned. Run 09 built the fix: the <b>librarian</b> agent, the <b>librify</b> skill, and <b>Shoin</b> (書院) — a library of evidence-linked, valenced lessons: what worked <b>and</b> what failed, sanitized on entry. The run was the case: the design, the oracle’s geometry catch, and full conformance — every piece of data about skills and agents updated.',
+  moments:[
+   {name:'the negatives, from day one',tag:'ruling',html:'The owner locked it in the brainstorm: <b>valence from day one</b> — “we usually learn from the negatives more times.” The schema carries positive patterns and negative post-mortems side by side; negatives are evidence-linked failures, never vibes.'},
+   {name:'the oracle’s geometry catch',tag:'catch',big:true,html:'The designer’s second flow-map edge (researchify → librify, labeled “briefs”) failed the coordinate audit: a vertical edge’s label would land <b>exactly on the opaque node edge</b>. House precedent ruled — vertical edges stay unlabeled. The original four checks would have passed it; the fifth (label-vs-node clearance) caught it.'},
+   {name:'the bounded lookup',tag:'ruling',html:'context-builder cooperates with librify by design — but only as a <b>bounded lookup</b>: top-k (≤5) summaries, flagged as library-derived, supersession respected. The library is a reference shelf, not a brain.'}
+  ],
+  verify:[['12/12','skills conform · array, installer, README, docs'],['0','hunks in the agents/ledger byte-identity zones'],['5/5','flow-map coordinate audit checks'],['gate','I1 gate designed in for every catalog entry — sanitize on entry, gate=0 before accepted (catalog seeding is S0/S1)']],
+  lessons:[
+   'Vertical edges don’t carry labels — the label math lands them on the opaque node edge. House precedent is the spec.',
+   'A bounded lookup (top-k, flagged, supersession-respected) is what keeps a memory system from becoming a loop.',
+   'Negatives earn their shelf space: evidence-linked post-mortems, stated as bluntly as the wins.'
   ]}
 ];
 /* run log index */
