@@ -19,7 +19,7 @@ The subagent fleet used by this homelab's pi setup, versioned for reproducibilit
 | `worker` | flash | high | shipify, ponytail, traceify, prototype, shadcn, caveman-commit, rtk-first | The single writer thread |
 | `reviewer` | qwen3.8-max-preview | medium | reviewify, code-review, ponytail-review, ponytail-audit, ponytail-debt, caveman-review, rtk-first | Verifies implementation against intent |
 | `oracle` / `advisor` | qwen3.8-max-preview | xhigh | grilling, domain-modeling, codebase-design, rtk-first | Decision-consistency check |
-| `researcher` | flash | high | research | Autonomous web research |
+| `researcher` | flash | high | research, researchify | Autonomous web research |
 | `scout` | flash | low* | caveman, rtk-first | Fast codebase recon |
 | `context-builder` | flash | high | undumbify, domain-modeling, rtk-first | Intent extraction + meta-prompt |
 | `delegate` | inherits | inherits | rtk-first | Lightweight generic child |

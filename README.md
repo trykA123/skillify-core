@@ -1,12 +1,12 @@
 # skillify
 
-Ten interlocking skills for AI-assisted work. Harness-agnostic — works with Qwen Code,
+Eleven interlocking skills for AI-assisted work. Harness-agnostic — works with Qwen Code,
 Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown.
 
 ## What's Inside
 
-- **Ten skills** — `orientify`, `explorify`, `undumbify`, `shapeify`, `shipify`,
-  `reviewify`, `traceify`, `promptify`, `explainify`, `recordify`. Each folder holds one `SKILL.md` — the skills ARE the prompts. Catalog below.
+- **Eleven skills** — `orientify`, `explorify`, `undumbify`, `shapeify`, `shipify`,
+  `reviewify`, `traceify`, `promptify`, `explainify`, `recordify`, `researchify`. Each folder holds one `SKILL.md` — the skills ARE the prompts. Catalog below.
 - **The fleet** — [`agents/`](agents/README.md): orchestrator + 9 builtin snapshots + `fleet-config.json`. No credentials.
 - **Docs** — [`docs/index.html`](docs/index.html) (skill map) + [`docs/html/`](docs/html/) — 17 standalone HTML artifacts.
 
@@ -23,10 +23,11 @@ Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown
 | `promptify` | Coaching — teach prompt craft from your real conversations | "Debrief that" |
 | `explainify` | Teaching — explain code and its wiring at your level | "What does this do?" |
 | `recordify` | Recording — capture a sanitized session record | "Record this session" |
+| `researchify` | Investigative — gather and vet evidence from the web and given documents | "Research this" |
 
 They chain: `orientify → explorify → undumbify → shapeify → shipify → reviewify`
 (map → diverge → converge → plan → build → judge). `traceify` is the debug entry;
-`promptify` + `explainify` harvest into the game layer; `recordify` writes the sanitized session records that feed the skill map. Ceremony scales with the work — every skill has a lite path; "just do it" overrides.
+`researchify` gathers the evidence on demand; `promptify` + `explainify` harvest into the game layer; `recordify` writes the sanitized session records that feed the skill map. Ceremony scales with the work — every skill has a lite path; "just do it" overrides.
 
 ## Install
 ### Option 1: `npx skills` (recommended, uses symlinks by default)
@@ -102,7 +103,7 @@ skillify/
 ├── agents/                # fleet — see agents/README.md
 ├── docs/                  # skill map + html/ artifacts
 ├── orientify/  explorify/  undumbify/  shapeify/  shipify/
-└── reviewify/  traceify/  promptify/  explainify/  recordify/
+└── reviewify/  traceify/  promptify/  explainify/  recordify/  researchify/
 ```
 
 ## No Secrets

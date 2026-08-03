@@ -14,7 +14,7 @@ set -euo pipefail
 # all harnesses at once.
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILLS=(orientify explorify undumbify shapeify shipify reviewify traceify promptify explainify recordify)
+SKILLS=(orientify explorify undumbify shapeify shipify reviewify traceify promptify explainify recordify researchify)
 MODE="link"
 SCOPE="global"
 ACTION="install"

@@ -8,6 +8,10 @@ Runtime data: `~/.agents/learnings/progress.json` (source of truth).
 Rendered dashboard: `progress.html` (regenerated on every update).
 This spec lives here — once — and both skills follow it.
 
+researchify is outside the game layer: it is not a teaching skill, it does not join this
+progression, and it is not a harvest source. promptify and explainify remain the two
+teaching skills; the pipeline-harvest list is unchanged.
+
 ## Philosophy
 
 - **Quality over frequency.** "You led with intent + constraints in one line and got a
