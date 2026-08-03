@@ -14,6 +14,7 @@ Curated, de-identified records of real orchestrator runs. These feed the docs si
 | 06 | [The skill map build](06-skill-map.md) | ✅ complete |
 | 07 | [The charts reinvention](07-charts-reinvention.md) | ✅ complete — researcher's debut |
 | 08 | [The researchify skill](08-researchify.md) | ✅ complete |
+| 09 | [The librarian](09-librarian.md) | ✅ complete |
 
 Process lessons that are not full workflows (e.g. the [README reconcile](03-readme-reconcile.md)) stay on record as side notes, not as numbered workflows.
 
