@@ -12,6 +12,11 @@ researchify is outside the game layer: it is not a teaching skill, it does not j
 progression, and it is not a harvest source. promptify and explainify remain the two
 teaching skills; the pipeline-harvest list is unchanged.
 
+librify is outside the game layer: it is fleet-internal memory, not a teaching skill; it
+does not coach the owner through a competency, it does not join this progression, and it
+is not a harvest source. promptify and explainify remain the two teaching skills; the
+pipeline-harvest list is unchanged.
+
 ## Philosophy
 
 - **Quality over frequency.** "You led with intent + constraints in one line and got a

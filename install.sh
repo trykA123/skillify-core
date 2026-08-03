@@ -13,13 +13,13 @@ set -euo pipefail
 # The repo is the single source of truth. Symlinks mean `git pull` updates
 # all harnesses at once.
 #
-# Skills live in family folders (entry/ pipeline/ teaching/) — the SKILL_FAMILY
+# Skills live in family folders (entry/ pipeline/ teaching/ memory/) — the SKILL_FAMILY
 # map resolves name → family. Harness destinations stay FLAT by skill name
 # (<harness-dir>/<skill-name>/SKILL.md); the family nesting never leaks out
 # of the repo. An unknown skill name fails loudly instead of silent-skipping.
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILLS=(orientify explorify undumbify shapeify shipify reviewify traceify promptify explainify recordify researchify)
+SKILLS=(orientify explorify undumbify shapeify shipify reviewify traceify promptify explainify recordify researchify librify)
 
 # name → family (mirrors the repo tree and the docs-site taxonomy)
 declare -A SKILL_FAMILY=(
@@ -34,6 +34,7 @@ declare -A SKILL_FAMILY=(
   [promptify]=teaching
   [explainify]=teaching
   [recordify]=teaching
+  [librify]=memory
 )
 
 # Resolve a skill name to its in-repo dir; fail loudly on an unknown name.

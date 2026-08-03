@@ -8,6 +8,7 @@ The subagent fleet used by this homelab's pi setup, versioned for reproducibilit
 |---|---|
 | `fleet-config.json` | The `subagents` block from pi's user settings: `defaultModel` + per-agent overrides (model, fallback models, thinking level, attached skills). Drop it under `"subagents"` in `~/.pi/agent/settings.json` to reproduce the fleet. |
 | `orchestrator.md` | **Custom agent** (ours): the pipeline conductor ("boss") — plans and delegates across scout/planner/worker/reviewer/oracle. Installed to `~/.agents/orchestrator.md`. |
+| `librarian.md` | **Custom agent** (ours): the fleet's write-only memory — compiles verified lessons into the library (Shoin) and serves bounded recall; agents never self-publish. Installed to `~/.agents/librarian.md`. |
 | `advisor.md` … `worker.md` | Snapshots of the 9 builtin agents from the `pi-subagents` npm package (their canonical source is the package — these are reference copies for review). |
 
 ## Fleet at a glance
@@ -22,6 +23,7 @@ The subagent fleet used by this homelab's pi setup, versioned for reproducibilit
 | `researcher` | flash | high | research, researchify | Autonomous web research |
 | `scout` | flash | low* | caveman, rtk-first | Fast codebase recon |
 | `context-builder` | flash | high | undumbify, domain-modeling, rtk-first | Intent extraction + meta-prompt |
+| `librarian` | qwen3.8-max-preview | xhigh | librify, rtk-first | Compile & recall the fleet's evidence-linked library |
 | `delegate` | inherits | inherits | rtk-first | Lightweight generic child |
 
 \* scout's `low` clamps up to `high` at runtime — deepseek supports only `off`/`high`/`max`.

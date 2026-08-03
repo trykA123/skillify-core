@@ -1,12 +1,12 @@
 # skillify
 
-Eleven interlocking skills for AI-assisted work. Harness-agnostic — works with Qwen Code,
+Twelve interlocking skills for AI-assisted work. Harness-agnostic — works with Qwen Code,
 Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown.
 
 ## What's Inside
 
-- **Eleven skills** — `orientify`, `explorify`, `undumbify`, `shapeify`, `shipify`,
-  `reviewify`, `traceify`, `promptify`, `explainify`, `recordify`, `researchify`. Each folder holds one `SKILL.md` — the skills ARE the prompts. Catalog below.
+- **Twelve skills** — `orientify`, `explorify`, `undumbify`, `shapeify`, `shipify`,
+  `reviewify`, `traceify`, `promptify`, `explainify`, `recordify`, `researchify`, `librify`. Each folder holds one `SKILL.md` — the skills ARE the prompts. Catalog below.
 - **The fleet** — [`agents/`](agents/README.md): orchestrator + 9 builtin snapshots + `fleet-config.json`. No credentials.
 - **Docs** — [`docs/index.html`](docs/index.html) (skill map) + [`docs/html/`](docs/html/) — 17 standalone HTML artifacts.
 
@@ -24,6 +24,7 @@ Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown
 | `explainify` | Teaching — explain code and its wiring at your level | "What does this do?" |
 | `recordify` | Recording — capture a sanitized session record | "Record this session" |
 | `researchify` | Investigative — gather and vet evidence from the web and given documents | "Research this" |
+| `librify` | Curatorial — compile & recall the fleet's evidence-linked lessons | "Check the library" |
 
 They chain: `orientify → explorify → undumbify → shapeify → shipify → reviewify`
 (map → diverge → converge → plan → build → judge). `traceify` is the debug entry;
@@ -106,8 +107,10 @@ skillify/
 │   ├── orientify/  explorify/  traceify/  researchify/
 ├── pipeline/              # the build pipeline
 │   ├── undumbify/  shapeify/  shipify/  reviewify/
-└── teaching/              # the teaching cluster — about you, not the work
-    └── promptify/  explainify/  recordify/
+├── teaching/              # the teaching cluster — about you, not the work
+│   └── promptify/  explainify/  recordify/
+└── memory/                # the library — institutional memory, fleet-internal
+    └── librify/
 ```
 
 ## No Secrets

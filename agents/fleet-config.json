@@ -109,6 +109,17 @@
       "skills": [
         "rtk-first"
       ]
+    },
+    "librarian": {
+      "model": "qwen-token-plan/qwen3.8-max-preview",
+      "fallbackModels": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "thinking": "xhigh",
+      "skills": [
+        "librify",
+        "rtk-first"
+      ]
     }
   }
 }
