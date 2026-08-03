@@ -10,11 +10,15 @@
 #     leak classes (ticket-id, internal-domain, verbatim speech) + the
 #     genericization vocabulary at capture time.
 #
-# Activation note: recordify/audit-records.mjs and records/ are being built
-# by the concurrent recordify effort and do not exist yet. Commit this
-# workflow now; it becomes live when those files land and main is pushed.
-# Do NOT create records/ here -- the pipeline creates it (see
-# plans/RELEASE-PACKET.md, Phase B).
+# Activation note: recordify/audit-records.mjs has landed (recordify
+# completion); records/ lands with the corpus import. The gate is live
+# once main is pushed with those files present.
+#
+# CI gates beyond the audit itself: `bun install --frozen-lockfile` makes
+# the Makefile check-ts (tsc --noEmit) a HARD gate instead of WARN-skipping,
+# and the shellcheck apt install makes check-bash's shellcheck half run for
+# real (host pattern is graceful WARN+skip; CI installs the tools -- same
+# pattern as TrueHL's check.yml).
 #
 # Solo-owner direct-push workflow: CI cannot block a push landing on main --
 # it is detect + notify + mark. The homeserver re-audit (the same
@@ -32,13 +36,21 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
 
+      - name: Install deps (typescript gate)
+        run: bun install --frozen-lockfile
+
+      - name: Install linters (shellcheck)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
       - name: Sanitizer contract (I1 test suite)
         run: bun test recordify/sanitize.test.mjs
 
       - name: Full-corpus audit (structure + speech + structural identifiers)
         run: bun recordify/audit-records.mjs records/
 
-      - name: make check (bash -n, node --check, security scan)
+      - name: make check (bash -n + shellcheck, node --check, tsc --noEmit, security scan)
         run: make check
 
       - name: Notify ntfy on failure
