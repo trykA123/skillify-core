@@ -79,8 +79,8 @@ When debugging, follow: /path/to/skillify/traceify/SKILL.md
 - **Session records:** `recordify` writes sanitized session records (git-native, the skill-map app's source of truth) at commit/push or an explicit "done".
 - **Dashboard:** [`docs/html/progress.html`](docs/html/progress.html) — a render, never hand-edited.
 ```bash
-node game-render.js                     # default: reads ~/.agents/learnings/progress.json
-node game-render.js path/to/progress.json  # or point at any progress file
+bun game-render.ts                      # default: reads ~/.agents/learnings/progress.json
+bun game-render.ts path/to/progress.json   # or point at any progress file
 ```
 
 ## The Fleet — `agents/`
@@ -91,14 +91,14 @@ overrides). Full table, roles, fallback models: [agents/README.md](agents/README
 ## The Docs Site — `docs/`
 - [`docs/index.html`](docs/index.html) — skill map: the cognitive pipeline as spec-sheet dossiers, 20px base / 1.250 (major third) type scale.
 - [`docs/html/`](docs/html/) — 17 tracked HTML artifacts: 16 `RATINGS-*.html` design
-  iterations + `progress.html`, the practice record rendered by `game-render.js`.
+  iterations + `progress.html`, the practice record rendered by `game-render.ts`.
 
 ## Repo Structure
 ```
 skillify/
 ├── README.md
 ├── game-layer.md          # spec shared by promptify + explainify
-├── game-render.js         # renders progress.json → progress.html
+├── game-render.ts         # renders progress.json → progress.html
 ├── install.sh             # symlink skills into AI harnesses
 ├── agents/                # fleet — see agents/README.md
 ├── docs/                  # skill map + html/ artifacts

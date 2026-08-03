@@ -1,17 +1,71 @@
-#!/usr/bin/env node
-// usage-stats.mjs — the fleet ledger: agent-usage analytics for the skillify docs site.
+#!/usr/bin/env bun
+// usage-stats.ts — the fleet ledger: agent-usage analytics for the skillify docs site.
 // Reads every session log under ~/.pi/agent/sessions (each *.jsonl file = one run),
 // counts subagent spawns per agent, and renders:
 //   docs/html/usage.json  — the raw aggregate (for reuse)
 //   docs/html/usage.html  — a standalone page in the docs design language
-// Private tooling like game-render.js: plain node, zero npm deps, idempotent.
+// Private tooling like game-render.ts: plain bun/node, zero npm runtime deps, idempotent.
 // Counting convention (stated on the page): a "call" = one subagent spawn
 // (a toolCall record with name:"subagent" whose arguments carry an agent and no action).
-// Usage: node usage-stats.mjs [path/to/sessions-root]
-'use strict';
+// Usage: bun usage-stats.ts [path/to/sessions-root]
 import fs from 'node:fs';
+import type { Dirent } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+/* ── session-record shape (one JSON line inside a run's *.jsonl) ── */
+interface ToolCallItem {
+  type?: string;
+  name?: string;
+  arguments?: { agent?: string; action?: string };
+}
+
+interface SessionLogRecord {
+  type?: string;
+  customType?: string;
+  timestamp?: string;
+  message?: { content?: ToolCallItem[] };
+}
+
+interface Spawn { agent: string; ts: number | null; }
+interface Mgmt { action: string; agent: string | null; }
+interface Run {
+  file: string;
+  records: number;
+  spawns: Spawn[];
+  mgmt: Mgmt[];
+  escalations: number;
+  minTs: number | null;
+  maxTs: number | null;
+  ordinal?: number;
+}
+
+/* ── the aggregate shape (docs/html/usage.json; renderHtml renders from it) ── */
+interface AgentRow { name: string; calls: number; share: string; trend: string | null; }
+interface Issue { severity: string; text: string; }
+interface RunMixRow {
+  label: string;
+  calls: number;
+  escalations: number;
+  repairRounds: number;
+  records: number;
+  mix: Record<string, string>;
+}
+interface TimelinePoint { date: string; calls: number; partial: boolean; }
+interface UsageAggregate {
+  generatedAt: string;
+  scope: string;
+  counting: string;
+  windowDays: number;
+  trendAvailable: boolean;
+  totals: { calls: number; runs: number; escalations: number; repairRounds: number; unclassified: number };
+  agents: AgentRow[];
+  coldSpots: { unused: string[]; underused: { name: string; calls: number; share: string }[] };
+  issues: Issue[];
+  runLength: { medianRecords: number; longest: { label: string; records: number } | null };
+  runs: RunMixRow[];
+  timeline: TimelinePoint[];
+}
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT_JSON = path.join(HERE, 'docs', 'html', 'usage.json');
@@ -31,8 +85,8 @@ const MIX_ROWS = 25;    // per-run mix table shows the most recent 25 runs with 
 const ISSUE_CAP = 5;    // per-issue-group cap on surfaced rows (noise guard)
 
 /* ── walking ── */
-function walkJsonl(dir, out = []) {
-  let entries;
+function walkJsonl(dir: string, out: string[] = []): string[] {
+  let entries: Dirent[];
   try { entries = fs.readdirSync(dir, { withFileTypes: true }); }
   catch { return out; }
   for (const e of entries) {
@@ -44,17 +98,17 @@ function walkJsonl(dir, out = []) {
 }
 
 /* ── per-run parsing ── */
-function parseRun(file) {
-  const run = { file, records: 0, spawns: [], mgmt: [], escalations: 0, minTs: null, maxTs: null };
+function parseRun(file: string): Run {
+  const run: Run = { file, records: 0, spawns: [], mgmt: [], escalations: 0, minTs: null, maxTs: null };
   let text;
   try { text = fs.readFileSync(file, 'utf8'); } catch { return run; }
   for (const line of text.split('\n')) {
     if (!line.trim()) continue;
     run.records++;
-    let rec;
-    try { rec = JSON.parse(line); } catch { continue; }
+    let rec: SessionLogRecord;
+    try { rec = JSON.parse(line) as SessionLogRecord; } catch { continue; }
     const ts = rec.timestamp ? new Date(rec.timestamp).getTime() : null;
-    if (Number.isFinite(ts)) {
+    if (typeof ts === 'number' && Number.isFinite(ts)) {
       run.minTs = run.minTs === null ? ts : Math.min(run.minTs, ts);
       run.maxTs = run.maxTs === null ? ts : Math.max(run.maxTs, ts);
     }
@@ -77,7 +131,7 @@ function parseRun(file) {
 }
 
 /* ── session grouping: topmost path segment under the sessions root ── */
-function sessionKeyOf(file) {
+function sessionKeyOf(file: string): string {
   const rel = path.relative(SESSIONS_ROOT, file);
   const parts = rel.split(path.sep);
   const key = parts.length >= 2 ? parts[1] : parts[0];
@@ -85,33 +139,33 @@ function sessionKeyOf(file) {
 }
 
 /* ── helpers ── */
-const median = (xs) => {
+const median = (xs: number[]): number => {
   if (!xs.length) return 0;
   const s = [...xs].sort((a, b) => a - b);
   const m = Math.floor(s.length / 2);
   return s.length % 2 ? s[m] : Math.round(((s[m - 1] + s[m]) / 2) * 10) / 10;
 };
-const pct = (n, d) => (d ? ((n / d) * 100).toFixed(2) : '0.00');
-const dayKey = (ts) => new Date(ts).toISOString().slice(0, 10);
-const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const pct = (n: number, d: number): string => (d ? ((n / d) * 100).toFixed(2) : '0.00');
+const dayKey = (ts: number): string => new Date(ts).toISOString().slice(0, 10);
+const esc = (s: unknown): string => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 /* ── build the aggregate ── */
-function aggregate(runs) {
+function aggregate(runs: Run[]): UsageAggregate {
   // ordinals: sessions by first activity, runs within a session by first activity
-  const bySession = new Map();
+  const bySession = new Map<string, Run[]>();
   for (const r of runs) {
     const k = sessionKeyOf(r.file);
     if (!bySession.has(k)) bySession.set(k, []);
-    bySession.get(k).push(r);
+    bySession.get(k)!.push(r);
   }
   const sessionKeys = [...bySession.keys()].sort((a, b) => {
-    const fa = Math.min(...bySession.get(a).map((r) => r.minTs ?? Infinity));
-    const fb = Math.min(...bySession.get(b).map((r) => r.minTs ?? Infinity));
+    const fa = Math.min(...bySession.get(a)!.map((r) => r.minTs ?? Infinity));
+    const fb = Math.min(...bySession.get(b)!.map((r) => r.minTs ?? Infinity));
     return fa - fb;
   });
-  const labelled = []; // {label, run}
+  const labelled: { label: string; run: Run }[] = []; // {label, run}
   sessionKeys.forEach((k, i) => {
-    const list = [...bySession.get(k)].sort((a, b) => (a.minTs ?? Infinity) - (b.minTs ?? Infinity));
+    const list = [...bySession.get(k)!].sort((a, b) => (a.minTs ?? Infinity) - (b.minTs ?? Infinity));
     list.forEach((r, j) => labelled.push({ label: `session ${i + 1} · run ${j + 1}`, run: r }));
   });
   labelled.forEach(({ run }, idx) => { run.ordinal = idx + 1; });
@@ -126,13 +180,13 @@ function aggregate(runs) {
   const bucketSet = new Set(buckets.map((b) => b.date));
 
   // agent universe = fleet ∪ observed
-  const agentSet = new Set(FLEET);
+  const agentSet = new Set<string>(FLEET);
   let total = 0;
   for (const { run } of labelled) for (const s of run.spawns) { agentSet.add(s.agent); total++; }
   const agents = [...agentSet];
-  const callsBy = Object.fromEntries(agents.map((a) => [a, 0]));
-  const spawnBy = Object.fromEntries(agents.map((a) => [a, 0])); // windowed for trend/timeline
-  const timeline = Object.fromEntries(buckets.map((b) => [b.date, 0]));
+  const callsBy: Record<string, number> = Object.fromEntries(agents.map((a) => [a, 0] as [string, number]));
+  const spawnBy: Record<string, number> = Object.fromEntries(agents.map((a) => [a, 0] as [string, number])); // windowed for trend/timeline
+  const timeline: Record<string, number> = Object.fromEntries(buckets.map((b) => [b.date, 0] as [string, number]));
   for (const { run } of labelled) {
     for (const s of run.spawns) {
       callsBy[s.agent] = (callsBy[s.agent] || 0) + 1;
@@ -144,7 +198,7 @@ function aggregate(runs) {
   // repair rounds: consecutive worker→reviewer spawns within a run
   let repairRounds = 0;
   let unclassified = 0;
-  const runRows = [];
+  const runRows: RunMixRow[] = [];
   for (const { label, run } of labelled) {
     let rounds = 0;
     for (let i = 0; i + 1 < run.spawns.length; i++) {
@@ -152,18 +206,18 @@ function aggregate(runs) {
       else if (!run.spawns[i].agent) unclassified++;
     }
     repairRounds += rounds;
-    const mix = {};
+    const mix: Record<string, number> = {};
     let runCalls = 0;
     for (const s of run.spawns) { mix[s.agent] = (mix[s.agent] || 0) + 1; runCalls++; }
     if (runCalls) {
-      const mixPct = {};
+      const mixPct: Record<string, string> = {};
       for (const a of agents) mixPct[a] = pct(mix[a] || 0, runCalls);
       runRows.push({ label, calls: runCalls, escalations: run.escalations, repairRounds: rounds, records: run.records, mix: mixPct });
     }
   }
   runRows.sort((a, b) => (b.calls === a.calls ? a.label.localeCompare(b.label) : b.calls - a.calls));
   // sort most-recent-first for display: use run.ordinal desc
-  const orderByOrd = new Map(labelled.map(({ label, run }) => [label, run.ordinal]));
+  const orderByOrd = new Map(labelled.map(({ label, run }) => [label, run.ordinal ?? 0] as [string, number]));
   runRows.sort((a, b) => (orderByOrd.get(b.label) || 0) - (orderByOrd.get(a.label) || 0));
 
   // cold spots & issues
@@ -176,11 +230,11 @@ function aggregate(runs) {
   const allTs = labelled.map(({ run }) => run.minTs).filter((t) => t !== null);
   const spanDays = allTs.length ? (Math.max(...allTs) - Math.min(...allTs)) / 86400000 : 0;
   const trendAvailable = spanDays >= WINDOW_DAYS - 0.5;
-  let trend = {};
+  let trend: Record<string, string> = {};
   if (trendAvailable) {
     // count spawns per agent inside each window, anchored on the same UTC day buckets as the timeline
-    const countIn = (winDates) => {
-      const c = Object.fromEntries(agents.map((a) => [a, 0]));
+    const countIn = (winDates: string[]) => {
+      const c: Record<string, number> = Object.fromEntries(agents.map((a) => [a, 0] as [string, number]));
       let tot = 0;
       for (const { run } of labelled) {
         for (const s of run.spawns) {
@@ -198,12 +252,12 @@ function aggregate(runs) {
       const pA = tA ? (cA[a] / tA) * 100 : 0;
       const pB = tB ? (cB[a] / tB) * 100 : 0;
       const d = pB - pA;
-      return [a, d > 0.5 ? 'up' : d < -0.5 ? 'down' : 'flat'];
+      return [a, d > 0.5 ? 'up' : d < -0.5 ? 'down' : 'flat'] as [string, string];
     }));
   }
 
   // issues — severity tagged
-  const issues = [];
+  const issues: Issue[] = [];
   for (const a of coldUnused) issues.push({ severity: 'high', text: `${a} — zero calls in the window` });
   for (const a of coldUnderused) issues.push({ severity: 'medium', text: `${a} — under ${COLD_SHARE}% share (${callsBy[a]} call${callsBy[a] === 1 ? '' : 's'})` });
   const escRuns = labelled.filter(({ run }) => run.escalations > 0).sort((a, b) => b.run.escalations - a.run.escalations);
@@ -218,11 +272,11 @@ function aggregate(runs) {
   // run length: median + longest
   const allRecords = labelled.map(({ run }) => run.records);
   const medRecords = median(allRecords);
-  let longest = null;
+  let longest: { label: string; records: number } | null = null;
   for (const { label, run } of labelled) {
     if (!longest || run.records > longest.records) longest = { label, records: run.records };
   }
-  issues.push({ severity: 'low', text: `${longest.label} — longest run, ${longest.records} records (median ${medRecords})` });
+  issues.push({ severity: 'low', text: `${longest!.label} — longest run, ${longest!.records} records (median ${medRecords})` });
 
   const escalationsTotal = labelled.reduce((a, { run }) => a + run.escalations, 0);
 
@@ -391,7 +445,7 @@ const SCRIPT = `
 })();
 `;
 
-function renderHtml(j) {
+function renderHtml(j: UsageAggregate): string {
   const bars = j.agents.filter((a) => a.calls > 0).map((a, i) => {
     const w = Math.max(2, Math.round((a.calls / j.totals.calls) * 1000) / 10);
     return `<div class="lbar" style="--c:var(--ag-${a.name})">
@@ -410,7 +464,7 @@ function renderHtml(j) {
       <ul>${j.coldSpots.underused.length ? j.coldSpots.underused.map((a) => `<li><b>${esc(a.name)}</b> · ${a.share}% · ${a.calls} call${a.calls === 1 ? '' : 's'}</li>`).join('') : '<li>none</li>'}</ul>
     </div>`;
 
-  const sevCls = { high: 'high', medium: 'medium', low: 'low' };
+  const sevCls: Record<string, string> = { high: 'high', medium: 'medium', low: 'low' };
   const issuesHtml = j.issues.length
     ? j.issues.map((i) => `<div class="issue"><span class="sev ${sevCls[i.severity]}">${i.severity}</span><span>${esc(i.text)}</span></div>`).join('')
     : '';
@@ -431,7 +485,7 @@ function renderHtml(j) {
   const sparkLabs = j.timeline.map((t, i) => `<span>${i % 2 === 1 ? '' : t.date.slice(5).replace('-', '/')}${t.partial ? '·' : ''}</span>`).join('');
 
   const trendHead = j.trendAvailable ? '<th>7d Δ</th>' : '';
-  const trendCell = (a) => j.trendAvailable ? `<td>${a.trend === 'up' ? '↑' : a.trend === 'down' ? '↓' : '·'}</td>` : '';
+  const trendCell = (a: AgentRow) => j.trendAvailable ? `<td>${a.trend === 'up' ? '↑' : a.trend === 'down' ? '↓' : '·'}</td>` : '';
   const agentRows = j.agents.map((a) => `<tr style="--c:var(--ag-${a.name})">
       <td class="rname"><span class="dot" style="background:var(--ag-${a.name})"></span>${esc(a.name)}</td>
       <td style="text-align:right">${a.calls}</td>
@@ -541,7 +595,7 @@ function main() {
   const agg = aggregate(runs);
   fs.mkdirSync(path.dirname(OUT_JSON), { recursive: true });
   fs.writeFileSync(OUT_JSON, JSON.stringify(agg, null, 2) + '\n');
-  const j = JSON.parse(fs.readFileSync(OUT_JSON, 'utf8')); // render from the JSON, not the live object
+  const j = JSON.parse(fs.readFileSync(OUT_JSON, 'utf8')) as UsageAggregate; // render from the JSON, not the live object
   fs.writeFileSync(OUT_HTML, renderHtml(j));
   const cold = agg.coldSpots.unused.length + agg.coldSpots.underused.length;
   console.log(`rendered ${OUT_HTML}`);

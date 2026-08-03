@@ -75,7 +75,7 @@ A lesson fits in one screen. Two strong patterns? Teach the better one, note the
 ### 5. Update The Skill Map
 
 Per game-layer.md: identify competencies touched, append evidence (honest valence),
-append history, then render (when Node is available) with `node <skillify-root>/game-render.js <progress.json>`.
+append history, then render via `bun <skillify-root>/game-render.ts <progress.json>` (skip silently if bun isn't available).
 One line to the user — the signal, not ceremony.
 
 ## Default: Quick Mode

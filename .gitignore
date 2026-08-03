@@ -1,3 +1,7 @@
 # local prototypes — embed session evidence, never publish
 SKILLMAP.html
 .pi-subagents/
+
+# toolchain + publish staging (devDependencies only; runtime scripts stay zero-dep)
+node_modules/
+.publish-staging/

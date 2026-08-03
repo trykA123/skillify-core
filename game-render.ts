@@ -1,14 +1,48 @@
-#!/usr/bin/env node
-// game-render.js — reads progress.json and renders the skill-map dashboard.
+#!/usr/bin/env bun
+// game-render.ts — reads progress.json and renders the skill-map dashboard.
 // The dashboard is a render, never hand-edited. Ratings are derived from evidence.
 // Aesthetic: The Practice Record — warm sumi-e, washi day / sumi night,
 // one ink, one vermillion seal. Design language after RATINGS-FOURTH.html.
-// Usage: node game-render.js [path/to/progress.json]
-'use strict';
-const fs = require('fs');
-const path = require('path');
+// Usage: bun game-render.ts [path/to/progress.json]
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
 
-const COMPETENCIES = {
+/* ── progress.json shape (~/.agents/learnings/progress.json) ── */
+type Valence = 'positive' | 'negative';
+type Rating = 'emerging' | 'developing' | 'reliable' | 'mastered';
+
+interface EvidenceEntry {
+  date: string;
+  note: string;
+  valence: Valence;
+}
+
+interface CompetencyData {
+  rating: Rating;
+  evidence: EvidenceEntry[];
+}
+
+interface HistoryEntry {
+  date: string;
+  skill: string;
+  topic: string;
+  xp?: number;
+  artifact?: string | null;
+  glossary_added?: number;
+  competencies_touched?: string[];
+}
+
+interface ProgressJson {
+  player: string;
+  updated?: string;
+  stats?: Record<string, unknown>;
+  badges?: string[];
+  history: HistoryEntry[];
+  competencies: Record<string, CompetencyData>;
+}
+
+const COMPETENCIES: Record<'prompting' | 'understanding' | 'pipeline', [string, string][]> = {
   prompting: [
     ['P1', 'Lead with intent'],
     ['P2', 'Constraints upfront'],
@@ -32,24 +66,24 @@ const COMPETENCIES = {
 };
 
 // 守破離熟 — the four stages of practice. A rating IS a stage.
-const STAGE = {
+const STAGE: Record<Rating, { kanji: string; en: string }> = {
   emerging:   { kanji: '守', en: 'keep the form' },
   developing: { kanji: '破', en: 'break the form' },
   reliable:   { kanji: '離', en: 'leave the form' },
   mastered:   { kanji: '熟', en: 'ripened' },
 };
-const RATINGS = ['emerging', 'developing', 'reliable', 'mastered'];
-const RATING_STAGE = { emerging: '守', developing: '破', reliable: '離', mastered: '熟' };
-const RATING_PCT = { emerging: 25, developing: 50, reliable: 75, mastered: 100 };
-const GROUP = {
+const RATINGS: Rating[] = ['emerging', 'developing', 'reliable', 'mastered'];
+const RATING_STAGE: Record<Rating, string> = { emerging: '守', developing: '破', reliable: '離', mastered: '熟' };
+const RATING_PCT: Record<Rating, number> = { emerging: 25, developing: 50, reliable: 75, mastered: 100 };
+const GROUP: Record<string, { kanji: string; title: string; accent: string }> = {
   prompting:     { kanji: '言', title: 'Prompting',     accent: 'var(--amber)' },
   understanding: { kanji: '解', title: 'Understanding', accent: 'var(--teal)' },
   pipeline:      { kanji: '流', title: 'Pipeline',      accent: 'var(--blue)' },
 };
 
-const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const esc = (s: unknown) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-function deriveRating(evidence) {
+function deriveRating(evidence: EvidenceEntry[] | undefined): Rating {
   if (!evidence || evidence.length === 0) return 'emerging';
   const pos = evidence.filter((e) => e.valence === 'positive').length;
   const neg = evidence.filter((e) => e.valence === 'negative').length;
@@ -62,21 +96,21 @@ function deriveRating(evidence) {
 }
 
 function main() {
-  const jsonPath = process.argv[2] || path.join(require('os').homedir(), '.agents/learnings/progress.json');
+  const jsonPath = process.argv[2] || path.join(os.homedir(), '.agents/learnings/progress.json');
   const baseDir = path.dirname(jsonPath);
-  const j = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+  const j = JSON.parse(fs.readFileSync(jsonPath, 'utf8')) as ProgressJson;
   const comps = j.competencies || {};
   const hist = j.history || [];
   const today = new Date().toISOString().slice(0, 10);
 
   // Derive ratings from evidence
-  const derived = {};
+  const derived: Record<string, { rating: Rating; evidence: EvidenceEntry[] }> = {};
   for (const [id, data] of Object.entries(comps)) {
     derived[id] = { rating: deriveRating(data.evidence), evidence: data.evidence || [] };
   }
 
   // All evidence entries, sorted by date desc
-  const allEvidence = [];
+  const allEvidence: (EvidenceEntry & { comp: string })[] = [];
   for (const [id, data] of Object.entries(derived)) {
     for (const e of data.evidence) {
       allEvidence.push({ ...e, comp: id });
@@ -85,7 +119,7 @@ function main() {
   allEvidence.sort((a, b) => b.date.localeCompare(a.date));
 
   // Focus: competencies with most recent negative evidence
-  const negByComp = {};
+  const negByComp: Record<string, EvidenceEntry & { comp: string }> = {};
   for (const e of allEvidence) {
     if (e.valence === 'negative' && !negByComp[e.comp]) negByComp[e.comp] = e;
   }
@@ -101,7 +135,7 @@ function main() {
   const summary = `${activeCount} competencies with evidence · ${totalEvidence} entries · ${developing} developing · ${gaps} gap${gaps !== 1 ? 's' : ''} exposed`;
 
   // ── the map: one table per territory, RATINGS-FOURTH table language ──
-  function renderGroup(key, entries) {
+  function renderGroup(key: string, entries: [string, string][]) {
     const g = GROUP[key];
     const rows = entries.map(([id, label]) => {
       const d = derived[id] || { rating: 'emerging', evidence: [] };
@@ -128,7 +162,7 @@ function main() {
     </div>`;
   }
 
-  const hasEvidence = (entries) => entries.some(([id]) => (derived[id]?.evidence?.length || 0) > 0);
+  const hasEvidence = (entries: [string, string][]) => entries.some(([id]) => (derived[id]?.evidence?.length || 0) > 0);
   const groups = [renderGroup('prompting', COMPETENCIES.prompting)];
   if (hasEvidence(COMPETENCIES.understanding)) groups.push(renderGroup('understanding', COMPETENCIES.understanding));
   if (hasEvidence(COMPETENCIES.pipeline)) groups.push(renderGroup('pipeline', COMPETENCIES.pipeline));

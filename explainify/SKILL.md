@@ -71,7 +71,7 @@ If none of the escalation criteria fire: skip this step entirely. Update the pro
 ### 5. Update The Skill Map
 
 Identify competencies touched, append evidence (honest valence), append history,
-render `progress.html` (when Node is available) via `node <skillify-root>/game-render.js <progress.json>`.
+render `progress.html` via `bun <skillify-root>/game-render.ts <progress.json>` (skip silently if bun isn't available).
 One line of signal to the user.
 
 ## Artifact Templates

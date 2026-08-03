@@ -2,10 +2,12 @@
 # skillify make check -- one entrypoint for the skill-repo gates.
 #
 #   make check   runs: bash -n + shellcheck (install.sh), node --check on all
-#                       tracked .js/.mjs, security-gate.sh (L1-L3).
+#                       tracked .js/.mjs, tsc --noEmit on the TS engine scripts,
+#                       security-gate.sh (L1-L3).
 #
-# skillify deliberately has NO package.json (plain node/bun scripts only) --
-# that stays true; see plans/split-design.md.
+# skillify's package.json carries devDependencies ONLY (typescript ~6 + @types/node
+# for the compile gate); the runtime scripts stay plain bun/node with zero runtime
+# deps. `bun install` materializes node_modules/ (gitignored); CI installs deps too.
 #
 # The authoritative personal-data gate for this repo is the records pipeline:
 #   bun test recordify/sanitize.test.mjs
@@ -17,11 +19,11 @@
 # SECURITY_GATE to point at a vendored copy for a standalone checkout/CI.
 # =============================================================================
 
-.PHONY: check check-bash check-js check-security
+.PHONY: check check-bash check-js check-ts check-security
 
 SECURITY_GATE ?= $(CURDIR)/../TrueHL/.githooks/security-gate.sh
 
-check: check-bash check-js check-security
+check: check-bash check-js check-ts check-security
 	@echo "== make check: OK (skillify) =="
 
 check-bash:
@@ -45,6 +47,15 @@ check-js:
 	done; \
 	if [ $$rc -ne 0 ]; then exit 1; fi; \
 	echo "  OK: $$(echo "$$files" | wc -l) files parsed"
+
+check-ts:
+	@echo "== [check-ts] tsc --noEmit over the TS engine scripts =="
+	@if [ -x node_modules/.bin/tsc ]; then \
+	  node_modules/.bin/tsc -p tsconfig.json || { echo "  FAIL: tsc --noEmit findings"; exit 1; }; \
+	  echo "  OK: tsc --noEmit clean (typescript gate)"; \
+	else \
+	  echo "  WARN: tsc missing - skipping (run bun install; CI installs deps)"; \
+	fi
 
 check-security:
 	@echo "== [check-security] security-gate.sh (L1 secrets, L2 env, L3 records) =="
