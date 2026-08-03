@@ -69,7 +69,7 @@ NEVER store:
    rating function").
 5. **Personal identifiers** — names, emails, handles, IPs, hex tokens, UUIDs.
 
-**The gate is automated, not a hope.** `recordify/sanitize.mjs` exports
+**The gate is automated, not a hope.** `teaching/recordify/sanitize.mjs` exports
 `scanRecord(md)` — the frontmatter-AWARE gate. It scans only the free text that
 carries meaning (every `evidence[].note` value, the title, the body prose) and
 NEVER the raw YAML syntax, whose quote-wrapped scalars would false-positive:
@@ -77,7 +77,7 @@ NEVER the raw YAML syntax, whose quote-wrapped scalars would false-positive:
 ```bash
 # from the skillify repo — gate every staged record (frontmatter-aware)
 bun -e "
-import { scanRecord } from './recordify/sanitize.mjs';
+import { scanRecord } from './teaching/recordify/sanitize.mjs';
 import fs from 'node:fs';
 let bad = 0;
 for (const f of process.argv.slice(1)) {
@@ -90,11 +90,11 @@ process.exit(bad ? 1 : 0);
 ```
 
 Or gate a single note (`detectLeaks` includes the verbatim-speech class):
-`bun -e "import {detectLeaks} from './recordify/sanitize.mjs'; console.log(detectLeaks(process.argv[1]))" "…"`.
+`bun -e "import {detectLeaks} from './teaching/recordify/sanitize.mjs'; console.log(detectLeaks(process.argv[1]))" "…"`.
 
 **If `scanRecord` — or `detectLeaks` on any single note — returns anything, the
 record is refused.** Paraphrase the offending note into a clean third-person gist
-and re-gate; do not ship it. The test suite (`bun test recordify/sanitize.test.mjs`)
+and re-gate; do not ship it. The test suite (`bun test teaching/recordify/sanitize.test.mjs`)
 is the contract. `detectLeaks` flags quoted spans, paths, URLs, emails, IPs, hex
 tokens, known identifiers, and verbatim speech (first/second person, imperatives,
 direct questions, chat markers, typo tells, gendered/personal descriptors). If a

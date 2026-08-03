@@ -134,8 +134,7 @@ Four lines. The user was in the room — they saw it happen.
 **Skill map signal:** <one evidence entry for the user's communication, or "none">
 ```
 
-The skill map signal is passive harvesting for the promptify/explainify skill map
-(game-layer.md). Note ONE honest observation about the user's input quality — did the
+The skill map signal is passive harvesting. Note ONE honest observation about the user's input quality — did the
 packet work first try because their intent was clear? Did a Revision Request happen
 because scope was under-specified? Format: `"P1 positive: intent was one line, first-try
 result"` or `"none"`. Never lecture, never block on this — one phrase, move on.

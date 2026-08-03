@@ -10,7 +10,7 @@
 #     leak classes (ticket-id, internal-domain, verbatim speech) + the
 #     genericization vocabulary at capture time.
 #
-# Activation note: recordify/audit-records.mjs has landed (recordify
+# Activation note: teaching/recordify/audit-records.mjs has landed (recordify
 # completion); records/ lands with the corpus import. The gate is live
 # once main is pushed with those files present.
 #
@@ -45,10 +45,10 @@ jobs:
           sudo apt-get install -y shellcheck
 
       - name: Sanitizer contract (I1 test suite)
-        run: bun test recordify/sanitize.test.mjs
+        run: bun test teaching/recordify/sanitize.test.mjs
 
       - name: Full-corpus audit (structure + speech + structural identifiers)
-        run: bun recordify/audit-records.mjs records/
+        run: bun teaching/recordify/audit-records.mjs records/
 
       - name: make check (bash -n + shellcheck, node --check, tsc --noEmit, security scan)
         run: make check

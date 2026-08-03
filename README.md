@@ -102,8 +102,12 @@ skillify/
 ├── install.sh             # symlink skills into AI harnesses
 ├── agents/                # fleet — see agents/README.md
 ├── docs/                  # skill map + html/ artifacts
-├── orientify/  explorify/  undumbify/  shapeify/  shipify/
-└── reviewify/  traceify/  promptify/  explainify/  recordify/  researchify/
+├── entry/                 # entry points — standalone, start anywhere
+│   ├── orientify/  explorify/  traceify/  researchify/
+├── pipeline/              # the build pipeline
+│   ├── undumbify/  shapeify/  shipify/  reviewify/
+└── teaching/              # the teaching cluster — about you, not the work
+    └── promptify/  explainify/  recordify/
 ```
 
 ## No Secrets

@@ -10,8 +10,8 @@
 # deps. `bun install` materializes node_modules/ (gitignored); CI installs deps too.
 #
 # The authoritative personal-data gate for this repo is the records pipeline:
-#   bun test recordify/sanitize.test.mjs
-#   bun recordify/audit-records.mjs records/
+#   bun test teaching/recordify/sanitize.test.mjs
+#   bun teaching/recordify/audit-records.mjs records/
 # wired into .github/workflows/records-gate.yml (and the homeserver re-audit).
 #
 # security-gate.sh lives in the sibling TrueHL repo. In this monorepo layout

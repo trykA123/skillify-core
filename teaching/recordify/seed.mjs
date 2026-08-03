@@ -12,7 +12,7 @@
 // enriched from their lesson artifact (curated, sanitized) so both days of real
 // progress are alive on the map. Every note passes the detectLeaks gate (I1).
 //
-// Usage: bun recordify/seed.mjs   (from the skillify repo root)
+// Usage: bun teaching/recordify/seed.mjs   (from the skillify repo root)
 
 import fs from 'node:fs';
 import os from 'node:os';

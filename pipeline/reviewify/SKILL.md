@@ -160,7 +160,7 @@ follow-up — don't block the review on documentation ceremony.
 **Skill map signal:** <one evidence entry, or "none">
 ```
 
-The skill map signal is passive harvesting (game-layer.md). One honest phrase about the
+The skill map signal is passive harvesting. One honest phrase about the
 input quality: was the intent clear enough to review against? Did the packet's
 requirements make the review trivial, or did ambiguity cause findings? Format:
 `"P5 positive: scope boundaries were explicit, zero out-of-scope code"` or `"none"`.
