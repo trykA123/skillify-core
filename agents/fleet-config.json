@@ -15,9 +15,7 @@
     },
     "worker": {
       "model": "deepseek/deepseek-v4-flash",
-      "fallbackModels": [
-        "qwen-token-plan/qwen3.8-max"
-      ],
+      "fallbackModels": [],
       "thinking": "high",
       "skills": [
         "shipify",
@@ -47,9 +45,7 @@
     },
     "researcher": {
       "model": "deepseek/deepseek-v4-flash",
-      "fallbackModels": [
-        "qwen-token-plan/qwen3.8-max"
-      ],
+      "fallbackModels": [],
       "thinking": "high",
       "skills": [
         "research",
@@ -58,9 +54,7 @@
     },
     "scout": {
       "model": "deepseek/deepseek-v4-flash",
-      "fallbackModels": [
-        "qwen-token-plan/qwen3.8-max"
-      ],
+      "fallbackModels": [],
       "thinking": "low",
       "skills": [
         "caveman",
@@ -69,9 +63,7 @@
     },
     "context-builder": {
       "model": "deepseek/deepseek-v4-flash",
-      "fallbackModels": [
-        "qwen-token-plan/qwen3.8-max"
-      ],
+      "fallbackModels": [],
       "thinking": "high",
       "skills": [
         "undumbify",
