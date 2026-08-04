@@ -1146,9 +1146,9 @@ var ROUTES=[
 var NS='http://www.w3.org/2000/svg';
 var flow=document.getElementById('flow');
 function el(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
-function fitText(t,max){if(!t||!t.textContent)return;var est=t.textContent.length*(t.getAttribute('class')==='fmode'?7.7:8.5);if(est>max){t.setAttribute('textLength',max);t.setAttribute('lengthAdjust','spacingAndGlyphs');t.style.letterSpacing='0px';}}
-function fitAll(){document.querySelectorAll('.fnode text[data-max]').forEach(function(t){try{var max=Number(t.getAttribute('data-max'));t.removeAttribute('textLength');t.removeAttribute('lengthAdjust');t.style.letterSpacing='';var L=t.getComputedTextLength();if(L>max){t.setAttribute('textLength',max);t.setAttribute('lengthAdjust','spacingAndGlyphs');t.style.letterSpacing='0px';}}catch(e){}});}
-if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitAll);
+function fitText(t,max){if(!t||!t.textContent)return;var n=t.textContent.length;var est=t.getAttribute('class')==='fmode'?n*12.8*0.6+(n-1)*12.8*0.12:n*16*0.62;if(est>max){t.setAttribute('textLength',max);t.setAttribute('lengthAdjust','spacingAndGlyphs');t.style.letterSpacing='0px';}}
+function fitAll(){document.querySelectorAll('.fnode text[data-max]').forEach(function(t){try{var pane=t.closest?t.closest('.tabpane'):null;if(pane&&!pane.classList.contains('active'))return;var max=Number(t.getAttribute('data-max'));t.removeAttribute('textLength');t.removeAttribute('lengthAdjust');t.style.letterSpacing='';var ls=parseFloat(getComputedStyle(t).letterSpacing)||0;t.style.letterSpacing='0px';var L=t.getComputedTextLength();if(L===0)return;var total=L+ls*(t.textContent.length-1);if(total>max){t.setAttribute('textLength',max);t.setAttribute('lengthAdjust','spacingAndGlyphs');t.style.letterSpacing='0px';}else{t.style.letterSpacing='';}}catch(e){}});}
+if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){fitAll();setTimeout(fitAll,800);});}else{setTimeout(fitAll,1200);}
 function byId(id){for(var i=0;i<SK.length;i++)if(SK[i].id===id)return SK[i];}
 
 /* edges first (under the nodes) */
@@ -1777,6 +1777,7 @@ function setTab(name){
     b.setAttribute('aria-selected',on?'true':'false');
   });
   window.scrollTo(0,0);
+  requestAnimationFrame(fitAll);
   /* safety net: re-arm any reveals in the newly shown pane that lack .in */
   if(io){
     panes[name].querySelectorAll('.reveal:not(.in)').forEach(function(x){io.observe(x);});
