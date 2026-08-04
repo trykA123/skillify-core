@@ -2,7 +2,7 @@
   "defaultModel": "deepseek/deepseek-v4-flash",
   "agentOverrides": {
     "planner": {
-      "model": "google/gemini-3.6-flash",
+      "model": "qwen-token-plan/qwen3.8-max",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],
@@ -15,7 +15,9 @@
     },
     "worker": {
       "model": "deepseek/deepseek-v4-flash",
-      "fallbackModels": [],
+      "fallbackModels": [
+        "qwen-token-plan/qwen3.8-max"
+      ],
       "thinking": "high",
       "skills": [
         "shipify",
@@ -28,7 +30,7 @@
       ]
     },
     "reviewer": {
-      "model": "deepseek/deepseek-v4-flash",
+      "model": "qwen-token-plan/qwen3.8-max",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],
@@ -72,7 +74,7 @@
       ]
     },
     "oracle": {
-      "model": "deepseek/deepseek-v4-flash",
+      "model": "qwen-token-plan/qwen3.8-max",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],
@@ -85,7 +87,7 @@
       ]
     },
     "advisor": {
-      "model": "deepseek/deepseek-v4-flash",
+      "model": "qwen-token-plan/qwen3.8-max",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],
