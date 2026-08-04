@@ -584,13 +584,13 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
   <section class="tabpane" id="pane-cases" role="tabpanel" aria-label="case studies for agent workflows">
     <header class="masthead">
       <div>
-        <div class="kicker">skillify · <b>the field guide</b> · nine real orchestrator runs</div>
-        <h1>Nine runs.<br><span class="thin">Field reports.</span></h1>
-        <p class="lede">The skills tab is the method; the agents tab is the fleet. This tab is the <b>evidence</b> — nine real orchestrator runs logged as they happened: what broke, who caught it, what the numbers said, and what stuck. De-identified, verified, and kept as the fleet&#8217;s institutional memory.</p>
+        <div class="kicker">skillify · <b>the field guide</b> · ten real orchestrator runs</div>
+        <h1>Ten runs.<br><span class="thin">Field reports.</span></h1>
+        <p class="lede">The skills tab is the method; the agents tab is the fleet. This tab is the <b>evidence</b> — ten real orchestrator runs logged as they happened: what broke, who caught it, what the numbers said, and what stuck. De-identified, verified, and kept as the fleet&#8217;s institutional memory.</p>
       </div>
       <div class="mast-side">
-        <div><span class="pip" style="background:var(--cs-ink)"></span><b>9</b> workflows</div>
-        <div><span class="pip" style="background:var(--sk-traceify)"></span><b>9</b> complete</div>
+        <div><span class="pip" style="background:var(--cs-ink)"></span><b>10</b> workflows</div>
+        <div><span class="pip" style="background:var(--sk-traceify)"></span><b>10</b> complete</div>
         <div><span class="pip" style="background:var(--cs-live)"></span><b>0</b> in progress</div>
         <div style="margin-top:.6rem">major catches <b>5</b> · kept</div>
       </div>
@@ -611,7 +611,7 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
     <footer>
       <span class="fmark">skillify</span>
       <span class="fline"></span>
-      <span>nine runs · real catches · lessons kept</span>
+      <span>ten runs · real catches · lessons kept</span>
     </footer>
   </section>
 
@@ -1393,10 +1393,10 @@ var AG=[
   model:'inherits',thinking:'inherits',skills:['rtk-first'],
   wiring:'spawned by <b>orchestrator</b> for ad-hoc work'},
  {id:'librarian',emoji:'🗄️',mode:'write-only memory',fam:'library',color:'var(--ag-librarian)',no:'11',flow:false,
-  does:'The fleet’s memory. A <b>write-only compiler</b>: it compiles the fleet’s verified feedback and lessons into <b>the Shoin library</b> — evidence-linked, valenced (what worked <b>and</b> what failed), sanitized on entry. Recall is a <b>bounded lookup</b>: top-k (≤5) summaries, flagged as library-derived, supersession respected. Agents read; they never self-publish. First-run seeding (S1) is still pending — the library shelves are empty until it lands.',
+  does:'The fleet’s memory. A <b>write-only compiler</b>: it compiles the fleet’s verified feedback and lessons into <b>the Shoin library</b> — evidence-linked, valenced (what worked <b>and</b> what failed), sanitized on entry. Recall is a <b>bounded lookup</b>: top-k (≤5) summaries, flagged as library-derived, supersession respected. Agents read; they never self-publish. First-run seeding (S1) landed: 22 entries shelved (17 positive · 5 negative), I1 gate clean — see case 10.',
   when:['“Check the library” / “what did we learn about X?”','Post-run compile — harvest a run’s verified lessons','Owner feedback capture worth shelving'],
   model:'qwen3.8-max-preview',thinking:'xhigh',skills:['librify','rtk-first'],
-  wiring:'compiles fleet feedback into the <b>Shoin library</b> · write-only compiler · bounded lookup (top-k ≤5) · agents read, never self-publish · first seeding (S1) pending'}
+  wiring:'compiles fleet feedback into the <b>Shoin library</b> · write-only compiler · bounded lookup (top-k ≤5) · agents read, never self-publish · first seeding (S1) landed · 22 entries'}
 ];
 var AGFAM={
  conductor:{name:'the conductor',sub:'plans · delegates · verifies · escalates',color:'var(--ag-orchestrator)'},
@@ -1637,9 +1637,9 @@ var CS=[
    'A documented planner call beats an unverified parent guess.'
   ]},
  {id:'librarian',no:'09',title:'The librarian',
-  sub:'the fleet\u2019s memory · the 12th skill · designed + conformed · first seeding (S1) pending',
+  sub:'the fleet\u2019s memory · the 12th skill · first seeding (S1) landed',
   status:'done',label:'complete',color:'var(--cs-librarian)',
-  wipnote:'First-run seeding (S1) is still pending — the librarian is designed and conformed (field report 09 complete), but the initial catalog seeding has not run yet: the library shelves are empty until S1 lands.',
+  wipnote:'First-run seeding (S1) landed: 22 entries shelved (17 positive · 5 negative), I1 gate clean (gate=0). The shelves are no longer empty — case 10 tells the account.',
   stat:'4 agents · design + conformance',
   stats:[['12','skills in the house'],['4','agents flew'],['rose','#c9707e']],
   does:'The fleet forgets — every run rediscovers what a previous run already learned. Run 09 built the fix: the <b>librarian</b> agent, the <b>librify</b> skill, and <b>Shoin</b> (書院) — a library of evidence-linked, valenced lessons: what worked <b>and</b> what failed, sanitized on entry. The run was the case: the design, the oracle’s geometry catch, and full conformance — every piece of data about skills and agents updated.',
@@ -1653,6 +1653,22 @@ var CS=[
    'Vertical edges don’t carry labels — the label math lands them on the opaque node edge. House precedent is the spec.',
    'A bounded lookup (top-k, flagged, supersession-respected) is what keeps a memory system from becoming a loop.',
    'Negatives earn their shelf space: evidence-linked post-mortems, stated as bluntly as the wins.'
+  ]},
+ {id:'firstrun',no:'10',title:'The librarian\u2019s first run',
+  sub:'the library\u2019s first seeding · 22 entries shelved',
+  status:'done',label:'complete',color:'var(--cs-librarian)',
+  stat:'22 entries · gate=0',
+  stats:[['22','entries shelved · 17 positive / 5 negative'],['5','categories'],['gate=0','I1 audit clean']],
+  does:'Run 10 filled the empty shelves: the <b>first-run catalog</b> of the Shoin library — 22 evidence-linked, valenced entries (17 positive, 5 negative) compiled from the field reports, the research briefs, the learnings, the homelab audit\u2019s 99%-list, and four post-mortems. The librarian ran on deepseek-v4-flash (the house default) and followed the compile: corpus → sanitize → frontmatter → index.',
+  moments:[
+   {name:'the corpus to catalog',tag:'plan',html:'Eight field reports, seven research briefs, the learnings, the 99%-list, four post-mortems → <b>22 entries</b> — one per flagship lesson, with the research briefs grouped honestly (decision verdicts, ecosystem facts, hardening) rather than padded.'},
+   {name:'the five negatives',tag:'ruling',html:'<b>5 of the 22 are post-mortems</b> — push-while-red, the doc rewrite without a planner pass, guess-placed map nodes, hand-wired services, the hung oracle call. Each carries the failure mode, what happened, why it failed, the guardrail, and its evidence — no blame, no drama.'},
+   {name:'the gate ran clean',tag:'verify',big:true,html:'Every entry passed the recordify I1 discipline — <b>scanRecord over all 22 files, gate=0</b> — zero verbatim speech, zero private paths or identifiers. The learnings-sourced entries are paraphrased, third-person, pattern-first.'}
+  ],
+  verify:[['22/22','entries · I1 gate clean (gate=0)'],['17/5','positive / negative'],['10','runs on the board · this one complete'],['0','leaks · verbatim / path / identifier']],
+  lessons:[
+   'The library now holds <b>its first shelf of principles and failure modes</b> — evidence-linked, valenced, sanitized. index.json is the O(1) lookup; the staleness audit promotes seed → accepted later.',
+   'Negatives earn their shelf space — 5 of the first 22 are post-mortems, stated as bluntly as the wins.'
   ]}
 ];
 /* run log index */
