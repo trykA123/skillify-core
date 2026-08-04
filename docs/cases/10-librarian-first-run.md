@@ -32,7 +32,7 @@ The compile ran **corpus → sanitize → frontmatter → index**:
 
 ## The gate
 
-The audit harness — a shoin-shaped audit importing `scanRecord` from `teaching/recordify/sanitize.mjs`, run from `/tmp` so the repo stays free of stray files — returned **clean: 22 records, gate=0**. Leak classes scanned: verbatim speech, verbatim quotes, paths, urls, emails, ips, hex tokens, identifiers. Belt-and-suspenders greps over the whole `shoin/` tree came back zero for absolute paths, hex runs, and question marks. One finding surfaced on the first pass ("do not" in one body tripping the directive-marker class) and was fixed at the entry, then the gate went green — the gate was never weakened.
+The audit harness — a shoin-shaped audit importing `scanRecord` from `teaching/recordify/sanitize.mjs`, run from a throwaway harness outside the repo so the tree stays free of stray files — returned **clean: 22 records, gate=0**. Leak classes scanned: verbatim speech, verbatim quotes, paths, urls, emails, ips, hex tokens, identifiers. Belt-and-suspenders greps over the whole `shoin/` tree came back zero for absolute paths, hex runs, and question marks. One finding surfaced on the first pass ("do not" in one body tripping the directive-marker class) and was fixed at the entry, then the gate went green — the gate was never weakened.
 
 ## The board
 
