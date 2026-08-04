@@ -90,6 +90,7 @@ snapshots from the `pi-subagents` npm package + `fleet-config.json` (model/think
 overrides). Full table, roles, fallback models: [agents/README.md](agents/README.md).
 
 ## The Docs Site — `docs/`
+- **Self-hosted** — [dojo.erzago.duckdns.org](https://dojo.erzago.duckdns.org) — the skill map behind the homelab SSO (zenauth); static files are served live from the pulled repo (no rebuild needed).
 - [`docs/index.html`](docs/index.html) — skill map: the cognitive pipeline as spec-sheet dossiers, 20px base / 1.250 (major third) type scale.
 - [`docs/html/`](docs/html/) — 17 tracked HTML artifacts: 16 `RATINGS-*.html` design
   iterations + `progress.html`, the practice record rendered by `game-render.ts`.

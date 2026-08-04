@@ -232,12 +232,12 @@ footer .fline{flex:1;height:1px;background:var(--line)}
 :root{
   --ag-orchestrator:#d8a24a;--ag-scout:#7ba05a;--ag-context-builder:#4aa8a0;
   --ag-planner:#5b8ab5;--ag-worker:#5a9ec5;--ag-reviewer:#b58ab0;
-  --ag-oracle:#9d8ac9;--ag-advisor:#9d8ac9;--ag-researcher:#d97a4a;--ag-delegate:#8fa0b5;
+  --ag-oracle:#9d8ac9;--ag-advisor:#9d8ac9;--ag-researcher:#d97a4a;--ag-delegate:#8fa0b5;--ag-librarian:#c9707e;
 }
 html[data-theme="light"]{
   --ag-orchestrator:#8a6420;--ag-scout:#55702e;--ag-context-builder:#20655e;
   --ag-planner:#37597e;--ag-worker:#2f6186;--ag-reviewer:#755170;
-  --ag-oracle:#5c4a92;--ag-advisor:#5c4a92;--ag-researcher:#a34d1e;--ag-delegate:#4f5f75;
+  --ag-oracle:#5c4a92;--ag-advisor:#5c4a92;--ag-researcher:#a34d1e;--ag-delegate:#4f5f75;--ag-librarian:#90404e;
 }
 /* tab switcher */
 .tabbar{display:flex;gap:.6rem;padding:1.4rem 0 0;align-items:center}
@@ -496,14 +496,15 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
     <header class="masthead">
       <div>
         <div class="kicker">skillify · <b>the field guide</b> · the pi-subagents fleet</div>
-        <h1>Ten agents.<br><span class="thin">One pipeline.</span></h1>
-        <p class="lede">A fleet of specialist subagents that <b>plan, build, and verify</b> under a conductor. Recon maps the ground, planning writes the packet, a single worker writes the code, and a reviewer judges it against intent — with decisions escalated to a human instead of guessed.</p>
+        <h1>Eleven agents.<br><span class="thin">One pipeline.</span></h1>
+        <p class="lede">A fleet of specialist subagents that <b>plan, build, and verify</b> under a conductor. Recon maps the ground, planning writes the packet, a single worker writes the code, and a reviewer judges it against intent — with decisions escalated to a human instead of guessed. Off to one side, the <b>librarian</b> keeps the fleet’s memory — it is memory, not pipeline.</p>
       </div>
       <div class="mast-side">
         <div><span class="pip" style="background:#d8a24a"></span><b>1</b> conductor</div>
         <div><span class="pip" style="background:#5b8ab5"></span><b>5</b> pipeline</div>
         <div><span class="pip" style="background:#9d8ac9"></span><b>4</b> support</div>
-        <div style="margin-top:.6rem">agents <b>10</b> · one fleet</div>
+        <div><span class="pip" style="background:var(--ag-librarian)"></span><b>1</b> library</div>
+        <div style="margin-top:.6rem">agents <b>11</b> · one fleet</div>
       </div>
     </header>
 
@@ -535,6 +536,7 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
           <tr style="--c:var(--ag-advisor)"><td class="a-name">advisor</td><td class="a-model">qwen-token-plan/qwen3.8-max-preview</td><td class="a-think">xhigh</td><td class="a-skills">grilling, domain-modeling, codebase-design, rtk-first</td><td class="a-fb">deepseek/deepseek-v4-flash</td></tr>
           <tr style="--c:var(--ag-researcher)"><td class="a-name">researcher</td><td class="a-model">deepseek/deepseek-v4-flash</td><td class="a-think">high</td><td class="a-skills">research</td><td class="a-fb">qwen-token-plan/qwen3.8-max-preview</td></tr>
           <tr style="--c:var(--ag-delegate)"><td class="a-name">delegate</td><td class="a-model">inherits (deepseek/deepseek-v4-flash)</td><td class="a-think">inherits</td><td class="a-skills">rtk-first</td><td class="a-fb">inherits</td></tr>
+          <tr style="--c:var(--ag-librarian)"><td class="a-name">librarian</td><td class="a-model">qwen-token-plan/qwen3.8-max-preview</td><td class="a-think">xhigh</td><td class="a-skills">librify, rtk-first</td><td class="a-fb">deepseek/deepseek-v4-flash</td></tr>
         </tbody>
       </table>
       <p class="table-note"><b>*</b> scout’s <code>low</code> clamps up to <code>high</code> at runtime — deepseek supports only <code>off</code>/<code>high</code>/<code>max</code>. Fallbacks are cross-provider availability insurance: <b>qwen</b> agents fall back to <code>deepseek-v4-flash</code>; <b>flash</b> agents fall back to <code>qwen3.8-max-preview</code>. <code>delegate</code> inherits the parent model. No credentials live in the fleet config — runtime secrets stay out of agent files entirely.</p>
@@ -575,7 +577,7 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
     <footer>
       <span class="fmark">skillify</span>
       <span class="fline"></span>
-      <span>ten agents · one fleet · decisions escalate</span>
+      <span>eleven agents · one fleet · decisions escalate</span>
     </footer>
   </section>
 
@@ -1389,12 +1391,18 @@ var AG=[
   does:'Lightweight generic subagent that inherits the parent model. Executes an assigned task directly with a strict tool allowlist — no default reads, no attached role. The minimal delegation primitive for ad-hoc work.',
   when:['Simple, self-contained tasks','Ad-hoc delegation','When no specialist fits'],
   model:'inherits',thinking:'inherits',skills:['rtk-first'],
-  wiring:'spawned by <b>orchestrator</b> for ad-hoc work'}
+  wiring:'spawned by <b>orchestrator</b> for ad-hoc work'},
+ {id:'librarian',emoji:'🗄️',mode:'write-only memory',fam:'library',color:'var(--ag-librarian)',no:'11',flow:false,
+  does:'The fleet’s memory. A <b>write-only compiler</b>: it compiles the fleet’s verified feedback and lessons into <b>the Shoin library</b> — evidence-linked, valenced (what worked <b>and</b> what failed), sanitized on entry. Recall is a <b>bounded lookup</b>: top-k (≤5) summaries, flagged as library-derived, supersession respected. Agents read; they never self-publish. First-run seeding (S1) is still pending — the library shelves are empty until it lands.',
+  when:['“Check the library” / “what did we learn about X?”','Post-run compile — harvest a run’s verified lessons','Owner feedback capture worth shelving'],
+  model:'qwen3.8-max-preview',thinking:'xhigh',skills:['librify','rtk-first'],
+  wiring:'compiles fleet feedback into the <b>Shoin library</b> · write-only compiler · bounded lookup (top-k ≤5) · agents read, never self-publish · first seeding (S1) pending'}
 ];
 var AGFAM={
  conductor:{name:'the conductor',sub:'plans · delegates · verifies · escalates',color:'var(--ag-orchestrator)'},
  pipeline:{name:'the pipeline',sub:'recon → plan → build → verify',color:'var(--ag-planner)'},
- support:{name:'the support bench',sub:'decisions · research · ad-hoc',color:'var(--ag-oracle)'}
+ support:{name:'the support bench',sub:'decisions · research · ad-hoc',color:'var(--ag-oracle)'},
+ library:{name:'the library',sub:'write-only memory · compile → recall',color:'var(--ag-librarian)'}
 };
 var AFLOWS=[
  ['orchestrator','parent','escalate · need_decision','dashed'],
@@ -1452,7 +1460,7 @@ var ps=el('text',{x:PARENT.x+PARENT.w/2,y:PARENT.y+37,'text-anchor':'middle','cl
 aflow.appendChild(pg);
 /* agent dossiers, grouped by family */
 var ahost=document.getElementById('adossiers');
-['conductor','pipeline','support'].forEach(function(fk){
+['conductor','pipeline','support','library'].forEach(function(fk){
   var f=AGFAM[fk];
   var agents=AG.filter(function(a){return a.fam===fk;});
   var fh=document.createElement('div');
@@ -1629,8 +1637,9 @@ var CS=[
    'A documented planner call beats an unverified parent guess.'
   ]},
  {id:'librarian',no:'09',title:'The librarian',
-  sub:'the fleet\u2019s memory · the 12th skill',
+  sub:'the fleet\u2019s memory · the 12th skill · designed + conformed · first seeding (S1) pending',
   status:'done',label:'complete',color:'var(--cs-librarian)',
+  wipnote:'First-run seeding (S1) is still pending — the librarian is designed and conformed (field report 09 complete), but the initial catalog seeding has not run yet: the library shelves are empty until S1 lands.',
   stat:'4 agents · design + conformance',
   stats:[['12','skills in the house'],['4','agents flew'],['rose','#c9707e']],
   does:'The fleet forgets — every run rediscovers what a previous run already learned. Run 09 built the fix: the <b>librarian</b> agent, the <b>librify</b> skill, and <b>Shoin</b> (書院) — a library of evidence-linked, valenced lessons: what worked <b>and</b> what failed, sanitized on entry. The run was the case: the design, the oracle’s geometry catch, and full conformance — every piece of data about skills and agents updated.',
