@@ -2,7 +2,7 @@
   "defaultModel": "deepseek/deepseek-v4-flash",
   "agentOverrides": {
     "planner": {
-      "model": "deepseek/deepseek-v4-flash",
+      "model": "google/gemini-3.6-flash",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],
