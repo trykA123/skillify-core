@@ -1,47 +1,55 @@
 ---
 name: librify
-description: Compile the fleet's verified lessons into the library (Shoin) and recall them on demand — evidence-linked, valenced (what worked AND what failed), sanitized entries. Write-only librarian: agents never self-publish; the librarian compiles from verified artifacts + owner feedback. Recall is bounded — top-k (≤5) summaries with confidence, status, and valence, never full dumps. Use when asked to "check the library," "what did we learn about X," after a run (post-run compile), or to capture owner feedback.
+description: Compile verified lessons into the library (Shoin) and recall them on demand — evidence-linked, valenced (what worked AND what failed), sanitized entries. Write-only librarian: agents never self-publish; the librarian compiles from verified artifacts + owner feedback. Recall is bounded — top-k (≤5) summaries with confidence, status, and valence, never full dumps. Use when asked to "check the library," "what did we learn about X," after a run (post-run compile), or to capture owner feedback.
 ---
 
 # Librify
 
-The fleet forgets. Every run rediscovers what a previous run already learned — or
+Agents forget. Every run rediscovers what a previous run already learned — or
 repeats a mistake that already cost a repair loop. Librify is the fix: a library
 (Shoin) of evidence-linked, valenced lessons, compiled by the librarian and shelved
 where any agent can look them up. Positive entries are patterns that worked; negative
 entries are post-mortems — "we tried this, it failed, don't repeat."
 
+The library is a location, librify is the method — the location is config-relative:
+the library lives in `shoin/` of your knowledge repo (or wherever your setup points
+the librarian). Point it at your own shelf; the skill below is the same everywhere.
+
 This is the librarian's skill. It runs on demand ("check the library" / "what did we
-learn about X"), after each orchestrator run (post-run compile), and when the owner
-gives feedback worth keeping. The librarian is write-only: it compiles from VERIFIED
-artifacts + the owner's feedback, never from vibes, and agents never self-publish.
-Recall is a bounded lookup — top-k summaries, flagged, never an ambient full-dump.
-The library is a reference shelf, not a brain.
+learn about X"), after each run (post-run compile), and when the owner gives feedback
+worth keeping. The librarian is write-only: it compiles from VERIFIED artifacts + the
+owner's feedback, never from vibes, and agents never self-publish. Recall is a bounded
+lookup — top-k summaries, flagged, never an ambient full-dump. The library is a
+reference shelf, not a brain.
 
 ## When To Use
 
 - "Check the library" / "What did we learn about X?"
-- Post-run compile — after an orchestrator run lands, harvest its verified lessons
+- Post-run compile — after a run lands, harvest its verified lessons
 - Owner feedback capture — "that worked" / "never do that again" worth shelving
-- Before planning a task that touches ground the fleet has worked before
+- Before planning a task that touches ground already worked before
 - Compiling a sanitized record into a durable, evidence-linked entry
 
 ## When NOT To Use
 
-- Capturing a raw session record → `recordify` (librify compiles records; it doesn't replace them)
-- Gathering external evidence → `researchify` (the library is internal memory, not the web)
-- Teaching the owner a competency → `promptify` / `explainify` (the library serves the fleet, not the progression)
+- Capturing a raw session record — librify compiles records into entries; it doesn't
+  replace the records themselves
+- Gathering external evidence — the library is internal memory, not the web; research
+  belongs in its own step
+- Teaching the owner a competency — the library serves the agents' memory, not a
+  learning progression
 - Dumping the whole library into context → forbidden by §4 (bounded top-k only)
-- Publishing an agent's own opinion → forbidden (write-only librarian; agents never self-publish)
+- Publishing an agent's own opinion → forbidden (write-only librarian; agents never
+  self-publish)
 
 ## 1. Compile From Verified Sources Only
 
 The librarian writes; agents don't. Every entry is compiled from:
-- **Verified artifacts** — field reports, records, commits, research briefs
+- **Verified artifacts** — session records, field reports, commits, research briefs
 - **The owner's feedback** — explicit "keep this" / "never again"
 
-**No citation → no entry.** An entry that can't point at a field report, record,
-commit, or brief is not shelved. Opinions and vibes are rejected at the door.
+**No citation → no entry.** An entry that can't point at a record, report, commit, or
+brief is not shelved. Opinions and vibes are rejected at the door.
 
 ## 2. Assign Valence Honestly
 
@@ -53,7 +61,7 @@ The failure mode, what happened, why, the guardrail, the evidence. Nothing more.
 ## 3. Sanitize On Entry (the I1 gate)
 
 Every entry is sanitized before it is accepted: paraphrase-first, strip identifiers,
-paths, and verbatim speech. Run the audit (recordify `audit-records.mjs` pattern) —
+paths, and verbatim speech. Run the privacy audit over the draft entry —
 **gate=0 required** to move `seed → accepted`. A tripped entry stays `seed` or is
 rejected; it is never accepted raw.
 
@@ -95,9 +103,10 @@ For a post-run compile, report instead: entries shelved (id + valence), entries 
 
 ## Interaction With Pipeline
 
-- **Harvests** `recordify` (records) and `researchify` (briefs) — the two durable sources.
-- **Feeds** the context-builder at run start via the bounded lookup protocol (§5 of the
-  design) — never by writing into another agent's context.
+- **Harvests** durable, verified artifacts — session records, research briefs, commits —
+  never raw chatter.
+- **Feeds** planning at run start via the bounded lookup protocol (§4) — never by
+  writing into another agent's context.
 - The librarian never blocks the build pipeline; recall is advisory, flagged, bounded.
 
 ## Final Gate
