@@ -114,6 +114,17 @@
         "librify",
         "rtk-first"
       ]
+    },
+    "recorder": {
+      "model": "deepseek/deepseek-v4-flash",
+      "fallbackModels": [
+        "qwen-token-plan/qwen3.8-max"
+      ],
+      "thinking": "high",
+      "skills": [
+        "recordify",
+        "rtk-first"
+      ]
     }
   }
 }

@@ -496,15 +496,15 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
     <header class="masthead">
       <div>
         <div class="kicker">skillify · <b>the field guide</b> · the pi-subagents fleet</div>
-        <h1>Eleven agents.<br><span class="thin">One pipeline.</span></h1>
-        <p class="lede">A fleet of specialist subagents that <b>plan, build, and verify</b> under a conductor. Recon maps the ground, planning writes the packet, a single worker writes the code, and a reviewer judges it against intent — with decisions escalated to a human instead of guessed. Off to one side, the <b>librarian</b> keeps the fleet’s memory — it is memory, not pipeline.</p>
+        <h1>Twelve agents.<br><span class="thin">One pipeline.</span></h1>
+        <p class="lede">A fleet of specialist subagents that <b>plan, build, and verify</b> under a conductor. Recon maps the ground, planning writes the packet, a single worker writes the code, and a reviewer judges it against intent — with decisions escalated to a human instead of guessed. Off to one side, the <b>librarian</b> keeps the fleet’s memory — it is memory, not pipeline. At the end of every run, the <b>recorder</b> writes its history — the session’s evidence, recorded honestly into the records pipeline.</p>
       </div>
       <div class="mast-side">
         <div><span class="pip" style="background:#d8a24a"></span><b>1</b> conductor</div>
-        <div><span class="pip" style="background:#5b8ab5"></span><b>5</b> pipeline</div>
+        <div><span class="pip" style="background:#5b8ab5"></span><b>6</b> pipeline</div>
         <div><span class="pip" style="background:#9d8ac9"></span><b>4</b> support</div>
         <div><span class="pip" style="background:var(--ag-librarian)"></span><b>1</b> library</div>
-        <div style="margin-top:.6rem">agents <b>11</b> · one fleet</div>
+        <div style="margin-top:.6rem">agents <b>12</b> · one fleet</div>
       </div>
     </header>
 
@@ -537,6 +537,7 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
           <tr style="--c:var(--ag-researcher)"><td class="a-name">researcher</td><td class="a-model">deepseek/deepseek-v4-flash</td><td class="a-think">high</td><td class="a-skills">research</td><td class="a-fb">qwen-token-plan/qwen3.8-max-preview</td></tr>
           <tr style="--c:var(--ag-delegate)"><td class="a-name">delegate</td><td class="a-model">inherits (deepseek/deepseek-v4-flash)</td><td class="a-think">inherits</td><td class="a-skills">rtk-first</td><td class="a-fb">inherits</td></tr>
           <tr style="--c:var(--ag-librarian)"><td class="a-name">librarian</td><td class="a-model">qwen-token-plan/qwen3.8-max-preview</td><td class="a-think">xhigh</td><td class="a-skills">librify, rtk-first</td><td class="a-fb">deepseek/deepseek-v4-flash</td></tr>
+          <tr style="--c:var(--ag-recorder)"><td class="a-name">recorder</td><td class="a-model">deepseek/deepseek-v4-flash</td><td class="a-think">high</td><td class="a-skills">recordify, rtk-first</td><td class="a-fb">qwen-token-plan/qwen3.8-max</td></tr>
         </tbody>
       </table>
       <p class="table-note"><b>*</b> scout’s <code>low</code> clamps up to <code>high</code> at runtime — deepseek supports only <code>off</code>/<code>high</code>/<code>max</code>. Fallbacks are cross-provider availability insurance: <b>qwen</b> agents fall back to <code>deepseek-v4-flash</code>; <b>flash</b> agents fall back to <code>qwen3.8-max-preview</code>. <code>delegate</code> inherits the parent model. No credentials live in the fleet config — runtime secrets stay out of agent files entirely.</p>
@@ -577,7 +578,7 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
     <footer>
       <span class="fmark">skillify</span>
       <span class="fline"></span>
-      <span>eleven agents · one fleet · decisions escalate</span>
+      <span>twelve agents · one fleet · decisions escalate</span>
     </footer>
   </section>
 
@@ -1396,7 +1397,12 @@ var AG=[
   does:'The fleet’s memory. A <b>write-only compiler</b>: it compiles the fleet’s verified feedback and lessons into <b>the Shoin library</b> — evidence-linked, valenced (what worked <b>and</b> what failed), sanitized on entry. Recall is a <b>bounded lookup</b>: top-k (≤5) summaries, flagged as library-derived, supersession respected. Agents read; they never self-publish. First-run seeding (S1) landed: 22 entries shelved (17 positive · 5 negative), I1 gate clean — see case 10.',
   when:['“Check the library” / “what did we learn about X?”','Post-run compile — harvest a run’s verified lessons','Owner feedback capture worth shelving'],
   model:'qwen3.8-max-preview',thinking:'xhigh',skills:['librify','rtk-first'],
-  wiring:'compiles fleet feedback into the <b>Shoin library</b> · write-only compiler · bounded lookup (top-k ≤5) · agents read, never self-publish · first seeding (S1) landed · 22 entries'}
+  wiring:'compiles fleet feedback into the <b>Shoin library</b> · write-only compiler · bounded lookup (top-k ≤5) · agents read, never self-publish · first seeding (S1) landed · 22 entries'},
+ {id:'recorder',emoji:'📖',mode:'session capture',fam:'pipeline',color:'var(--ag-recorder)',no:'12',x:1100,y:255,w:160,flow:true,
+  does:'The house chronicler. Captures sessions into the <b>records pipeline</b> — one honest evidence record per skill (promptify · explainify · recordify), real competency codes, real valence. Validates against the house gate exactly as CI does, commits atomically, never pushes. It sits at the end of the pipeline: work happens, then history is written.',
+  when:['After every completed run — “record this session”','End-of-session capture (the owner’s nightly history)','Reconstructing a missed day’s records'],
+  model:'deepseek-v4-flash',thinking:'high',skills:['recordify','rtk-first'],
+  wiring:'fed by <b>reviewer</b> · output: session records → records pipeline → Kokoro'}
 ];
 var AGFAM={
  conductor:{name:'the conductor',sub:'plans · delegates · verifies · escalates',color:'var(--ag-orchestrator)'},
