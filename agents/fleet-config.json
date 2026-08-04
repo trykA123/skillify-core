@@ -2,7 +2,7 @@
   "defaultModel": "deepseek/deepseek-v4-flash",
   "agentOverrides": {
     "planner": {
-      "model": "qwen-token-plan/qwen3.8-max-preview",
+      "model": "qwen-token-plan/qwen3.8-max",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],
@@ -16,7 +16,7 @@
     "worker": {
       "model": "deepseek/deepseek-v4-flash",
       "fallbackModels": [
-        "qwen-token-plan/qwen3.8-max-preview"
+        "qwen-token-plan/qwen3.8-max"
       ],
       "thinking": "high",
       "skills": [
@@ -30,7 +30,7 @@
       ]
     },
     "reviewer": {
-      "model": "qwen-token-plan/qwen3.8-max-preview",
+      "model": "qwen-token-plan/qwen3.8-max",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],
@@ -48,7 +48,7 @@
     "researcher": {
       "model": "deepseek/deepseek-v4-flash",
       "fallbackModels": [
-        "qwen-token-plan/qwen3.8-max-preview"
+        "qwen-token-plan/qwen3.8-max"
       ],
       "thinking": "high",
       "skills": [
@@ -59,7 +59,7 @@
     "scout": {
       "model": "deepseek/deepseek-v4-flash",
       "fallbackModels": [
-        "qwen-token-plan/qwen3.8-max-preview"
+        "qwen-token-plan/qwen3.8-max"
       ],
       "thinking": "low",
       "skills": [
@@ -70,7 +70,7 @@
     "context-builder": {
       "model": "deepseek/deepseek-v4-flash",
       "fallbackModels": [
-        "qwen-token-plan/qwen3.8-max-preview"
+        "qwen-token-plan/qwen3.8-max"
       ],
       "thinking": "high",
       "skills": [
@@ -80,7 +80,7 @@
       ]
     },
     "oracle": {
-      "model": "qwen-token-plan/qwen3.8-max-preview",
+      "model": "qwen-token-plan/qwen3.8-max",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],
@@ -93,7 +93,7 @@
       ]
     },
     "advisor": {
-      "model": "qwen-token-plan/qwen3.8-max-preview",
+      "model": "qwen-token-plan/qwen3.8-max",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],
@@ -111,7 +111,7 @@
       ]
     },
     "librarian": {
-      "model": "qwen-token-plan/qwen3.8-max-preview",
+      "model": "qwen-token-plan/qwen3.8-max",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],

@@ -4,7 +4,7 @@ description: Pipeline conductor — plans and delegates across scout/context-bui
 aliases: conductor, boss
 tools: read, grep, find, ls, bash, write, subagent, contact_supervisor
 model: deepseek/deepseek-v4-flash
-fallbackModels: qwen-token-plan/qwen3.8-max-preview
+fallbackModels: qwen-token-plan/qwen3.8-max
 thinking: high
 systemPromptMode: replace
 inheritProjectContext: true

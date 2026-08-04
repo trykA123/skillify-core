@@ -1,6 +1,6 @@
 # THE LIBRARIAN — Design
 
-**Deliverable:** `plans/2026-08-03-librarian-design.md` · **Status:** DESIGN (Phase A) · **Designer:** planner @ qwen3.8-max-preview/xhigh · **Date:** 2026-08-03
+**Deliverable:** `plans/2026-08-03-librarian-design.md` · **Status:** DESIGN (Phase A) · **Designer:** planner @ qwen3.8-max/xhigh · **Date:** 2026-08-03
 
 > **Living doc.** This is the single source of truth for the librarian agent, the librify skill, and the library (Shoin). Phase B conformance executes from this doc alone. Amend in place; don't regenerate.
 
@@ -118,7 +118,7 @@ Every entry passes the recordify sanitize/audit discipline **before** it is acce
 Inserted as a new key inside `agentOverrides`, **after `delegate`**, before the closing brace:
 ```json
     "librarian": {
-      "model": "qwen-token-plan/qwen3.8-max-preview",
+      "model": "qwen-token-plan/qwen3.8-max",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],
@@ -418,7 +418,7 @@ Appended after the researchify entry, before `];`. **ROUTES additions:** `['chec
 ### 9.7 install.sh + README.md + agents/README.md
 - **install.sh:** `SKILLS=( … researchify librify )` (12 entries); `SKILL_FAMILY` += `[librify]=memory`. (No literal "11" exists — the array is the count.)
 - **README.md:** line 3 "Eleven interlocking skills" → "Twelve interlocking skills"; line 8 "- **Eleven skills** — … researchify." → "**Twelve skills** — … researchify, **librify**."; catalog table += `| librify | Curatorial — compile & recall the fleet's evidence-linked lessons | "Check the library" |`; Repo Structure += `memory/` dir with librify.
-- **agents/README.md:** fleet table += `| librarian | qwen3.8-max-preview | xhigh | librify, rtk-first | Compile & recall the fleet's evidence-linked library |`.
+- **agents/README.md:** fleet table += `| librarian | qwen3.8-max | xhigh | librify, rtk-first | Compile & recall the fleet's evidence-linked library |`.
 - **agents/fleet-config.json:** the §3.1 block after `delegate`.
 
 ### 9.8 game-layer.md decision note (progress.json untouched)
