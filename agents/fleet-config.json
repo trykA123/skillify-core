@@ -2,7 +2,7 @@
   "defaultModel": "deepseek/deepseek-v4-flash",
   "agentOverrides": {
     "planner": {
-      "model": "qwen-token-plan/qwen3.8-max",
+      "model": "deepseek/deepseek-v4-flash",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],
@@ -30,7 +30,7 @@
       ]
     },
     "reviewer": {
-      "model": "qwen-token-plan/qwen3.8-max",
+      "model": "deepseek/deepseek-v4-flash",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],
@@ -80,7 +80,7 @@
       ]
     },
     "oracle": {
-      "model": "qwen-token-plan/qwen3.8-max",
+      "model": "deepseek/deepseek-v4-flash",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],
@@ -93,7 +93,7 @@
       ]
     },
     "advisor": {
-      "model": "qwen-token-plan/qwen3.8-max",
+      "model": "deepseek/deepseek-v4-flash",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],
@@ -111,7 +111,7 @@
       ]
     },
     "librarian": {
-      "model": "qwen-token-plan/qwen3.8-max",
+      "model": "deepseek/deepseek-v4-flash",
       "fallbackModels": [
         "deepseek/deepseek-v4-flash"
       ],
