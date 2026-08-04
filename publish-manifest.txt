@@ -10,3 +10,4 @@ pipeline/undumbify/ -> pipeline/undumbify/
 pipeline/shapeify/  -> pipeline/shapeify/
 pipeline/shipify/   -> pipeline/shipify/
 pipeline/reviewify/ -> pipeline/reviewify/
+memory/librify/     -> memory/librify/
