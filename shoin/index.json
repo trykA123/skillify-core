@@ -1,0 +1,377 @@
+{
+  "lib-2026-08-04-a-documented-planner-call-beats-an-unverified-guess": {
+    "title": "A documented planner call beats an unverified guess",
+    "category": "process",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "A documented planner call beats an unverified guess.",
+    "evidence": [
+      "docs/cases/08-researchify.md"
+    ],
+    "tags": [
+      "planner-call",
+      "audit",
+      "placement",
+      "documentation"
+    ]
+  },
+  "lib-2026-08-04-a-privacy-gate-must-fail-loudly": {
+    "title": "A privacy gate must fail loudly",
+    "category": "patterns",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "A privacy gate is only as good as its ability to fail loudly.",
+    "evidence": [
+      "docs/cases/06-skill-map.md"
+    ],
+    "tags": [
+      "privacy",
+      "gate",
+      "i1",
+      "verbatim-speech"
+    ]
+  },
+  "lib-2026-08-04-a-review-that-measures-beats-one-that-eyeballs": {
+    "title": "A review that measures beats one that eyeballs",
+    "category": "patterns",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "A review that measures beats one that eyeballs.",
+    "evidence": [
+      "docs/cases/05-polish-round.md"
+    ],
+    "tags": [
+      "review",
+      "measurement",
+      "contrast",
+      "preemption"
+    ]
+  },
+  "lib-2026-08-04-challenge-with-evidence-delegate-the-how": {
+    "title": "Challenge claims with evidence; delegate the how, lock the what",
+    "category": "prompting",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "Challenge claims with evidence; delegate the how, lock the what.",
+    "evidence": [
+      "learnings (challenge-with-evidence, delegate-the-how) — paraphrased"
+    ],
+    "tags": [
+      "prompting",
+      "evidence",
+      "challenge",
+      "delegation"
+    ]
+  },
+  "lib-2026-08-04-checkable-acceptance-criteria-survive-long-runs": {
+    "title": "Checkable acceptance criteria survive long runs",
+    "category": "process",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "A packet with per-slice checkable acceptance criteria survives a long run without contract revision.",
+    "evidence": [
+      "docs/cases/01-alerts-rebuild.md"
+    ],
+    "tags": [
+      "acceptance",
+      "verification",
+      "long-run",
+      "packet"
+    ]
+  },
+  "lib-2026-08-04-design-at-xhigh-keeps-a-change-a-pure-addition": {
+    "title": "A design pass at the highest reasoning setting keeps a change a pure addition",
+    "category": "process",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "A deliberate design pass keeps a change a pure addition, so the no-regression claim stays verifiable.",
+    "evidence": [
+      "docs/cases/03-agents-tab.md"
+    ],
+    "tags": [
+      "planning",
+      "pure-addition",
+      "byte-identity",
+      "review"
+    ]
+  },
+  "lib-2026-08-04-dont-hand-wire-services-the-orchestrator-must-rescue": {
+    "title": "Never hand-wire a service the orchestrator must later rescue",
+    "category": "mistakes",
+    "valence": "negative",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "Never hand-wire a service the orchestrator must later rescue.",
+    "evidence": [
+      "session history + the progress report (compose-rescue passage)"
+    ],
+    "tags": [
+      "mistakes",
+      "services",
+      "compose",
+      "orchestration"
+    ]
+  },
+  "lib-2026-08-04-dont-let-a-delegated-judgment-call-hang-without-a-timeout": {
+    "title": "Never let a delegated judgment call hang without a timeout",
+    "category": "process",
+    "valence": "negative",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "Never let a delegated judgment call hang without a timeout.",
+    "evidence": [
+      "session history + nearest documented artifact: docs/cases/06-skill-map.md"
+    ],
+    "tags": [
+      "timeout",
+      "delegation",
+      "oracle",
+      "judgment"
+    ]
+  },
+  "lib-2026-08-04-dont-place-flow-map-nodes-by-guess-run-the-coordinate-audit": {
+    "title": "Never place flow-map nodes by guess; run the coordinate audit",
+    "category": "mistakes",
+    "valence": "negative",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "Never place flow-map nodes by guess; run the coordinate audit.",
+    "evidence": [
+      "session history + the flow-map conformance report (coordinate-audit passage)"
+    ],
+    "tags": [
+      "mistakes",
+      "flow-map",
+      "coordinate-audit",
+      "placement"
+    ]
+  },
+  "lib-2026-08-04-dont-push-records-while-the-privacy-gate-is-red": {
+    "title": "Never push records while the privacy gate is red",
+    "category": "mistakes",
+    "valence": "negative",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "Never push records while the privacy gate is red.",
+    "evidence": [
+      "docs/cases/06-skill-map.md",
+      "session history"
+    ],
+    "tags": [
+      "mistakes",
+      "privacy",
+      "push",
+      "gate"
+    ]
+  },
+  "lib-2026-08-04-dont-rewrite-docs-without-a-planner-pass": {
+    "title": "Never rewrite docs without a planner pass",
+    "category": "mistakes",
+    "valence": "negative",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "A good unplanned write is still an unplanned write.",
+    "evidence": [
+      "docs/cases/03-readme-reconcile.md"
+    ],
+    "tags": [
+      "mistakes",
+      "planning",
+      "docs",
+      "dead-link"
+    ]
+  },
+  "lib-2026-08-04-ecosystem-facts-before-design-caps-limits-constraints": {
+    "title": "Ecosystem facts belong before design: caps, limits, constraints",
+    "category": "research",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "Ecosystem facts (caps, limits, constraints) belong before design, not after.",
+    "evidence": [
+      "session history + research briefs (dynamic-DNS, shell toolkit, graph layout, studio panels, X2/3/4 dissection, gateway)"
+    ],
+    "tags": [
+      "research",
+      "ecosystem",
+      "constraints",
+      "caps"
+    ]
+  },
+  "lib-2026-08-04-enforce-never-delete-the-only-copy-by-data-not-policy": {
+    "title": "Enforce never-delete-the-only-copy by data, not policy",
+    "category": "patterns",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "A never-delete guarantee holds when it is enforced by data, not assumed by policy.",
+    "evidence": [
+      "docs/cases/02-seed-watch.md"
+    ],
+    "tags": [
+      "safety-gate",
+      "data-integrity",
+      "deletion",
+      "content-identity"
+    ]
+  },
+  "lib-2026-08-04-hardening-patterns-for-unattended-scripts": {
+    "title": "Hardening patterns for unattended scripts",
+    "category": "research",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "Unattended scripts harden through exit codes, dry-run defaults, and timer discipline.",
+    "evidence": [
+      "session history + hardening brief"
+    ],
+    "tags": [
+      "hardening",
+      "unattended",
+      "systemd",
+      "dry-run",
+      "exit-codes"
+    ]
+  },
+  "lib-2026-08-04-know-the-ecosystem-wiring-review-on-a-cadence": {
+    "title": "Know the ecosystem wiring; review on a cadence",
+    "category": "patterns",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "Know the ecosystem wiring; review on a cadence.",
+    "evidence": [
+      "learnings (records wiring and review cadence) — paraphrased"
+    ],
+    "tags": [
+      "wiring",
+      "trace",
+      "review-cadence",
+      "documentation"
+    ]
+  },
+  "lib-2026-08-04-lead-with-the-delta-ask-once": {
+    "title": "Lead with the delta; ask once",
+    "category": "prompting",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "Lead with the delta and ask once.",
+    "evidence": [
+      "learnings (ask-once, state-the-delta) — paraphrased"
+    ],
+    "tags": [
+      "prompting",
+      "delta",
+      "ask-once",
+      "symptom-report"
+    ]
+  },
+  "lib-2026-08-04-name-the-1-percent-gaps-never-claim-perfect": {
+    "title": "Name the 1% gaps; never claim perfect",
+    "category": "process",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "Name the 1% gaps; never claim perfect.",
+    "evidence": [
+      "session history + the homelab audit 99%-list"
+    ],
+    "tags": [
+      "audit",
+      "honest-reporting",
+      "99-percent",
+      "residuals"
+    ]
+  },
+  "lib-2026-08-04-name-the-referent-anchor-the-new-to-the-known": {
+    "title": "Name the referent; anchor the new to the known",
+    "category": "prompting",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "Name the referent; anchor the new to the known.",
+    "evidence": [
+      "learnings (name-the-referent, anchor-the-new) — paraphrased"
+    ],
+    "tags": [
+      "prompting",
+      "referent",
+      "anchoring",
+      "spec"
+    ]
+  },
+  "lib-2026-08-04-render-before-delivering": {
+    "title": "Render before delivering",
+    "category": "prompting",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "Render before delivering.",
+    "evidence": [
+      "learnings (render-before-you-deliver) — paraphrased"
+    ],
+    "tags": [
+      "prompting",
+      "render",
+      "screenshot",
+      "visual-verification"
+    ]
+  },
+  "lib-2026-08-04-research-first-design-second-build-third": {
+    "title": "Research first, design second, build third",
+    "category": "research",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "Research first, design second, build third.",
+    "evidence": [
+      "docs/cases/07-charts-reinvention.md"
+    ],
+    "tags": [
+      "research-first",
+      "verdict",
+      "pattern-catalog"
+    ]
+  },
+  "lib-2026-08-04-research-first-verdicts-keep-adopt-rewrite": {
+    "title": "Research verdicts come in three honest shapes: keep, adopt, rewrite",
+    "category": "research",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "Research verdicts come in three honest shapes: keep, adopt, rewrite.",
+    "evidence": [
+      "session history + research briefs (chart library, engine TS-vs-Rust, TS7)"
+    ],
+    "tags": [
+      "research",
+      "verdict",
+      "keep-adopt-rewrite",
+      "evidence"
+    ]
+  },
+  "lib-2026-08-04-reviewers-catch-real-math-bugs-read-only-plus-one-repair-round": {
+    "title": "Read-only reviewers catch real math bugs; one repair round is enough",
+    "category": "patterns",
+    "valence": "positive",
+    "status": "seed",
+    "date": "2026-08-04",
+    "summary": "Read-only reviewers catch real math bugs the tests miss; one repair round is enough.",
+    "evidence": [
+      "docs/cases/04-feature-round.md"
+    ],
+    "tags": [
+      "review",
+      "math-bugs",
+      "repair-round",
+      "read-only"
+    ]
+  }
+}
