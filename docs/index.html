@@ -1146,6 +1146,7 @@ var ROUTES=[
 var NS='http://www.w3.org/2000/svg';
 var flow=document.getElementById('flow');
 function el(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+function fitText(t,max){try{var L=t.getComputedTextLength();if(L>max){t.setAttribute('textLength',max);t.setAttribute('lengthAdjust','spacingAndGlyphs');}}catch(e){}}
 function byId(id){for(var i=0;i<SK.length;i++)if(SK[i].id===id)return SK[i];}
 
 /* edges first (under the nodes) */
@@ -1174,6 +1175,7 @@ SK.forEach(function(s,i){
   var em=el('text',{x:s.x+13,y:s.y+26,'font-size':16});em.textContent=s.emoji;g.appendChild(em);
   var nm=el('text',{x:s.x+36,y:s.y+27,'class':'fname'});nm.textContent=s.id;g.appendChild(nm);
   var md=el('text',{x:s.x+13,y:s.y+47,'class':'fmode'});md.textContent=s.mode;g.appendChild(md);
+  fitText(nm,91);fitText(md,114);
   g.addEventListener('click',function(){ gotoSkill(s.id); });
   g.addEventListener('mouseenter',function(){ lightChip(s.id,true); });
   g.addEventListener('mouseleave',function(){ lightChip(s.id,false); });
@@ -1457,6 +1459,7 @@ AG.forEach(function(a){
   var em=el('text',{x:a.x+13,y:a.y+26,'font-size':16});em.textContent=a.emoji;g.appendChild(em);
   var nm=el('text',{x:a.x+36,y:a.y+27,'class':'fname'});nm.textContent=a.id;g.appendChild(nm);
   var md=el('text',{x:a.x+13,y:a.y+47,'class':'fmode'});md.textContent=a.mode;g.appendChild(md);
+  fitText(nm,(a.w||160)-49);fitText(md,(a.w||160)-26);
   g.addEventListener('click',function(){gotoAgent(a.id);});
   aflow.appendChild(g);
 });
