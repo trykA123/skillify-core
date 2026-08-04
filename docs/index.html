@@ -501,9 +501,9 @@ When planning, follow: <span class="a">/path/to/skillify/shapeify/SKILL.md</span
       </div>
       <div class="mast-side">
         <div><span class="pip" style="background:#d8a24a"></span><b>1</b> conductor</div>
-        <div><span class="pip" style="background:#5b8ab5"></span><b>6</b> pipeline</div>
+        <div><span class="pip" style="background:#5b8ab5"></span><b>5</b> pipeline</div>
         <div><span class="pip" style="background:#9d8ac9"></span><b>4</b> support</div>
-        <div><span class="pip" style="background:var(--ag-librarian)"></span><b>1</b> library</div>
+        <div><span class="pip" style="background:var(--ag-librarian)"></span><b>2</b> library</div>
         <div style="margin-top:.6rem">agents <b>12</b> · one fleet</div>
       </div>
     </header>
@@ -1398,17 +1398,17 @@ var AG=[
   when:['“Check the library” / “what did we learn about X?”','Post-run compile — harvest a run’s verified lessons','Owner feedback capture worth shelving'],
   model:'qwen3.8-max-preview',thinking:'xhigh',skills:['librify','rtk-first'],
   wiring:'compiles fleet feedback into the <b>Shoin library</b> · write-only compiler · bounded lookup (top-k ≤5) · agents read, never self-publish · first seeding (S1) landed · 22 entries'},
- {id:'recorder',emoji:'📖',mode:'session capture',fam:'pipeline',color:'var(--ag-recorder)',no:'12',x:1120,y:100,w:160,flow:true,
-  does:'The house chronicler. Captures sessions into the <b>records pipeline</b> — one honest evidence record per skill (promptify · explainify · recordify), real competency codes, real valence. Validates against the house gate exactly as CI does, commits atomically, never pushes. It sits at the end of the pipeline: work happens, then history is written.',
-  when:['After every completed run — “record this session”','End-of-session capture (the owner’s nightly history)','Reconstructing a missed day’s records'],
+ {id:'recorder',emoji:'📖',mode:'session capture',fam:'library',color:'var(--ag-recorder)',no:'12',x:180,y:100,w:160,flow:true,
+  does:'The house chronicler. Captures sessions into the <b>records pipeline</b> — one honest evidence record per skill (promptify · explainify · recordify), real competency codes, real valence. Validates against the house gate exactly as CI does, commits atomically, never pushes. It sits with the librarian in the memory family: the librarian writes what we learned, the recorder writes what happened.',
+  when:['End of every completed orchestrator run (automatic epilogue)','“Record this session” — parent-triggered, any time','Reconstructing a missed day’s records (owner-gated)'],
   model:'deepseek-v4-flash',thinking:'high',skills:['recordify','rtk-first'],
-  wiring:'fed by <b>reviewer</b> · output: session records → records pipeline → Kokoro'}
+  wiring:'launched by <b>orchestrator</b> (run epilogue) · or by the <b>parent</b> on demand · output: session records → records pipeline → Kokoro'}
 ];
 var AGFAM={
  conductor:{name:'the conductor',sub:'plans · delegates · verifies · escalates',color:'var(--ag-orchestrator)'},
  pipeline:{name:'the pipeline',sub:'recon → plan → build → verify',color:'var(--ag-planner)'},
  support:{name:'the support bench',sub:'decisions · research · ad-hoc',color:'var(--ag-oracle)'},
- library:{name:'the library',sub:'write-only memory · compile → recall',color:'var(--ag-librarian)'}
+ library:{name:'the library',sub:'write-only memory · history (records) + lessons (shoin)',color:'var(--ag-librarian)'}
 };
 var AFLOWS=[
  ['orchestrator','parent','escalate · need_decision','dashed'],
@@ -1421,7 +1421,7 @@ var AFLOWS=[
  ['worker','reviewer','report','solid'],
  ['reviewer','planner','replan','dashed',660,170],
  ['reviewer','worker','repair · max 3','dashed',800,370],
- ['reviewer','recorder','record','solid'],
+ ['orchestrator','recorder','record session','solid'],
  ['orchestrator','librarian','compiles lessons','dashed']
 ];
 var PARENT={id:'parent',x:470,y:14,w:240,h:46};
