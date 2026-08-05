@@ -1432,6 +1432,139 @@ var AFLOWS=[
 var PARENT={id:'parent',x:570,y:14,w:240,h:46};
 function agById(id){ if(id==='parent')return PARENT; for(var i=0;i<AG.length;i++)if(AG[i].id===id)return AG[i]; }
 function agCenter(a){ return {x:a.x+(a.w||160)/2, y:a.y+31}; }
+/* ═══ aflow layout — deterministic force-directed placement (mini engine, no deps) ═══
+   Fruchterman–Reingold-style: pairwise repulsion + link springs + family anchors +
+   border clamp (full-container usage) + rect collision + labels as particles.
+   Pure function of the hand-tuned initial positions — no RNG → identical every load. */
+(function(){
+  var VW=1380,VH=420;
+  var nodes=AG.filter(function(a){return a.flow;});
+  var B=[],bidx={};
+  nodes.forEach(function(n,i){bidx[n.id]=i;B.push({id:n.id,pr:n,w:(n.w||160),h:62,cx:n.x+(n.w||160)/2,cy:n.y+31,vx:0,vy:0,pin:(n.id==='orchestrator')});});
+  bidx['parent']=B.length;B.push({id:'parent',pr:PARENT,w:PARENT.w,h:PARENT.h,cx:PARENT.x+PARENT.w/2,cy:PARENT.y+23,vx:0,vy:0,pin:true});
+
+  var LAB=[];
+  AFLOWS.forEach(function(f){
+    var a=agById(f[0]),b=agById(f[1]);
+    var A={x:a.x+(a.w||160)/2,y:a.y+31},Bp={x:b.x+(b.w||160)/2,y:b.y+31};
+    var cx=(f[4]!=null)?f[4]:(A.x+Bp.x)/2,cy=(f[5]!=null)?f[5]:((A.y+Bp.y)/2+((Bp.y>A.y)?-26:26));
+    LAB.push({key:f[0]+'\u2192'+f[1],ia:bidx[f[0]],ib:bidx[f[1]],mx:(A.x+Bp.x)/2,my:(A.y+Bp.y)/2,
+      x:0.25*A.x+0.5*cx+0.25*Bp.x,y:0.25*A.y+0.5*cy+0.25*Bp.y,vx:0,vy:0});
+  });
+
+  var ANCH={scout:[105,220],'context-builder':[150,362],planner:[410,328],worker:[700,320],
+    reviewer:[1010,328],oracle:[1000,100],researcher:[1260,352],librarian:[225,80],recorder:[445,80]};
+
+  var alpha=1,alphaMin=0.004,alphaDecay=0.02,velDecay=0.45;
+
+  function repulse(){
+    for(var i=0;i<B.length;i++)for(var j=i+1;j<B.length;j++){
+      var bi=B[i],bj=B[j],dx=bj.cx-bi.cx,dy=bj.cy-bi.cy;
+      var d2=dx*dx+dy*dy;if(d2<4)d2=4;var d=Math.sqrt(d2);
+      var f=3400/d2,ux=dx/d,uy=dy/d;
+      bi.vx-=ux*f*alpha;bi.vy-=uy*f*alpha;bj.vx+=ux*f*alpha;bj.vy+=uy*f*alpha;
+    }
+  }
+  function springs(){
+    LAB.forEach(function(l){
+      var bi=B[l.ia],bj=B[l.ib],dx=bj.cx-bi.cx,dy=bj.cy-bi.cy;
+      var d=Math.sqrt(dx*dx+dy*dy)||1,t=280,f=(d-t)*0.02*alpha,ux=dx/d,uy=dy/d;
+      bi.vx+=ux*f;bi.vy+=uy*f;bj.vx-=ux*f;bj.vy-=uy*f;
+    });
+  }
+  function anchors(){
+    B.forEach(function(b){
+      if(b.pin)return;var an=ANCH[b.id];if(!an)return;
+      b.vx+=(an[0]-b.cx)*0.06*alpha;b.vy+=(an[1]-b.cy)*0.06*alpha;
+    });
+  }
+  function border(){
+    B.forEach(function(b){
+      var m=14;
+      if(b.cx<b.w/2+m)b.vx+=(b.w/2+m-b.cx)*0.12*alpha;
+      if(b.cx>VW-b.w/2-m)b.vx-=(b.cx-(VW-b.w/2-m))*0.12*alpha;
+      if(b.cy<b.h/2+m)b.vy+=(b.h/2+m-b.cy)*0.12*alpha;
+      if(b.cy>VH-b.h/2-m)b.vy-=(b.cy-(VH-b.h/2-m))*0.12*alpha;
+    });
+  }
+  function collide(){
+    for(var i=0;i<B.length;i++)for(var j=i+1;j<B.length;j++){
+      var bi=B[i],bj=B[j],dx=bj.cx-bi.cx,dy=bj.cy-bi.cy;
+      var ox=(bi.w+bj.w)/2-Math.abs(dx),oy=(bi.h+bj.h)/2-Math.abs(dy);
+      if(ox>0&&oy>0){
+        if(ox<oy){
+          var s=dx<0?-1:1;
+          if(bi.pin&&bj.pin){}else if(bi.pin){bj.cx+=s*ox;}else if(bj.pin){bi.cx-=s*ox;}else{bi.cx-=s*ox/2;bj.cx+=s*ox/2;}
+        }else{
+          var s2=dy<0?-1:1;
+          if(bi.pin&&bj.pin){}else if(bi.pin){bj.cy+=s2*oy;}else if(bj.pin){bi.cy-=s2*oy;}else{bi.cy-=s2*oy/2;bj.cy+=s2*oy/2;}
+        }
+      }
+    }
+  }
+  function labels(){
+    LAB.forEach(function(l){
+      l.vx+=(l.mx-l.x)*0.05*alpha;l.vy+=(l.my-l.y)*0.05*alpha;
+      B.forEach(function(b){
+        var e=10,hw=b.w/2+e,hh=b.h/2+e,dx=l.x-b.cx,dy=l.y-b.cy;
+        if(Math.abs(dx)<hw&&Math.abs(dy)<hh){
+          var ox=hw-Math.abs(dx),oy=hh-Math.abs(dy),f=26*alpha;
+          if(ox<oy){l.vx+=(dx<0?-f:f);}else{l.vy+=(dy<0?-f:f);}
+        }
+      });
+      LAB.forEach(function(m){
+        if(m===l)return;var dx=l.x-m.x,dy=l.y-m.y,d=Math.sqrt(dx*dx+dy*dy)||1;
+        if(d<46){var f=14*(46-d)/46*alpha;l.vx+=dx/d*f;l.vy+=dy/d*f;}
+      });
+    });
+  }
+  function integrate(){
+    B.forEach(function(b){
+      if(b.pin){b.cx=b.tx;b.cy=b.ty;b.vx=0;b.vy=0;return;}
+      b.cx+=b.vx;b.cy+=b.vy;b.vx*=velDecay;b.vy*=velDecay;
+    });
+    LAB.forEach(function(l){
+      l.x+=l.vx;l.y+=l.vy;l.vx*=velDecay;l.vy*=velDecay;
+      if(l.x<24)l.x=24;if(l.x>VW-24)l.x=VW-24;if(l.y<20)l.y=20;if(l.y>VH-16)l.y=VH-16;
+    });
+  }
+  function labelClear(){
+    for(var pass=0;pass<12;pass++){
+      var moved=false;
+      LAB.forEach(function(l){
+        B.forEach(function(b){
+          var e=8,hw=b.w/2+e,hh=b.h/2+e,dx=l.x-b.cx,dy=l.y-b.cy;
+          if(Math.abs(dx)<hw&&Math.abs(dy)<hh){
+            var ox=hw-Math.abs(dx),oy=hh-Math.abs(dy);
+            if(ox<oy){l.x+=dx<0?-ox-1:ox+1;}else{l.y+=dy<0?-oy-1:oy+1;}
+            moved=true;
+          }
+        });
+        if(l.x<24)l.x=24;if(l.x>VW-24)l.x=VW-24;if(l.y<20)l.y=20;if(l.y>VH-16)l.y=VH-16;
+      });
+      if(!moved)break;
+    }
+  }
+
+  B.forEach(function(b){if(b.pin){b.tx=b.cx;b.ty=b.cy;}});
+  var ticks=0;
+  try{
+    while(alpha>alphaMin&&ticks<600){
+      repulse();springs();anchors();border();labels();integrate();collide();
+      alpha+=(alphaMin-alpha)*alphaDecay;ticks++;
+    }
+    for(var k=0;k<10;k++)collide();
+    labelClear();
+    B.forEach(function(b){
+      if(b.id==='parent'){PARENT.x=Math.round(b.cx-b.w/2);PARENT.y=Math.round(b.cy-b.h/2);}
+      else if(b.pr){b.pr.x=Math.round(b.cx-b.w/2);b.pr.y=Math.round(b.cy-31);}
+    });
+    window.__AFLOW_LABELPOS={};
+    LAB.forEach(function(l){window.__AFLOW_LABELPOS[l.key]={x:Math.round(l.x),y:Math.round(l.y)};});
+    window.__AFLOW_LAYOUT={nodes:B.map(function(b){return {id:b.id,x:Math.round(b.cx-b.w/2),y:Math.round(b.cy-b.h/2)};}),labels:LAB.map(function(l){return {key:l.key,x:Math.round(l.x),y:Math.round(l.y)};}),ticks:ticks};
+    window.__AFLOW_LAYOUT_OK=true;
+  }catch(e){window.__AFLOW_LAYOUT_OK=false;window.__AFLOW_LAYOUT_ERR=String(e);}
+})();
 var aflow=document.getElementById('aflow');
 /* edges first (under the nodes) */
 AFLOWS.forEach(function(f){
@@ -1446,8 +1579,9 @@ AFLOWS.forEach(function(f){
   if(f[3]==='dashed')p.setAttribute('stroke-dasharray','4 6');
   aflow.appendChild(p);
   if(f[2]){
-    var lx=0.25*A.x+0.5*cx+0.25*B.x;
-    var ly=0.25*A.y+0.5*cy+0.25*B.y+((f[5]!=null&&f[5]>(A.y+B.y)/2)?16:-8);
+    var _lp=window.__AFLOW_LABELPOS?window.__AFLOW_LABELPOS[f[0]+'\u2192'+f[1]]:null;
+    var lx=_lp?_lp.x:(0.25*A.x+0.5*cx+0.25*B.x);
+    var ly=_lp?_lp.y:(0.25*A.y+0.5*cy+0.25*B.y+((f[5]!=null&&f[5]>(A.y+B.y)/2)?16:-8));
     var t=el('text',{x:lx,y:ly,'text-anchor':'middle','class':'fedge-label',opacity:.75});
     t.style.fill=col;t.textContent=f[2];aflow.appendChild(t);
   }
