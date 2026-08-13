@@ -40,14 +40,14 @@ channel is an optimisation, not the rule.
 | `planner` | Turns intent into a worker packet |
 | `worker` | The single writer thread |
 | `reviewer` | Verifies implementation against intent |
-| `oracle` / `advisor` | Decision-consistency check |
+| `oracle` | Decision-consistency check (`advisor` is an alias) |
 | `researcher` | Autonomous web research |
 | `scout` | Fast codebase recon |
 | `context-builder` | Intent extraction |
 | `librarian` | Compiles and recalls the library |
 | `delegate` | Lightweight generic child |
 
-`orchestrator` and `librarian` are ours. The other nine began as snapshots of the
+`orchestrator` and `librarian` are ours. The other eight began as snapshots of the
 `pi-subagents` package; their roles are now maintained here, and their wiring lives in
 `profiles/pi.json`.
 

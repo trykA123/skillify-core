@@ -6,21 +6,6 @@
     "fallbackChannel": null
   },
   "agents": {
-    "advisor": {
-      "model": "opus",
-      "tools": [
-        "Bash",
-        "Glob",
-        "Grep",
-        "Read"
-      ],
-      "skills": [
-        "grilling",
-        "domain-modeling",
-        "codebase-design",
-        "rtk-first"
-      ]
-    },
     "context-builder": {
       "model": "sonnet",
       "tools": [
@@ -168,5 +153,8 @@
         "rtk-first"
       ]
     }
+  },
+  "aliases": {
+    "advisor": "oracle"
   }
 }

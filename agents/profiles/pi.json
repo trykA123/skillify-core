@@ -6,24 +6,6 @@
     "fallbackChannel": "intercom"
   },
   "agents": {
-    "advisor": {
-      "tools": "read, grep, find, ls, bash, intercom",
-      "thinking": "xhigh",
-      "systemPromptMode": "replace",
-      "inheritProjectContext": "true",
-      "inheritSkills": "false",
-      "defaultContext": "fork",
-      "model": "qwen-token-plan/qwen3.8-max",
-      "fallbackModels": [
-        "deepseek/deepseek-v4-flash"
-      ],
-      "skills": [
-        "grilling",
-        "domain-modeling",
-        "codebase-design",
-        "rtk-first"
-      ]
-    },
     "context-builder": {
       "tools": "read, grep, find, ls, bash, write, web_search, intercom",
       "thinking": "high",
@@ -188,5 +170,8 @@
         "rtk-first"
       ]
     }
+  },
+  "aliases": {
+    "advisor": "oracle"
   }
 }
