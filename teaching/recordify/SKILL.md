@@ -63,14 +63,18 @@ Store the pattern and a sanitized gist. Never store:
 by hand into a third-person gist with the meaning intact. `sanitizeNote` is a last-mile
 pass — a note that still needs it is a note you haven't finished writing.
 
-The gate is automated. `teaching/recordify/sanitize.mjs` exports `scanRecord(md)`, which
+The gate is automated. `sanitize.mjs`, colocated beside this file, exports `scanRecord(md)`, which
 is frontmatter-aware: it scans the free text that carries meaning — every
 `evidence[].note`, the title, the body — and never the raw YAML, whose quoted scalars
 would false-positive.
 
+`<skill-dir>` below is the directory holding this SKILL.md — resolve it with
+`dirname "$(readlink -f <path-to-this-skill>/SKILL.md)"`, since the install is a symlink
+back into the repo and the flat harness layout has no `teaching/` parent.
+
 ```bash
 bun -e "
-import { scanRecord } from './teaching/recordify/sanitize.mjs';
+import { scanRecord } from '<skill-dir>/sanitize.mjs';
 import fs from 'node:fs';
 let bad = 0;
 for (const f of process.argv.slice(1)) {
@@ -83,7 +87,7 @@ process.exit(bad ? 1 : 0);
 ```
 
 **If it returns anything, the record is refused.** Paraphrase and re-gate; do not ship
-it. `bun test teaching/recordify/sanitize.test.mjs` is the contract. `detectLeaks` covers
+it. `bun test <skill-dir>/sanitize.test.mjs` is the contract. `detectLeaks` covers
 quoted spans, paths, URLs, emails, IPs, hex tokens, known identifiers and verbatim speech.
 When a new identifier family shows up in real sessions, add it to the blocklist **with a
 test case** — an unenforced rule here is worse than none, because the promise stays.

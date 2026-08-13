@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audit: *ify Skills — 2026-08-13</title>
+<style>
+  :root {
+    --bg: oklch(0.98 0 0);
+    --bg-surface: oklch(0.96 0 0);
+    --bg-code: oklch(0.94 0 0);
+    --text: oklch(0.18 0 0);
+    --text-muted: oklch(0.45 0 0);
+    --border: oklch(0.85 0 0);
+    --border-light: oklch(0.92 0 0);
+
+    /* Severity ramp — luminance-differentiated, safe for CVD */
+    --sev-do-now: oklch(0.55 0.18 25);      /* dark warm red */
+    --sev-do-now-bg: oklch(0.95 0.03 25);
+    --sev-plan: oklch(0.55 0.15 70);         /* dark amber */
+    --sev-plan-bg: oklch(0.95 0.03 70);
+    --sev-sweep: oklch(0.45 0.1 250);        /* dark blue */
+    --sev-sweep-bg: oklch(0.95 0.02 250);
+    --sev-accept: oklch(0.50 0 0);           /* neutral gray */
+    --sev-accept-bg: oklch(0.96 0 0);
+
+    /* Categorical — hue-independent shapes + labels carry the meaning */
+    --cat-consistency: oklch(0.55 0.12 160);
+    --cat-chain: oklch(0.55 0.12 280);
+    --cat-structure: oklch(0.55 0.12 40);
+    --cat-references: oklch(0.55 0.12 330);
+    --cat-selfdesc: oklch(0.55 0.12 210);
+
+    --healthy: oklch(0.50 0.14 155);
+    --healthy-bg: oklch(0.95 0.03 155);
+
+    --font-body: 'Charter', 'Georgia', 'Noto Serif', serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Menlo', monospace;
+    --measure: 72ch;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: oklch(0.14 0 0);
+      --bg-surface: oklch(0.18 0 0);
+      --bg-code: oklch(0.22 0 0);
+      --text: oklch(0.90 0 0);
+      --text-muted: oklch(0.60 0 0);
+      --border: oklch(0.30 0 0);
+      --border-light: oklch(0.24 0 0);
+
+      --sev-do-now: oklch(0.72 0.16 25);
+      --sev-do-now-bg: oklch(0.22 0.04 25);
+      --sev-plan: oklch(0.72 0.14 70);
+      --sev-plan-bg: oklch(0.22 0.03 70);
+      --sev-sweep: oklch(0.72 0.10 250);
+      --sev-sweep-bg: oklch(0.20 0.03 250);
+      --sev-accept: oklch(0.65 0 0);
+      --sev-accept-bg: oklch(0.20 0 0);
+
+      --cat-consistency: oklch(0.72 0.10 160);
+      --cat-chain: oklch(0.72 0.10 280);
+      --cat-structure: oklch(0.72 0.10 40);
+      --cat-references: oklch(0.72 0.10 330);
+      --cat-selfdesc: oklch(0.72 0.10 210);
+
+      --healthy: oklch(0.72 0.12 155);
+      --healthy-bg: oklch(0.22 0.03 155);
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .container {
+    max-width: var(--measure);
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  h2 {
+    font-size: 1.375rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.375rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  p { margin-bottom: 0.75rem; }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background: var(--bg-code);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+  }
+
+  pre {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    background: var(--bg-code);
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--border-light);
+  }
+
+  .verdict-box {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .verdict-box .date {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .verdict-box .condition {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+
+  .quadrant-counts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .quadrant-counts .q {
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.15s;
+  }
+
+  .quadrant-counts .q:hover,
+  .quadrant-counts .q.active {
+    border-color: var(--text-muted);
+  }
+
+  .q-do-now { background: var(--sev-do-now-bg); color: var(--sev-do-now); }
+  .q-plan   { background: var(--sev-plan-bg); color: var(--sev-plan); }
+  .q-sweep  { background: var(--sev-sweep-bg); color: var(--sev-sweep); }
+  .q-accept { background: var(--sev-accept-bg); color: var(--sev-accept); }
+
+  .q strong { font-size: 1.5rem; margin-right: 0.25rem; }
+
+  .standard-list {
+    list-style: none;
+    counter-reset: std;
+  }
+
+  .standard-list li {
+    counter-increment: std;
+    padding: 0.5rem 0;
+    padding-left: 2rem;
+    position: relative;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .standard-list li:last-child { border-bottom: none; }
+
+  .standard-list li::before {
+    content: counter(std);
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+
+  .finding {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .finding-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+
+  .finding-id {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .finding-title {
+    font-weight: 600;
+    font-size: 1rem;
+    flex: 1;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.15em 0.5em;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .badge-do-now { background: var(--sev-do-now-bg); color: var(--sev-do-now); border: 1px solid var(--sev-do-now); }
+  .badge-plan   { background: var(--sev-plan-bg); color: var(--sev-plan); border: 1px solid var(--sev-plan); }
+  .badge-sweep  { background: var(--sev-sweep-bg); color: var(--sev-sweep); border: 1px solid var(--sev-sweep); }
+  .badge-accept { background: var(--sev-accept-bg); color: var(--sev-accept); border: 1px solid var(--sev-accept); }
+
+  .finding-meta {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .finding-body p {
+    font-size: 0.9375rem;
+    margin-bottom: 0.5rem;
+  }
+
+  details.evidence {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  details.evidence summary {
+    cursor: pointer;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0;
+    user-select: none;
+  }
+
+  details.evidence summary:hover {
+    color: var(--text);
+  }
+
+  .first-step {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text);
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-light);
+  }
+
+  .healthy-section {
+    background: var(--healthy-bg);
+    border: 1px solid var(--healthy);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .healthy-section h3 {
+    color: var(--healthy);
+    margin-top: 0;
+  }
+
+  .healthy-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .healthy-list li {
+    padding: 0.375rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    font-size: 0.9375rem;
+  }
+
+  .healthy-list li::before {
+    content: "\2713";
+    position: absolute;
+    left: 0;
+    color: var(--healthy);
+    font-weight: 700;
+  }
+
+  .coverage-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  .coverage-table th,
+  .coverage-table td {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .coverage-table th {
+    font-weight: 700;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- VERDICT -->
+<div class="verdict-box">
+  <div class="date">Audit: *ify Skills &mdash; 2026-08-13 &middot; HEAD <code>ccb7066</code></div>
+  <div class="condition">Sound at the core; broken at the edges. The pipeline spine and the skill prose are strong. The metadata, cross-references, and README are stale in measurable ways &mdash; 5 claims the repo makes about itself don't match what's deployed.</div>
+  <div class="quadrant-counts">
+    <div class="q q-do-now" data-quadrant="do-now" role="button" tabindex="0"><strong>2</strong> Do Now</div>
+    <div class="q q-plan" data-quadrant="plan" role="button" tabindex="0"><strong>2</strong> Plan It</div>
+    <div class="q q-sweep" data-quadrant="sweep" role="button" tabindex="0"><strong>4</strong> Sweep</div>
+    <div class="q q-accept" data-quadrant="accept" role="button" tabindex="0"><strong>3</strong> Accept</div>
+  </div>
+</div>
+
+<!-- STANDARD -->
+<h2>The Standard</h2>
+<p>Derived from the skills' own stated goals and the README's commitments. Five criteria, each testable:</p>
+<ol class="standard-list">
+  <li><strong>Internal consistency</strong> &mdash; each skill's claims about itself (what it does, where it routes, what it references) match what actually exists in the repo</li>
+  <li><strong>Chain integrity</strong> &mdash; the pipeline chain (<code>orientify &rarr; undumbify &rarr; shapeify &rarr; shipify &rarr; reviewify</code>) is wired: each skill names its downstream handoff</li>
+  <li><strong>Structural coherence</strong> &mdash; the 12 skills share enough structural convention to be recognizable as one family; frontmatter and metadata are consistent</li>
+  <li><strong>Executable references</strong> &mdash; paths, commands, and file references in the skills resolve to real things</li>
+  <li><strong>Self-description accuracy</strong> &mdash; the README's claims about the skill set match reality (counts, names, labels, taxonomy)</li>
+</ol>
+
+<!-- ACTION GRID -->
+<h2>Action Grid</h2>
+<p>Click a quadrant to filter findings. Click again to show all.</p>
+
+<!-- FINDINGS -->
+<h2>Findings</h2>
+
+<!-- F1 -->
+<div class="finding" data-quadrant="do-now">
+  <div class="finding-header">
+    <span class="finding-id">F1</span>
+    <span class="finding-title">shipify does not name reviewify &mdash; the pipeline chain is broken</span>
+    <span class="badge badge-do-now">Do Now</span>
+  </div>
+  <div class="finding-meta">Criterion 2 (chain integrity) &middot; <code>shipify/SKILL.md</code></div>
+  <div class="finding-body">
+    <p>The README claims <code>orientify &rarr; undumbify &rarr; shapeify &rarr; shipify &rarr; reviewify</code>. Every link in this chain is present <em>except</em> the last: shipify contains zero mentions of "review" or "reviewify".</p>
+    <p>The reverse link exists &mdash; reviewify mentions shipify 3 times and routes verdicts back to it. But shipify's "done" path has no forward handoff. A junior running the pipeline in order would finish shipify and have no indication that review is next.</p>
+  </div>
+  <details class="evidence">
+    <summary>Evidence</summary>
+    <pre>$ grep -i 'review' shipify/SKILL.md
+(no output)
+
+$ grep -n 'shipify' reviewify/SKILL.md
+3:  ...Use after shipify...
+100: → shipify
+101: → shipify</pre>
+  </details>
+  <div class="first-step">Add one line to shipify's Report section routing to reviewify, mirroring how shapeify routes to shipify.</div>
+</div>
+
+<!-- F2 -->
+<div class="finding" data-quadrant="do-now">
+  <div class="finding-header">
+    <span class="finding-id">F2</span>
+    <span class="finding-title">recordify's path references are unresolvable outside the repo root</span>
+    <span class="badge badge-do-now">Do Now</span>
+  </div>
+  <div class="finding-meta">Criterion 4 (executable references) &middot; <code>recordify/SKILL.md:66,73,86</code></div>
+  <div class="finding-body">
+    <p>recordify's SKILL.md contains three references to <code>teaching/recordify/sanitize.mjs</code> (line 66), <code>./teaching/recordify/sanitize.mjs</code> (line 73, in a <code>bun -e</code> import), and <code>teaching/recordify/sanitize.test.mjs</code> (line 86). These paths only resolve from the skillify repo root.</p>
+    <p>When invoked, agents are in the user's project directory. The skill is installed at <code>~/.claude/skills/recordify/</code> (flat, no <code>teaching/</code> parent), so the import path in the code example would fail. The actual <code>sanitize.mjs</code> <em>is</em> colocated in the symlinked directory and can be imported as <code>./sanitize.mjs</code>, but the SKILL.md tells agents to use the wrong path.</p>
+  </div>
+  <details class="evidence">
+    <summary>Evidence</summary>
+    <pre>$ grep -n 'teaching/' recordify/SKILL.md
+66:...`teaching/recordify/sanitize.mjs` exports...
+73:import { scanRecord } from './teaching/recordify/sanitize.mjs';
+86:...`bun test teaching/recordify/sanitize.test.mjs`...
+
+$ ls ~/.claude/skills/recordify/sanitize.mjs
+-rw-r--r-- 1 claud claud 11155 ...sanitize.mjs  # EXISTS here
+
+$ ls ~/.claude/skills/teaching/recordify/sanitize.mjs
+ls: cannot access: No such file or directory</pre>
+  </details>
+  <div class="first-step">Rewrite the 3 path references to use <code>./sanitize.mjs</code> (relative to the skill directory, which is what agents see) or a variable like <code>&lt;skill-dir&gt;</code>.</div>
+</div>
+
+<!-- F3 -->
+<div class="finding" data-quadrant="plan">
+  <div class="finding-header">
+    <span class="finding-id">F3</span>
+    <span class="finding-title">librify claims it "stays uninstalled deliberately" but is installed</span>
+    <span class="badge badge-plan">Plan It</span>
+  </div>
+  <div class="finding-meta">Criterion 1 (internal consistency) &middot; <code>librify/SKILL.md:70-74</code></div>
+  <div class="finding-body">
+    <p>librify's Status section says: "It stays uninstalled deliberately; revisit when there's a run volume worth compiling." But librify <em>is</em> installed &mdash; symlinked at <code>~/.claude/skills/librify</code> pointing to <code>/mnt/Sabrent/homelab/skillify/memory/librify</code>. It also appears in the install.sh SKILLS array and the publish-manifest.txt.</p>
+    <p>The shoin shelf holds 22 entries, all at <code>seed</code> status, all seeded on one day. None have been promoted to <code>accepted</code>. The self-description is honest about the emptiness &mdash; but the "uninstalled" claim is factually wrong.</p>
+  </div>
+  <details class="evidence">
+    <summary>Evidence</summary>
+    <pre>$ readlink ~/.claude/skills/librify
+/mnt/Sabrent/homelab/skillify/memory/librify
+
+$ grep 'librify' install.sh
+SKILLS=(orientify ... librify audify)
+
+$ python3 -c "..."
+Total entries: 22
+Statuses: {'seed': 22}</pre>
+  </details>
+  <div class="first-step">Decide: either uninstall it (remove from SKILLS array, remove symlink) or update the Status section to say "installed but dormant" and explain when it activates.</div>
+</div>
+
+<!-- F4 -->
+<div class="finding" data-quadrant="plan">
+  <div class="finding-header">
+    <span class="finding-id">F4</span>
+    <span class="finding-title">README says "11 harness-agnostic roles" but the directory contains 10</span>
+    <span class="badge badge-plan">Plan It</span>
+  </div>
+  <div class="finding-meta">Criterion 5 (self-description accuracy) &middot; <code>README.md:10</code> vs <code>agents/roles/</code></div>
+  <div class="finding-body">
+    <p>The README claims "11 harness-agnostic roles in <code>roles/</code>". The directory contains 10 files. The recent commit <code>1f988e9</code> (<em>"refactor(agents): advisor was a copy of oracle &mdash; make it an alias"</em>) removed the advisor role file, reducing the count from 11 to 10 without updating the README.</p>
+  </div>
+  <details class="evidence">
+    <summary>Evidence</summary>
+    <pre>$ ls agents/roles/ | wc -l
+10
+
+$ ls agents/roles/
+context-builder.md  delegate.md  librarian.md
+oracle.md  orchestrator.md  planner.md
+researcher.md  reviewer.md  scout.md  worker.md
+
+$ git log --oneline -2
+ccb7066 feat(skills): audify
+1f988e9 refactor(agents): advisor was a copy of oracle</pre>
+  </details>
+  <div class="first-step">Change README line 10 from "11" to "10".</div>
+</div>
+
+<!-- F5 -->
+<div class="finding" data-quadrant="sweep">
+  <div class="finding-header">
+    <span class="finding-id">F5</span>
+    <span class="finding-title">README says "17 standalone HTML artifacts" but <code>docs/html/</code> contains 19</span>
+    <span class="badge badge-sweep">Sweep</span>
+  </div>
+  <div class="finding-meta">Criterion 5 (self-description accuracy) &middot; <code>README.md:11</code></div>
+  <div class="finding-body">
+    <p>The directory holds 19 HTML files plus 1 JSON file (20 total). The claim of "17 tracked HTML artifacts" and "16 <code>RATINGS-*.html</code> iterations + <code>progress.html</code>" is stale &mdash; there are now 16 RATINGS variants + <code>progress.html</code> + <code>SKILLMAP.html</code> + <code>usage.html</code> = 19.</p>
+  </div>
+  <details class="evidence">
+    <summary>Evidence</summary>
+    <pre>$ ls docs/html/*.html | wc -l
+19
+
+$ ls docs/html/
+RATINGS-ATLAS.html ... (16 RATINGS files)
+SKILLMAP.html  progress.html  usage.html</pre>
+  </details>
+  <div class="first-step">Update README to say "19 standalone HTML artifacts" and revise the breakdown in the description.</div>
+</div>
+
+<!-- F6 -->
+<div class="finding" data-quadrant="sweep">
+  <div class="finding-header">
+    <span class="finding-id">F6</span>
+    <span class="finding-title"><code>disable-model-invocation</code> applied to 6 of 12 skills with no visible pattern</span>
+    <span class="badge badge-sweep">Sweep</span>
+  </div>
+  <div class="finding-meta">Criterion 3 (structural coherence) &middot; All SKILL.md frontmatters</div>
+  <div class="finding-body">
+    <p>6 skills set <code>disable-model-invocation: true</code>: audify, librify, explainify, recordify, promptify, orientify. The other 6 (researchify, traceify, reviewify, shipify, shapeify, undumbify) do not. There's no obvious rule: the pipeline skills (undumbify, shapeify, shipify, reviewify) don't have it, but neither does traceify (an entry skill) or researchify (an entry skill). The teaching skills do have it &mdash; except one teaching skill (recordify) has it while one entry skill (traceify) doesn't.</p>
+    <p>The inconsistency is harmless if <code>disable-model-invocation</code> is being set intentionally per-skill. But there's no documentation of the intent, so it's impossible to tell whether researchify and traceify were accidentally omitted.</p>
+  </div>
+  <details class="evidence">
+    <summary>Evidence</summary>
+    <pre>With DMI:    audify, librify, explainify, recordify, promptify, orientify
+Without DMI: researchify, traceify, reviewify, shipify, shapeify, undumbify
+
+Family breakdown:
+  entry/:    orientify=yes, traceify=NO, researchify=NO, audify=yes
+  pipeline/: undumbify=NO, shapeify=NO, shipify=NO, reviewify=NO
+  teaching/: promptify=yes, explainify=yes, recordify=yes
+  memory/:   librify=yes</pre>
+  </details>
+  <div class="first-step">Decide the rule (e.g., "all entry skills" or "all non-pipeline skills") and apply it consistently, or document per-skill reasoning in the skill frontmatter.</div>
+</div>
+
+<!-- F7 -->
+<div class="finding" data-quadrant="sweep">
+  <div class="finding-header">
+    <span class="finding-id">F7</span>
+    <span class="finding-title"><code>argument-hint</code> present on 4 of 12 skills</span>
+    <span class="badge badge-sweep">Sweep</span>
+  </div>
+  <div class="finding-meta">Criterion 3 (structural coherence) &middot; All SKILL.md frontmatters</div>
+  <div class="finding-body">
+    <p>Only 4 skills provide <code>argument-hint</code>: audify, explainify, promptify, orientify. These are the same 4 with both <code>disable-model-invocation</code> and <code>argument-hint</code>. The other skills with <code>disable-model-invocation</code> (librify, recordify) lack it. Every skill without <code>disable-model-invocation</code> also lacks <code>argument-hint</code>.</p>
+    <p>Since <code>argument-hint</code> helps users invoke skills correctly, its absence from user-facing skills like traceify ("What broke?") and researchify ("Research what?") is a minor usability gap.</p>
+  </div>
+  <details class="evidence">
+    <summary>Evidence</summary>
+    <pre>With argument-hint:    audify, explainify, promptify, orientify
+Without argument-hint: librify, recordify, researchify, traceify,
+                       reviewify, shipify, shapeify, undumbify</pre>
+  </details>
+  <div class="first-step">Add <code>argument-hint</code> to traceify, researchify, and librify at minimum &mdash; the three that accept a direct user-facing subject.</div>
+</div>
+
+<!-- F8 -->
+<div class="finding" data-quadrant="sweep">
+  <div class="finding-header">
+    <span class="finding-id">F8</span>
+    <span class="finding-title">README cognitive-mode labels contradict the pipeline annotation</span>
+    <span class="badge badge-sweep">Sweep</span>
+  </div>
+  <div class="finding-meta">Criterion 5 (self-description accuracy) &middot; <code>README.md:17,29-30</code></div>
+  <div class="finding-body">
+    <p>The skill table labels undumbify as "Convergent &mdash; extract intent from ambiguity." The chain annotation says <code>map &rarr; diverge &rarr; converge &rarr; plan &rarr; build &rarr; judge</code>, placing undumbify at the "diverge" position. undumbify's own SKILL.md actually has a "Diverge" mode (line 93) for when "user doesn't know what they want yet." The word "Convergent" in the table and "diverge" in the chain directly contradict each other.</p>
+    <p>undumbify does both &mdash; it converges a vague prompt <em>and</em> it can diverge when the user has no direction. The table picked one; the chain picked the other.</p>
+  </div>
+  <details class="evidence">
+    <summary>Evidence</summary>
+    <pre>README table:
+| `undumbify` | Convergent — extract intent... |
+
+README chain:
+(map → diverge → converge → plan → build → judge)
+         ^undumbify  ^shapeify
+
+undumbify SKILL.md line 93:
+- **Diverge** — user doesn't know what they want yet.</pre>
+  </details>
+  <div class="first-step">Either relabel undumbify's cognitive mode to match its diverge capability, or rewrite the chain annotation to say <code>map &rarr; refine &rarr; plan &rarr; build &rarr; judge</code>.</div>
+</div>
+
+<!-- F9 -->
+<div class="finding" data-quadrant="accept">
+  <div class="finding-header">
+    <span class="finding-id">F9</span>
+    <span class="finding-title">Terminal section naming varies: "Before you emit/ship/close/finish" across 7 skills</span>
+    <span class="badge badge-accept">Accept</span>
+  </div>
+  <div class="finding-meta">Criterion 3 (structural coherence) &middot; All SKILL.md files</div>
+  <div class="finding-body">
+    <p>7 of 12 skills have a "Before you&hellip;" terminal section, using 4 different verbs: <code>emit</code> (researchify, reviewify, shapeify, undumbify), <code>ship it</code> (audify), <code>close</code> (traceify), <code>finish</code> (shipify). 5 skills (librify, explainify, recordify, promptify, orientify) use "Done when" or "Then" instead, or have no explicit terminal guard.</p>
+    <p>The variation is intentional &mdash; each verb matches the skill's cognitive mode (you "emit" findings, "ship" an artifact, "close" a bug, "finish" a build). But a reader encountering the family would need to learn where the self-check lives in each skill.</p>
+  </div>
+  <details class="evidence">
+    <summary>Evidence</summary>
+    <pre>"Before you emit":   researchify, reviewify, shapeify, undumbify
+"Before you ship it": audify
+"Before you close":  traceify
+"Before you finish": shipify
+"Done when":         explainify, promptify, orientify
+"Then":              recordify
+(none):              librify (has "Status" instead)</pre>
+  </details>
+  <div class="first-step">Intentional variation &mdash; accept as-is. The verb differences are meaningful and the section is consistently the <em>last</em> heading in every skill that has one.</div>
+</div>
+
+<!-- F10 -->
+<div class="finding" data-quadrant="accept">
+  <div class="finding-header">
+    <span class="finding-id">F10</span>
+    <span class="finding-title">explorify appears in the system prompt skill list but doesn't exist</span>
+    <span class="badge badge-accept">Accept</span>
+  </div>
+  <div class="finding-meta">Criterion 1 (internal consistency) &middot; System prompt vs <code>~/.claude/skills/</code></div>
+  <div class="finding-body">
+    <p>The Claude Code system prompt (injected from skill registration) lists "explorify" as an available skill with a trigger description. No directory, no SKILL.md, no entry in install.sh, and no mention in the README. The family-structure plan references it 4 times as a planned entry skill (<code>entry/explorify</code>), suggesting it was designed but never written.</p>
+    <p>This is outside the audit boundary (system prompt registration is harness config, not the skill files). Noted because an agent seeing "explorify" in its skill list would attempt to invoke it and fail.</p>
+  </div>
+  <details class="evidence">
+    <summary>Evidence</summary>
+    <pre>$ ls ~/.claude/skills/explorify
+NOT INSTALLED
+
+$ grep -c 'explorify' install.sh
+0
+
+$ grep -c 'explorify' README.md
+0
+
+$ grep -c 'explorify' plans/family-structure.md
+4</pre>
+  </details>
+  <div class="first-step">Outside this audit's boundary. If the ghost registration matters: either write explorify or remove it from whatever config injects it into the system prompt.</div>
+</div>
+
+<!-- F11 -->
+<div class="finding" data-quadrant="accept">
+  <div class="finding-header">
+    <span class="finding-id">F11</span>
+    <span class="finding-title"><code>&lt;skillify-root&gt;</code> placeholder unresolvable by convention</span>
+    <span class="badge badge-accept">Accept</span>
+  </div>
+  <div class="finding-meta">Criterion 4 (executable references) &middot; <code>explainify/SKILL.md:62</code>, <code>promptify/SKILL.md:73</code></div>
+  <div class="finding-body">
+    <p>Both teaching skills reference <code>bun &lt;skillify-root&gt;/game-render.ts</code>. There is no documented convention for how an agent discovers <code>&lt;skillify-root&gt;</code>. The symlink target is resolvable (<code>readlink -f</code> two parents up), but the skill doesn't say that.</p>
+    <p>Both skills also say "skip silently if bun is absent", making the render step gracefully optional. The path is a nice-to-have, not load-bearing.</p>
+  </div>
+  <details class="evidence">
+    <summary>Evidence</summary>
+    <pre>$ readlink -f ~/.claude/skills/promptify/SKILL.md
+/mnt/Sabrent/homelab/skillify/teaching/promptify/SKILL.md
+# Two parents up = /mnt/Sabrent/homelab/skillify (the root)
+
+explainify line 62:
+`bun <skillify-root>/game-render.ts <progress.json>`
+
+promptify line 73:
+`bun <skillify-root>/game-render.ts <progress.json>`</pre>
+  </details>
+  <div class="first-step">Accept &mdash; the render step is explicitly optional. Could add one line documenting the symlink-resolution trick, but it's low cost if omitted.</div>
+</div>
+
+<!-- WHAT'S SOUND -->
+<h2>What's Sound</h2>
+<div class="healthy-section">
+  <h3>Healthy</h3>
+  <ul class="healthy-list">
+    <li><strong>The prose is excellent.</strong> Every skill reads as a coherent document with a clear cognitive model, a defined entry/exit, and a self-check. The writing is dense and specific &mdash; no filler, no generic advice. Each skill teaches the agent a different way of thinking, not just a different checklist.</li>
+    <li><strong>The pipeline chain works where it's wired.</strong> orientify &rarr; undumbify (line 76), undumbify &rarr; shapeify (line 97), shapeify &rarr; shipify (6 references). Routing is bidirectional where needed: reviewify routes back to shipify and shapeify for rework.</li>
+    <li><strong>recordify's privacy gate is real and tested.</strong> 22 passing sanitize tests, 16 passing audit-records tests, all green. The gate code (<code>sanitize.mjs</code>, <code>audit-records.mjs</code>) is colocated and functional. This is the skill with the most executable backing.</li>
+    <li><strong>The family taxonomy is clean.</strong> entry/ (standalone entry points), pipeline/ (the build chain), teaching/ (user-facing coaching), memory/ (institutional). Every skill is in the right family. Symlinks are all valid and point to the correct locations.</li>
+    <li><strong>install.sh matches reality.</strong> All 12 skills in the SKILLS array, the SKILL_FAMILY map resolves correctly, and the flat destination naming is documented and enforced. The family-structure plan's design for the nested-lookup fix was executed.</li>
+    <li><strong>Game layer integration is deliberate.</strong> Only the two teaching skills (promptify, explainify) and the pipeline skills participate. researchify, librify, and audify are explicitly excluded, and the game-layer.md spec documents why. No accidental coupling.</li>
+    <li><strong>Entry skills are genuinely standalone.</strong> audify, researchify, and orientify make zero references to pipeline skills. traceify references undumbify/shapeify only for non-trivial handoff &mdash; exactly the right coupling point.</li>
+  </ul>
+</div>
+
+<!-- COVERAGE -->
+<h2>Coverage</h2>
+<div class="table-scroll">
+<table class="coverage-table">
+  <thead>
+    <tr>
+      <th>What was examined</th>
+      <th>How</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>All 12 SKILL.md files (full text)</td>
+      <td>Read in full; every line of every skill</td>
+    </tr>
+    <tr>
+      <td>Frontmatter fields across all 12</td>
+      <td><code>grep</code> for <code>disable-model-invocation</code>, <code>argument-hint</code>, <code>name</code>, <code>description</code></td>
+    </tr>
+    <tr>
+      <td>Cross-reference map (all 12 &times; 12)</td>
+      <td><code>grep</code> each skill name in every other skill</td>
+    </tr>
+    <tr>
+      <td>Pipeline chain (5 links)</td>
+      <td><code>grep</code> downstream skill name in each upstream skill</td>
+    </tr>
+    <tr>
+      <td>Path references in recordify, explainify, promptify</td>
+      <td><code>grep</code> + filesystem verification (<code>ls</code>, <code>readlink</code>)</td>
+    </tr>
+    <tr>
+      <td>install.sh SKILLS array vs actual dirs</td>
+      <td>Compared array to <code>ls</code> of all family dirs</td>
+    </tr>
+    <tr>
+      <td>Symlink integrity (all 12)</td>
+      <td><code>readlink</code> on every <code>~/.claude/skills/*ify</code></td>
+    </tr>
+    <tr>
+      <td>recordify tests</td>
+      <td><code>bun test</code> both test files &mdash; 38 tests, 0 failures</td>
+    </tr>
+    <tr>
+      <td>README numerical claims</td>
+      <td>Compared stated counts (12 skills, 11 roles, 17 HTML) to filesystem</td>
+    </tr>
+    <tr>
+      <td>Game-layer exclusions</td>
+      <td><code>grep</code> for game-layer refs in excluded skills (confirmed clean)</td>
+    </tr>
+    <tr>
+      <td>librify shoin shelf</td>
+      <td>Parsed <code>index.json</code> for entry count and status distribution</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Not examined</h3>
+<div class="table-scroll">
+<table class="coverage-table">
+  <thead>
+    <tr>
+      <th>What was not examined</th>
+      <th>Why</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>agents/ fleet (roles, profiles)</td>
+      <td>Outside boundary &mdash; only the role count claim was checked</td>
+    </tr>
+    <tr>
+      <td>docs/ site and HTML artifacts</td>
+      <td>Outside boundary &mdash; only the file count was checked</td>
+    </tr>
+    <tr>
+      <td>game-render.ts, usage-stats.ts</td>
+      <td>Outside boundary &mdash; supporting code, not skill definitions</td>
+    </tr>
+    <tr>
+      <td>publish.sh, public-overlay/, .publish-staging/</td>
+      <td>Outside boundary &mdash; publishing pipeline</td>
+    </tr>
+    <tr>
+      <td>Runtime behavior &mdash; whether agents actually follow the skills correctly</td>
+      <td>Not observable from the skill files; would require session analysis</td>
+    </tr>
+    <tr>
+      <td>explainify/html-template.md, promptify/html-template.md, promptify/game-layer.md</td>
+      <td>Supporting templates, not the skill definitions themselves</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div><!-- .container -->
+
+<script>
+(function() {
+  const findings = document.querySelectorAll('.finding');
+  const quadrants = document.querySelectorAll('.q');
+  let active = null;
+
+  quadrants.forEach(function(q) {
+    q.addEventListener('click', function() {
+      const qName = this.dataset.quadrant;
+      if (active === qName) {
+        // Deactivate
+        active = null;
+        quadrants.forEach(function(el) { el.classList.remove('active'); });
+        findings.forEach(function(f) { f.classList.remove('hidden'); });
+      } else {
+        // Activate
+        active = qName;
+        quadrants.forEach(function(el) {
+          el.classList.toggle('active', el.dataset.quadrant === qName);
+        });
+        findings.forEach(function(f) {
+          f.classList.toggle('hidden', f.dataset.quadrant !== qName);
+        });
+      }
+    });
+
+    q.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.click();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

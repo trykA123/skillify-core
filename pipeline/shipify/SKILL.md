@@ -109,6 +109,10 @@ slice.
 
 Never claim a check ran when it didn't.
 
+Then hand to **reviewify** — you built it, so you are the worst-placed judge of whether
+it matches what was asked. Skip only for a one-line change with a passing test, or when
+the user says they're done.
+
 **Skill map signal** — one honest observation about the *input*, harvested passively:
 did the packet work first try because the intent was clear, or did a Revision Request
 happen because scope was thin? `"P1 positive: intent was one line, first-try result"`
