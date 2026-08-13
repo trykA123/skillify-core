@@ -95,6 +95,21 @@
         "shapeify"
       ]
     },
+    "recorder": {
+      "tools": "read, grep, find, ls, bash, write, intercom",
+      "thinking": "high",
+      "systemPromptMode": "replace",
+      "inheritProjectContext": "true",
+      "inheritSkills": "false",
+      "model": "deepseek/deepseek-v4-flash",
+      "fallbackModels": [
+        "qwen-token-plan/qwen3.8-max"
+      ],
+      "skills": [
+        "recordify",
+        "rtk-first"
+      ]
+    },
     "researcher": {
       "tools": "read, write, web_search, fetch_content, get_search_content, intercom",
       "thinking": "high",

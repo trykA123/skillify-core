@@ -7,7 +7,7 @@ Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown
 
 - **Twelve skills** — `orientify`, `undumbify`, `shapeify`, `shipify`,
   `reviewify`, `traceify`, `promptify`, `explainify`, `recordify`, `researchify`, `librify`, `audify`. Each folder holds one `SKILL.md` — the skills ARE the prompts. Catalog below.
-- **The fleet** — [`agents/`](agents/README.md): 10 harness-agnostic roles in `roles/`, per-harness wiring in `profiles/`. No credentials.
+- **The fleet** — [`agents/`](agents/README.md): 11 harness-agnostic roles in `roles/`, per-harness wiring in `profiles/`. No credentials.
 - **Docs** — [`docs/index.html`](docs/index.html) (skill map) + [`docs/html/`](docs/html/) — 19 standalone HTML artifacts.
 
 ## The Skills

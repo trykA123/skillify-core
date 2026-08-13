@@ -88,6 +88,21 @@
         "shapeify"
       ]
     },
+    "recorder": {
+      "model": "opus",
+      "tools": [
+        "Bash",
+        "Glob",
+        "Grep",
+        "Read",
+        "Write"
+      ],
+      "skills": [
+        "recordify",
+        "rtk-first"
+      ],
+      "thinking": "high"
+    },
     "researcher": {
       "model": "sonnet",
       "tools": [
