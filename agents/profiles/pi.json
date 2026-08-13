@@ -73,7 +73,9 @@
       "inheritProjectContext": "true",
       "inheritSkills": "false",
       "defaultContext": "fork",
-      "skills": "rtk-first",
+      "skills": [
+        "rtk-first"
+      ],
       "maxSubagentDepth": "2"
     },
     "planner": {

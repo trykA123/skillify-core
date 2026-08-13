@@ -74,7 +74,9 @@
         "Read",
         "Write"
       ],
-      "skills": "rtk-first"
+      "skills": [
+        "rtk-first"
+      ]
     },
     "planner": {
       "model": "opus",
