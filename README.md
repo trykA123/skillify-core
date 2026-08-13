@@ -7,7 +7,7 @@ Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown
 
 - **Eleven skills** — `orientify`, `undumbify`, `shapeify`, `shipify`,
   `reviewify`, `traceify`, `promptify`, `explainify`, `recordify`, `researchify`, `librify`. Each folder holds one `SKILL.md` — the skills ARE the prompts. Catalog below.
-- **The fleet** — [`agents/`](agents/README.md): orchestrator + 9 builtin snapshots + `fleet-config.json`. No credentials.
+- **The fleet** — [`agents/`](agents/README.md): 11 harness-agnostic roles in `roles/`, per-harness wiring in `profiles/`. No credentials.
 - **Docs** — [`docs/index.html`](docs/index.html) (skill map) + [`docs/html/`](docs/html/) — 17 standalone HTML artifacts.
 
 ## The Skills
@@ -84,9 +84,13 @@ bun game-render.ts path/to/progress.json   # or point at any progress file
 ```
 
 ## The Fleet — `agents/`
-The pi-subagents fleet, versioned for reproducibility: a custom `orchestrator` + 9 builtin
-snapshots from the `pi-subagents` npm package + `fleet-config.json` (model/thinking/skill
-overrides). Full table, roles, fallback models: [agents/README.md](agents/README.md).
+Eleven agent roles, kept harness-agnostic: `roles/` holds what each agent is *for* —
+name, description, prompt, nothing local. `profiles/` holds what a given harness needs to
+run them: model, tool names, thinking level, attached skills, and a capability map.
+
+Roles speak capability names (`escalate`); profiles map them to the harness's own tools.
+Where a harness has no escalation channel, an agent returns the decision as a blocking
+question instead of guessing. Full table: [agents/README.md](agents/README.md).
 
 ## The Docs Site — `docs/`
 - **Self-hosted** — [dojo.erzago.duckdns.org](https://dojo.erzago.duckdns.org) — the skill map behind the homelab SSO (zenauth); static files are served live from the pulled repo (no rebuild needed).

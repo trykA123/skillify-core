@@ -1,0 +1,192 @@
+{
+  "harness": "pi",
+  "defaultModel": "deepseek/deepseek-v4-flash",
+  "capabilities": {
+    "escalate": "contact_supervisor",
+    "fallbackChannel": "intercom"
+  },
+  "agents": {
+    "advisor": {
+      "tools": "read, grep, find, ls, bash, intercom",
+      "thinking": "xhigh",
+      "systemPromptMode": "replace",
+      "inheritProjectContext": "true",
+      "inheritSkills": "false",
+      "defaultContext": "fork",
+      "model": "qwen-token-plan/qwen3.8-max",
+      "fallbackModels": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "skills": [
+        "grilling",
+        "domain-modeling",
+        "codebase-design",
+        "rtk-first"
+      ]
+    },
+    "context-builder": {
+      "tools": "read, grep, find, ls, bash, write, web_search, intercom",
+      "thinking": "high",
+      "systemPromptMode": "replace",
+      "inheritProjectContext": "true",
+      "inheritSkills": "false",
+      "output": "context.md",
+      "model": "deepseek/deepseek-v4-flash",
+      "fallbackModels": [],
+      "skills": [
+        "undumbify",
+        "domain-modeling",
+        "rtk-first"
+      ]
+    },
+    "delegate": {
+      "systemPromptMode": "append",
+      "inheritProjectContext": "true",
+      "tools": "read, grep, find, ls, bash, edit, write, contact_supervisor",
+      "inheritSkills": "false",
+      "skills": [
+        "rtk-first"
+      ]
+    },
+    "librarian": {
+      "tools": "read, grep, find, ls, bash, write, intercom",
+      "thinking": "xhigh",
+      "systemPromptMode": "replace",
+      "inheritProjectContext": "true",
+      "inheritSkills": "false",
+      "model": "deepseek/deepseek-v4-flash",
+      "fallbackModels": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "skills": [
+        "librify",
+        "rtk-first"
+      ]
+    },
+    "oracle": {
+      "tools": "read, grep, find, ls, bash, intercom",
+      "thinking": "xhigh",
+      "systemPromptMode": "replace",
+      "inheritProjectContext": "true",
+      "inheritSkills": "false",
+      "defaultContext": "fork",
+      "model": "qwen-token-plan/qwen3.8-max",
+      "fallbackModels": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "skills": [
+        "grilling",
+        "domain-modeling",
+        "codebase-design",
+        "rtk-first"
+      ]
+    },
+    "orchestrator": {
+      "aliases": "conductor, boss",
+      "tools": "read, grep, find, ls, bash, write, subagent, contact_supervisor",
+      "model": "deepseek/deepseek-v4-flash",
+      "fallbackModels": "qwen-token-plan/qwen3.8-max",
+      "thinking": "high",
+      "systemPromptMode": "replace",
+      "inheritProjectContext": "true",
+      "inheritSkills": "false",
+      "defaultContext": "fork",
+      "skills": "rtk-first",
+      "maxSubagentDepth": "2"
+    },
+    "planner": {
+      "tools": "read, grep, find, ls, intercom",
+      "thinking": "medium",
+      "acceptanceRole": "read-only",
+      "systemPromptMode": "replace",
+      "inheritProjectContext": "true",
+      "inheritSkills": "false",
+      "output": "plan.md",
+      "defaultReads": "context.md",
+      "defaultContext": "fork",
+      "model": "qwen-token-plan/qwen3.8-max",
+      "fallbackModels": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "skills": [
+        "undumbify",
+        "shapeify"
+      ]
+    },
+    "researcher": {
+      "tools": "read, write, web_search, fetch_content, get_search_content, intercom",
+      "thinking": "high",
+      "systemPromptMode": "replace",
+      "inheritProjectContext": "true",
+      "inheritSkills": "false",
+      "output": "research.md",
+      "defaultProgress": "true",
+      "model": "deepseek/deepseek-v4-flash",
+      "fallbackModels": [],
+      "skills": [
+        "research",
+        "researchify"
+      ]
+    },
+    "reviewer": {
+      "tools": "read, grep, find, ls, bash, edit, write, intercom",
+      "thinking": "medium",
+      "systemPromptMode": "replace",
+      "inheritProjectContext": "true",
+      "inheritSkills": "false",
+      "defaultReads": "plan.md, progress.md",
+      "model": "qwen-token-plan/qwen3.8-max",
+      "fallbackModels": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "skills": [
+        "reviewify",
+        "code-review",
+        "ponytail-review",
+        "ponytail-audit",
+        "ponytail-debt",
+        "caveman-review",
+        "rtk-first"
+      ]
+    },
+    "scout": {
+      "tools": "read, grep, find, ls, bash, write, intercom",
+      "thinking": "low",
+      "systemPromptMode": "replace",
+      "inheritProjectContext": "true",
+      "inheritSkills": "false",
+      "output": "context.md",
+      "defaultProgress": "true",
+      "model": "deepseek/deepseek-v4-flash",
+      "fallbackModels": [],
+      "skills": [
+        "caveman",
+        "rtk-first"
+      ]
+    },
+    "worker": {
+      "aliases": "developer, coder, implementer, develop",
+      "thinking": "high",
+      "systemPromptMode": "replace",
+      "inheritProjectContext": "true",
+      "inheritSkills": "false",
+      "tools": "read, grep, find, ls, bash, edit, write, contact_supervisor",
+      "defaultContext": "fork",
+      "defaultReads": "context.md, plan.md",
+      "defaultProgress": "true",
+      "model": "deepseek/deepseek-v4-flash",
+      "fallbackModels": [
+        "qwen-token-plan/qwen3.8-max"
+      ],
+      "skills": [
+        "shipify",
+        "ponytail",
+        "traceify",
+        "prototype",
+        "shadcn",
+        "caveman-commit",
+        "rtk-first"
+      ]
+    }
+  }
+}

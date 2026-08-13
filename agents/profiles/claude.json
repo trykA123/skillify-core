@@ -1,0 +1,172 @@
+{
+  "harness": "claude",
+  "note": "Claude Code has no escalation tool \u2014 agents return the decision as a blocking question in their result instead.",
+  "capabilities": {
+    "escalate": null,
+    "fallbackChannel": null
+  },
+  "agents": {
+    "advisor": {
+      "model": "opus",
+      "tools": [
+        "Bash",
+        "Glob",
+        "Grep",
+        "Read"
+      ],
+      "skills": [
+        "grilling",
+        "domain-modeling",
+        "codebase-design",
+        "rtk-first"
+      ]
+    },
+    "context-builder": {
+      "model": "sonnet",
+      "tools": [
+        "Bash",
+        "Glob",
+        "Grep",
+        "Read",
+        "Write"
+      ],
+      "skills": [
+        "undumbify",
+        "domain-modeling",
+        "rtk-first"
+      ]
+    },
+    "delegate": {
+      "model": "inherit",
+      "tools": [
+        "Bash",
+        "Edit",
+        "Glob",
+        "Grep",
+        "Read",
+        "Write"
+      ],
+      "skills": [
+        "rtk-first"
+      ]
+    },
+    "librarian": {
+      "model": "opus",
+      "tools": [
+        "Bash",
+        "Glob",
+        "Grep",
+        "Read",
+        "Write"
+      ],
+      "skills": [
+        "librify",
+        "rtk-first"
+      ]
+    },
+    "oracle": {
+      "model": "opus",
+      "tools": [
+        "Bash",
+        "Glob",
+        "Grep",
+        "Read"
+      ],
+      "skills": [
+        "grilling",
+        "domain-modeling",
+        "codebase-design",
+        "rtk-first"
+      ]
+    },
+    "orchestrator": {
+      "model": "sonnet",
+      "tools": [
+        "Agent",
+        "Bash",
+        "Glob",
+        "Grep",
+        "Read",
+        "Write"
+      ],
+      "skills": "rtk-first"
+    },
+    "planner": {
+      "model": "opus",
+      "tools": [
+        "Glob",
+        "Grep",
+        "Read"
+      ],
+      "skills": [
+        "undumbify",
+        "shapeify"
+      ]
+    },
+    "researcher": {
+      "model": "sonnet",
+      "tools": [
+        "Read",
+        "Write"
+      ],
+      "skills": [
+        "research",
+        "researchify"
+      ]
+    },
+    "reviewer": {
+      "model": "opus",
+      "tools": [
+        "Bash",
+        "Edit",
+        "Glob",
+        "Grep",
+        "Read",
+        "Write"
+      ],
+      "skills": [
+        "reviewify",
+        "code-review",
+        "ponytail-review",
+        "ponytail-audit",
+        "ponytail-debt",
+        "caveman-review",
+        "rtk-first"
+      ]
+    },
+    "scout": {
+      "model": "haiku",
+      "tools": [
+        "Bash",
+        "Glob",
+        "Grep",
+        "Read",
+        "Write"
+      ],
+      "skills": [
+        "caveman",
+        "rtk-first"
+      ]
+    },
+    "worker": {
+      "model": "sonnet",
+      "tools": [
+        "Bash",
+        "Edit",
+        "Glob",
+        "Grep",
+        "Read",
+        "Write"
+      ],
+      "skills": [
+        "shipify",
+        "ponytail",
+        "traceify",
+        "prototype",
+        "shadcn",
+        "caveman-commit",
+        "rtk-first"
+      ]
+    }
+  }
+}

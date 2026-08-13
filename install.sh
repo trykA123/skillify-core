@@ -69,6 +69,7 @@ done
 # type=dir means the harness expects <dir>/<skill-name>/SKILL.md
 # type=file means the harness expects <dir>/<skill-name>.md (single file)
 declare -A HARNESS_GLOBAL_DIR=(
+  [pi]="$HOME/.agents/skills"
   [qwen]="$HOME/.qwen/skills"
   [claude]="$HOME/.claude/skills"
   [cursor]="$HOME/.cursor/skills"
