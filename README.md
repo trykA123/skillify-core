@@ -5,8 +5,8 @@ Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown
 
 ## What's Inside
 
-- **Eleven skills** — `orientify`, `undumbify`, `shapeify`, `shipify`,
-  `reviewify`, `traceify`, `promptify`, `explainify`, `recordify`, `researchify`, `librify`. Each folder holds one `SKILL.md` — the skills ARE the prompts. Catalog below.
+- **Twelve skills** — `orientify`, `undumbify`, `shapeify`, `shipify`,
+  `reviewify`, `traceify`, `promptify`, `explainify`, `recordify`, `researchify`, `librify`, `audify`. Each folder holds one `SKILL.md` — the skills ARE the prompts. Catalog below.
 - **The fleet** — [`agents/`](agents/README.md): 11 harness-agnostic roles in `roles/`, per-harness wiring in `profiles/`. No credentials.
 - **Docs** — [`docs/index.html`](docs/index.html) (skill map) + [`docs/html/`](docs/html/) — 17 standalone HTML artifacts.
 
@@ -24,9 +24,12 @@ Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown
 | `recordify` | Recording — capture a sanitized session record | "Record this session" |
 | `researchify` | Investigative — gather and vet evidence from the web and given documents | "Research this" |
 | `librify` | Curatorial — compile & recall the fleet's evidence-linked lessons | "Check the library" |
+| `audify` | Forensic — measure a subject's condition against a standard you set first | "Audit this" |
 
 They chain: `orientify → undumbify → shapeify → shipify → reviewify`
 (map → diverge → converge → plan → build → judge). `traceify` is the debug entry;
+`audify` is the standing-assessment entry — no packet, so it sets the standard itself and
+reports in HTML, where `reviewify` judges a diff against an intent already written down;
 `researchify` gathers the evidence on demand; `promptify` + `explainify` harvest into the game layer; `recordify` writes the sanitized session records that feed the skill map. Ceremony scales with the work — every skill has a lite path; "just do it" overrides.
 
 ## Install
