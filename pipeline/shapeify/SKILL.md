@@ -1,79 +1,49 @@
 ---
 name: shapeify
-description: Decomposes intent into executable slices with risk annotations and revision support. Produces a living Worker Packet that can be amended in place when execution reveals wrong assumptions. Use after undumbify or when the user has a clear "what" and needs a "how."
+description: Turns architect-grade intent into a plan a junior could execute without guessing — each step naming its location, its check, and the trap. Produces a living packet that can be amended in place when execution proves an assumption wrong. Use after undumbify, or when the "what" is clear and the "how" isn't.
 ---
 
 # Shapeify
 
-Turn intent into a plan a worker can execute without guessing. The packet is a **living
-document** — it can be revised in place when shipify discovers wrong assumptions, without
-requiring a full re-shape.
+**Architect intent in, a plan a junior can execute out.** Second rung of the ladder.
 
-## Reliability Contract
+The bar is not "a competent agent could follow this". It is: *someone who doesn't know
+this codebase, and doesn't know what they don't know, executes it and produces senior
+work.* That bar forces something the usual planning skills skip — **naming the trap**.
+For any step where a reasonable person would plausibly do the wrong thing, say so.
 
-The worker (shipify) may have ONLY this packet — no conversation history, no hidden
-reasoning. Every dependency, decision, and success condition must be explicit.
+The packet is a living document. When shipify finds an assumption wrong, it comes back
+for an amendment, not a re-plan.
 
-- Stable IDs: `R*`, `I*`, `A*`, `P*`, `S*` — never renamed mid-delivery.
-- Distinguish **Fact**, **Assumption**, **Decision**. Never blur them.
-- Name concrete files, symbols, commands, observable results. Use a discovery step when
-  the exact location is unknown.
-- One authoritative instruction per change. Later sections reference by ID.
+## Reliability contract
 
-## 0. Choose Packet Weight
+The worker may have only this packet — no conversation, no hidden reasoning.
 
-Before building anything, decide which mode fits:
+- Stable IDs: `R*` `I*` `A*` `P*` `S*`. Never renamed mid-delivery.
+- **Fact**, **Assumption** and **Decision** are tagged and never blurred.
+- Concrete files, symbols, commands, observable results. Where the location is unknown,
+  write a bounded discovery step instead of hand-waving.
+- One authoritative instruction per change; later sections reference by ID.
 
-| Mode | Criteria | Output |
-|------|----------|--------|
-| **Lite** | ≤5 steps, ≤3 files, single slice, no irreversible transitions, no public contract changes | Lite Packet (below) |
-| **Full** | >5 steps, >3 files, multi-slice, irreversible transitions, public contracts, or subagent dispatch | Full Worker Packet (step 2) |
+## Pick the weight first
 
-When in doubt: lite. You can always escalate mid-execution if a step reveals hidden
-complexity (shipify will send a Revision Request).
-
-### Lite Packet
+**Lite** — ≤5 steps, ≤3 files, one slice, nothing irreversible, no public contract
+change. **Full** — anything else, or subagent dispatch. When in doubt, lite; shipify can
+escalate mid-run.
 
 ```markdown
 ## Lite Packet
-**Outcome:** <one paragraph — what exists when done>
+**Outcome:** <what exists when done>
 **Steps:**
-1. <step> — `file` → `symbol` — verify: <command/observation>
-2. ...
-**Done when:** <observable check that proves the outcome>
-**Risks:** <one line each, or "none">
-**Out of scope:** <tempting adjacent work, one line>
+1. <step> — `file` → `symbol` — verify: <command> — trap: <what a junior gets wrong, or none>
+**Done when:** <observable check proving the outcome>
+**Risks:** <one line each, or none>
+**Out of scope:** <tempting adjacent work>
 ```
 
-That's it. No Risk Register table, no Assumptions section, no Revision Log, no plan
-folder. The lite packet IS the plan. Shipify executes it directly.
+No risk register, no revision log, no plan folder. The lite packet *is* the plan.
 
-If a lite packet fails mid-execution (two consecutive failures, wrong assumption),
-shipify escalates: either a local fix, or a request to re-shape as Full.
-
----
-
-## 1. Normalize Input (Full Mode)
-
-Accept an undumbify Intent Brief or a direct request:
-
-```yaml
-intent:
-constraints:
-anti_examples:
-priorities:
-feeling_of_done:
-current_state:
-target_state:
-assumptions:
-risks:
-topology:
-```
-
-When fields are missing, inspect available evidence. Ask only when the Materiality Gate
-fires (two plausible answers → materially different, hard-to-reverse outcomes).
-
-## 2. Build The Worker Packet
+## The full packet
 
 ```markdown
 ## Worker Packet
@@ -82,155 +52,118 @@ fires (two plausible answers → materially different, hard-to-reverse outcomes)
 One paragraph: what exists when this is done.
 
 ### Scope
-- **In:** exact components and behaviors
+- **In:** exact components and behaviours
 - **Out:** tempting adjacent work, explicitly excluded
 
 ### Requirements
-- R1: <one testable behavior>
-- R2: ...
+- R1: <one testable behaviour>
 
 ### Invariants
-- I1: <boundary that must remain true, including on failure paths>
+- I1: <boundary that stays true, including on failure paths>
 
 ### Constraints & Priorities
-- Hard limits: <from intent>
-- Priority ordering: <X > Y > Z — resolves conflicts during execution>
-- Anti-examples: <what the implementation must NOT produce>
+- Hard limits, priority ordering `X > Y > Z`, anti-examples
 
 ### Evidence — tagged, never blurred
-- [FACT] <fact> — <evidence source>
-- [ASSUMPTION] <assumption> — consequence if false — how to verify during execution
-- [DECISION] <decision> — <why, and what it rules out>
+- [FACT] <fact> — <source>
+- [ASSUMPTION] <assumption> — what breaks if false — how to check during execution
+- [DECISION] <decision> — why, and what it rules out
 
 ### Risk Register
-| Slice | Risk | Likelihood | Impact | Mitigation |
-|-------|------|-----------|--------|------------|
-| S1 | <what could go wrong> | low/med/high | <what breaks> | <how shipify handles it> |
+| Slice | Risk | L | Impact | Mitigation |
 
 ### Ordered Plan
 - P1: <step> [ISOLATE | BATCH] — risk: low/med/high
-- P2: <step> [ISOLATE | BATCH] — risk: low/med/high
-  - Depends on: P1
-  - Location: `path/to/file` → `symbol`
-  - Change: <concrete behavior>
+  - Depends on: <P*>
+  - Location: `path` → `symbol`
+  - Change: <concrete behaviour>
   - Do not change: <invariant or boundary>
   - Verify: <exact command or observable check>
   - Failure signal: <what disproves this step>
+  - Trap: <the plausible wrong move here — or omit if genuinely none>
 
 ### Acceptance
-- A1: <command/observation> → <expected result> — proves: R1, I1
+- A1: <command/observation> → <expected> — proves: R1, I1
 
 ### Stop Conditions
-- <conditions requiring shipify to stop rather than improvise>
+<what makes shipify stop rather than improvise>
 
 ### Revision Log
-(empty initially — shipify appends here when amending in place)
+(shipify appends here)
 
 ### Topology
 single-agent | subagent
 ```
 
-## 3. Tag Steps With Granularity Hints
+## Traps — the junior bar
 
-Each `P*` step gets a granularity tag:
+A trap is not a risk. A risk is what might go wrong with the *system*; a trap is what
+goes wrong in the *executor's head*. Write one when a step has a plausible wrong move:
 
-- **[ISOLATE]** — Execute alone, verify immediately before next step. Use when:
-  - Risk is high (touches DB, auth, external API, irreversible state)
-  - The step's failure would obscure the next step's diagnosis
-  - The step changes a public contract
+- *"Trap: the obvious fix is to make this async — don't, the caller holds a lock."*
+- *"Trap: there are two `format()` in this file. You want the one in `Money`."*
+- *"Trap: this test passes if you delete the assertion. Passing isn't the goal."*
 
-- **[BATCH]** — Can be grouped with adjacent BATCH steps, verify once after the group.
-  Use when:
-  - Risk is low (additive change, new file, internal helper)
-  - Steps are tightly coupled (edit + its import + its type annotation)
-  - Individual verification adds no signal over group verification
+Most steps have none. Forcing one everywhere produces noise, which is how a good rule
+becomes ignored.
 
-Shipify respects these tags but may override with evidence (e.g., a BATCH step that
-fails gets promoted to ISOLATE for the retry).
+## Granularity tags
 
-## 4. Slice When Needed
+Tag every step. Shipify owns the execution semantics; you own the judgement.
 
-Split into slices (`S1`, `S2`, ...) when:
-- More than 8 steps
-- More than one deployable unit changes
-- More than one irreversible transition
-- The diff would be too large to review as one unit
-- Work can't reach green/committable in one sitting
+- **[ISOLATE]** — high risk, touches irreversible state or a public contract, or its
+  failure would obscure the next step's diagnosis.
+- **[BATCH]** — additive, internal, low risk, or so tightly coupled to its neighbours
+  that separate verification adds no signal.
 
-Each slice must:
-- Deliver one coherent outcome
-- Leave the repo green and committable on its own
-- Carry its own acceptance checks
-- Declare dependencies only on lower-numbered slices
-- Have a risk entry in the Risk Register
+## Slice when
 
-## 5. Revision Support (Living Document)
+More than 8 steps, more than one deployable unit, more than one irreversible transition,
+a diff too large to review at once, or work that can't reach green in one sitting.
 
-When shipify discovers a wrong assumption mid-execution, it sends back a **Revision
-Request** (not a full Packet Defect):
+Each slice delivers one coherent outcome, leaves the repo green and committable alone,
+carries its own acceptance checks, depends only on lower-numbered slices, and has a risk
+entry.
+
+## Amending in place
+
+Shipify sends a **Revision Request** when a step's assumption is wrong but the intent
+holds:
 
 ```markdown
 ## Revision Request
 **Step:** P<n>
-**Discovery:** <what the code/runtime actually shows>
-**Affected assumption:** <which assumption is wrong>
-**Proposed amendment:** <minimal change to the plan>
-**Blast radius:** <which other steps/slices this affects>
+**Discovery:** <what the code or runtime actually shows>
+**Affected assumption:** <which one is wrong>
+**Proposed amendment:** <minimal plan change>
+**Blast radius:** <other steps affected, or none>
 ```
 
-Shapeify processes this by:
-1. Amending the affected step/assumption in place
-2. Adding an entry to the Revision Log: `[REV <date>] P<n>: <what changed and why>`
-3. Checking if downstream steps need adjustment
-4. Returning the amended section to shipify (not regenerating the whole packet)
+Amend the step in place, append `[REV <date>] P<n>: <what changed and why>` to the
+Revision Log, check whether downstream steps move, and return only the amended section.
+One round-trip, not a re-shape.
 
-This is the feedback loop. It's cheap — one round-trip, not a full re-shape.
+Use a **Packet Defect** instead when the amendment would change requirements,
+invariants or scope — the intent was wrong, not the plan. That routes to undumbify.
 
-**When to use Packet Defect instead:** When the revision would change requirements,
-invariants, or scope — i.e., when the *intent* was wrong, not just the *plan*. That
-routes back to undumbify.
+## Plan folder
 
-## 6. Plan Folder (When Sliced or Cross-Session)
-
-Write to disk when: plan is sliced, spans sessions, or user asks for a file shipify
-reads later.
+Only when sliced, spanning sessions, or the user wants a file shipify reads later.
 
 ```
 plans/<YYYY-MM-DD>-<slug>/
-  README.md          Index, execution order, status
-  packet.md          The Worker Packet (this skill's output)
-  slices/
-    S1-<slug>.md     Self-contained slice (repeat what it needs from packet.md)
-  evidence/          shipify writes reports here
-  reviews/           reviewify writes reports here
+  README.md   index, execution order, status
+  packet.md   the packet
+  slices/     S1-<slug>.md, self-contained
+  evidence/   shipify writes here
+  reviews/    reviewify writes here
 ```
 
-Do NOT create a folder for a single-slice inline plan. The inline packet IS the artifact.
+A single-slice inline packet is the artifact. Don't make a folder for it.
 
-## 7. Quality Gate
+## Before you emit
 
-Before emitting, verify:
-
-- [ ] Every R* and I* maps to at least one P* step and one A* check
-- [ ] Every P* step has a location (or a bounded discovery step), a verify, and a failure signal
-- [ ] Every step has a granularity tag
-- [ ] Risk Register covers every slice
-- [ ] Dependencies are acyclic
-- [ ] No vague verbs ("update as needed", "handle edge cases", "ensure quality")
-- [ ] The packet is self-contained (no "see discussion above")
-- [ ] Revision Log section exists (even if empty)
-- [ ] Topology declared
-
-## Topology Behavior
-
-- **Single-agent:** The packet is your own working note. Keep it tight — you have the
-  context. The value is in making implicit decisions explicit for post-compaction recovery
-  and for potential subagent dispatch.
-- **Subagent dispatch:** The packet must be fully self-contained. A fresh agent with no
-  conversation history must be able to execute it. This is when every field earns its
-  weight.
-
-## Final Output
-
-Emit the Worker Packet. If a plan folder was written, end with its path and the first
-slice shipify should execute.
+Beyond what the template already forces: every `R*` and `I*` reaches at least one step
+and one acceptance check, dependencies are acyclic, and no step contains a vague verb —
+*update as needed*, *handle edge cases*, *ensure quality* are not instructions. If the
+packet says "see the discussion above", it has failed its own reliability contract.

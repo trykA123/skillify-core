@@ -1,220 +1,135 @@
 ---
 name: reviewify
-description: Reviews implementation against intent with two modes — solo (findings + fixes only, no ceremony) and full (team handoff with ADRs and glossary). Auto-detects mode from topology. Use after shipify completes a slice, or to review a diff/PR.
+description: Judges an implementation against what was intended rather than against taste — a few lenses deep instead of nine shallow, findings filtered to those with a location and a fix. Solo mode is a punch list; full mode is a handoff. Use after shipify, or to review a diff or PR.
 ---
 
 # Reviewify
 
-Judge the implementation against what was intended. Not against your taste. Not against
-how you would have written it. Against the packet's requirements, invariants, and the
-user's stated priorities and anti-examples.
+**Work in, verdict on whether it's actually senior-grade out.** Last rung of the ladder,
+and the only one that can catch the other three failing.
 
-## Mode Detection
+Judge against the packet's requirements, invariants, priorities and anti-examples. Not
+against your taste. Not against how you would have written it.
 
-| Signal | Mode |
-|--------|------|
-| Topology is single-agent, or findings go to same agent that built it | **Solo** |
-| Topology is subagent, or findings go to a different human/agent | **Full** |
-| User explicitly says "quick review" or "just tell me what's wrong" | **Solo** |
-| User explicitly says "formal review" or "write it up for the team" | **Full** |
+## Two modes
 
-**Solo mode:** Findings + fixes. No ADRs. No glossary. No coverage matrix. No "What
-Works" section unless something is genuinely surprising. The output is a punch list the
-builder acts on immediately.
+**Solo** — findings and fixes, nothing else. The builder was in the room. Use when the
+topology is single-agent, when findings go back to whoever wrote it, or when the user
+says "quick review" or "just tell me what's wrong".
 
-**Full mode:** Complete review report with ADRs, glossary entries, coverage matrix.
-The output is a document a stranger can act on without asking follow-up questions.
+**Full** — a document a stranger can act on without asking a follow-up question. Use for
+subagent topology, a different human, or an explicit "write it up for the team".
 
-## 1. Establish Scope
+Detection is inferred, so say which mode you picked in one word before the findings.
+A wrong guess costs the user ceremony they didn't ask for.
 
-Determine what's under review:
-- Plan folder + evidence report → review against slice's R*, I*, A*
-- Worker Packet only → review against packet requirements
-- Diff only → review against implied contract + repo conventions
+## 1. Scope, then intent, then diff
 
-Read the packet/plan BEFORE the diff. Reviewing diff-first anchors you to what was
-written instead of what was required.
+State the boundary — which files, which commit range, which slice.
 
-State the boundary: which files, which commit range, which slice.
+**Read the packet before the diff.** Reviewing diff-first anchors you to what was
+written instead of what was required, and that single ordering mistake is responsible
+for most reviews that approve the wrong thing confidently.
 
-## 2. Reconstruct Intended Design
+Then reconstruct the intended design in three to five lines: what this should do, which
+contracts it honours, which invariants it preserves, what failures it survives. Derive
+from the packet where there is one, from surrounding code where there isn't.
 
-In 3-5 lines: what should this code do, what contracts it honors, what invariants it
-preserves, what failures it survives. Derive from packet when available, from surrounding
-code when not.
+If intent cannot be reconstructed from available evidence, that is the first finding, at
+Blocking.
 
-If you can't reconstruct intent from available evidence → that's F1 at Blocking severity.
+## 2. Pick lenses with surface
 
-## 3. Review Through Lenses
-
-Select the 3–4 lenses with real surface in this diff. Go deep on those — not shallow
-on all nine. State which lenses you skipped and why (one line).
+Choose the three or four that have real surface in *this* diff and go deep. Say which
+you skipped, in one line. Nine shallow lenses find nothing.
 
 | Lens | Question |
-|------|----------|
-| Requirement fit | Satisfies R* IDs and nothing beyond scope? |
-| Invariant safety | Each I* still true, including failure paths? |
-| Boundaries | Module knows something it shouldn't? Layer skipped? |
-| Contracts | Public signatures/schemas/events change compatibly? |
-| Failure modes | What happens on timeout, partial write, retry, concurrent call? |
+|---|---|
+| Requirement fit | Satisfies the `R*` IDs, and nothing beyond scope? |
+| Invariant safety | Each `I*` still true, including on failure paths? |
+| Boundaries | Does a module know something it shouldn't? A layer skipped? |
+| Contracts | Do public signatures, schemas or events change compatibly? |
+| Failure modes | Timeout, partial write, retry, concurrent call? |
 | Data integrity | Can this corrupt, orphan, or silently drop state? |
-| Security | Inputs validated at boundary? Secrets out of logs? Auth server-side? |
-| Priority alignment | Does the implementation respect the stated priority ordering? |
-| Anti-example check | Does it produce anything the user said it must NOT be? |
+| Security | Inputs validated at the boundary, secrets out of logs, auth server-side? |
+| Priority alignment | Does it respect the stated priority ordering? |
+| Anti-example | Does it produce something the user said it must not be? |
 
-Selection heuristic: Requirement fit + Invariant safety are always in (they're the
-contract). Pick 1–2 more from the rest based on what the diff actually touches. A
-one-file internal helper doesn't need Security + Contracts + Data integrity.
+Requirement fit and invariant safety are always in — they are the contract. Pick one or
+two more from what the diff actually touches; a one-file internal helper does not need
+security, contracts and data integrity.
 
-Trace at least one realistic failure path end-to-end through the selected lenses.
+Trace at least one realistic failure path end to end.
 
-## 4. Grade Findings
+## 3. Grade, and filter hard
 
 | Severity | Meaning | Effect |
-|----------|---------|--------|
-| **Blocking** | Violates requirement, invariant, contract, or safety | Merge stops |
-| **Material** | Correct today but carries real risk or debt | Fix now or accept explicitly |
+|---|---|---|
+| **Blocking** | Violates a requirement, invariant, contract or safety property | Stops the merge |
+| **Material** | Correct today, carries real risk or debt | Fix now or accept explicitly |
 | **Advisory** | Improvement with no correctness consequence | Optional |
 
-Filter out findings that:
-- Restate what linter/type-checker already enforces
-- Are naming/layout preferences with no comprehension cost
-- Propose rewriting code the change didn't touch
-- Can't be stated with a location and concrete fix
+Drop anything that restates what the linter or type-checker already enforces, is a
+naming or layout preference with no comprehension cost, proposes rewriting code this
+change didn't touch, or can't be stated with a location and a concrete fix.
 
-Cap Advisory at 3 in solo mode, 5 in full mode.
+Cap advisory findings at three in solo, five in full. A review that lists everything
+gets read as noise and actioned as nothing.
 
-## 5. Write Findings
+## 4. Write findings
 
-### Solo mode format (lean):
+Solo:
 
 ```markdown
 ### F<n>: <problem> [Blocking | Material | Advisory]
 **Where:** `file:lines` → symbol
-**Fix:** <concrete change — file, symbol, new behavior>
+**Fix:** <concrete change — file, symbol, new behaviour>
 **Verify:** <command or observation>
 ```
 
-That's it. No principle, no "if you disagree," no evidence paragraph. The builder was
-in the room — they know the context. Give them the fix and the check.
+Full adds, for a reader with no context: the type (defect, risk, preference), which
+`R*`/`I*` it affects, what the code actually does, the concrete consequence and who it
+reaches, the one-line principle violated, and **what evidence would prove the finding
+wrong**. That last field is what stops a review being an assertion.
 
-### Full mode format (complete):
-
-```markdown
-### F<n>: <one-line problem> [Blocking | Material | Advisory]
-**Type:** Defect | Risk | Preference
-**Location:** `file:lines` → symbol
-**Affects:** R<n>, I<n> | none
-**Evidence:** What the code actually does.
-**Why it matters:** Concrete consequence — who breaks, when, how.
-**Principle:** The one-line rule this violates.
-**Fix:** Specific change. Name file, symbol, new behavior.
-**Verify:** Command or observation proving the fix.
-**If you disagree:** What evidence would make this finding wrong.
-```
-
-## 6. Record Durable Decisions (Full Mode Only)
-
-### ADRs
-Write only when ALL three hold:
-1. Constrains future work beyond this diff
-2. A real alternative was rejected for a stated reason
-3. Reversing later costs real work
-
-Write to `docs/adr/NNNN-<slug>.md` (or repo's existing location).
-
-### Glossary
-Promote a term only when ALL three hold:
-1. A competent engineer wouldn't guess the meaning
-2. It appears in code/API/schemas (not just prose)
-3. Misreading it causes a real mistake
-
-Write to `docs/GLOSSARY.md` (or repo's existing location).
-
-**Solo mode skips this entirely.** If a decision is worth recording, note it as a
-follow-up — don't block the review on documentation ceremony.
-
-## 7. Verdict
+## 5. Verdict
 
 | Verdict | Condition | Route |
-|---------|-----------|-------|
-| **Approve** | No Blocking; Materials accepted as risks | Done |
-| **Approve with fixes** | Blocking exists but design holds | → shipify |
+|---|---|---|
+| **Approve** | No blocking; materials accepted as risks | done |
+| **Approve with fixes** | Blocking exists, design holds | → shipify |
 | **Rework** | Implementation wrong, plan sound | → shipify |
-| **Replan** | Plan itself is wrong | → shapeify (Packet Defect) |
+| **Replan** | The plan itself is wrong | → shapeify, as a Packet Defect |
 
-## 8. Emit Report
+Exactly one verdict.
 
-### Solo mode:
+## 6. Durable decisions — full mode only
 
-```markdown
-## Review: <scope>
-**Verdict:** <verdict>
+An **ADR** only when all three hold: it constrains work beyond this diff, a real
+alternative was rejected for a stated reason, and reversing it later costs real work.
 
-### Findings
-<findings in lean format>
+A **glossary** entry only when all three hold: a competent engineer wouldn't guess the
+meaning, it appears in code rather than only in prose, and misreading it causes a real
+mistake.
 
-### Follow-ups
-<out-of-boundary observations, or None>
+Solo mode skips both. If something deserves recording, note it as a follow-up rather
+than blocking the review on documentation.
 
-**Skill map signal:** <one evidence entry, or "none">
-```
+## Report
 
-The skill map signal is passive harvesting. One honest phrase about the
-input quality: was the intent clear enough to review against? Did the packet's
-requirements make the review trivial, or did ambiguity cause findings? Format:
-`"P5 positive: scope boundaries were explicit, zero out-of-scope code"` or `"none"`.
+Solo is the findings, the follow-ups, the verdict, and one skill-map signal — an honest
+phrase about whether the intent was clear enough to review against. Full adds scope, the
+reconstructed design, what genuinely works, a findings table, and a coverage table
+mapping each requirement and invariant to what verified it. With a plan folder, write to
+`reviews/S<n>-review.md` and update the README.
 
-### Full mode:
+## Skip when
 
-```markdown
-## Review Report
-
-### Verdict
-<verdict>
-
-### Scope
-<commit range / files / slice>
-
-### Intended Design
-<3-5 line reconstruction>
-
-### What Works
-<decisions worth keeping — specific, not filler>
-
-### Findings
-| ID | Severity | Type | Location | Summary |
-<then full findings>
-
-### Coverage
-| Requirement / Invariant | Verified by | Result |
-
-### ADRs
-<path, title, status; or None with reason>
-
-### Glossary
-<terms added; or None>
-
-### Follow-ups
-<out-of-boundary issues; or None>
-```
-
-When a plan folder exists: write to `reviews/S<n>-review.md`, update README status.
-
-## Invocation Brake
-
-Skip for: one-line change with passing test, a revert, generated-file update, direct
+A one-line change with a passing test, a revert, a generated-file update, or a direct
 question about code. Review is a gate, not a tax.
 
-## Final Gate
+## Before you emit
 
-- [ ] Mode detected and declared
-- [ ] Scope and intended design stated before findings
-- [ ] Packet/plan read before diff (when available)
-- [ ] Every applicable lens applied; one failure path traced
-- [ ] Priority alignment and anti-example lenses checked
-- [ ] Findings have location + fix + verify (both modes)
-- [ ] Severities honest; preferences not disguised as defects
-- [ ] Solo mode: no ADR/glossary ceremony
-- [ ] Full mode: ADRs and glossary pass their three-tests-each bar
-- [ ] Exactly one verdict, routed correctly
+The filters are the part that decays first, so the honest question is whether any
+finding survived only because you wanted something to say — and whether the severities
+would look the same to someone who had to act on them tonight.

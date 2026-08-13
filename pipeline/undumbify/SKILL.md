@@ -1,147 +1,109 @@
 ---
 name: undumbify
-description: Extracts intent from ambiguity using six dimensions (constraints, anti-examples, priorities, feeling of done, pushback permission, existing knowledge). Context-aware — assesses what's already known before asking. Use when the user has a direction but it's vague, or to pressure-test a prompt before shapeify.
+description: Turns a rough prompt into intent an architect would have written — extracting what the user knows, and supplying what they didn't know to say. Use when the user has a direction but it's vague, or to pressure-test a prompt before shapeify.
 ---
 
 # Undumbify
 
-Converge intent into decisions. Unlike a generic "clarify" step, this skill extracts
-**what matters for judgment** — not technical scope (that's shapeify's job).
+**Rough prompt in, architect-grade intent out.** First rung of the ladder: the user
+brings the problem, you bring the judgment they don't have yet.
 
-## Context Awareness (Run First)
+Two jobs, and the second is the one that matters.
 
-Before asking anything, assess what you already know from:
-- Conversation history (prior decisions, stated preferences, established context)
-- Codebase state (existing patterns, tech stack, architecture)
-- The user's profile (expertise level, past feedback)
+1. **Extract** what the user knows but didn't say.
+2. **Supply** what they didn't know to say — the constraints, failure modes and
+   decisions that experience in this problem class would have surfaced.
 
-Mark each of the six dimensions as: **known** (evidence exists), **assumed** (reasonable
-default), or **unknown** (genuinely needs input). Only ask about unknowns that pass the
-Materiality Gate.
+A junior asking for "a login page" doesn't know to specify session expiry, password
+reset, or what happens on the third failed attempt. Mining them for it produces
+silence. Naming it produces a decision.
 
-This is the core difference from v1: you do NOT start from zero. You start from what the
-conversation already established and only probe the gaps.
+## Assess before asking
 
-## The Six Dimensions
+Mark each dimension **known** (evidence exists), **assumed** (a default you'll state),
+or **unknown**. Draw on conversation history, the codebase, and what the user has told
+you before. Never ask what the conversation already answered or the code already shows.
 
-Extract these from the user's input + context. These are what you need to make good
-judgment calls during implementation.
+## The six dimensions
 
-**Plain-language aliases** — use these when talking to the user; keep the formal names
-for the Intent Brief output only:
+Ask in the right-hand column. The left-hand names are for the brief only — a junior
+answers the plain question naturally and never needs the vocabulary.
 
-| Formal name | Ask the user… |
-|-------------|---------------|
-| Constraints | "What's off the table?" |
-| Anti-examples | "What should this NOT look like?" |
-| Priority ordering | "When things clash, what wins?" |
-| Feeling of done | "How will you know it's right?" |
-| Pushback permission | "Can I tell you 'no'?" |
-| Existing knowledge | "What do you already know?" |
+| Dimension | Ask | What it controls |
+|---|---|---|
+| Constraints | "What's off the table?" | Which options are impossible, not merely disliked |
+| Anti-examples | "What should this NOT look like?" | Eliminates whole regions of the space |
+| Priority ordering | "When things clash, what wins?" | Resolves conflicts silently during execution — `X > Y > Z` |
+| Feeling of done | "How will you know it's right?" | The hundred micro-decisions no checklist enumerates |
+| Pushback permission | "Can I tell you 'no'?" | Thinking partner or executor. Default: partner |
+| Existing knowledge | "What do you already know?" | Stops over- and under-explaining |
 
-A junior doesn't need to know what "anti-examples" means — they answer the plain
-question naturally.
+## The architect pass
 
-### 1. Constraints — *"What's off the table?"*
-What kills options? Tech, time, budget, compatibility, physical limits.
-Not preferences — things that make an approach literally impossible.
+Before asking anything, answer this yourself:
 
-### 2. Anti-examples — *"What should this NOT look like?"*
-High-signal negation. "Not corporate." "Not like Spotify." "Don't make it feel heavy."
-Each anti-example eliminates a region of possibility space.
+> What does someone experienced in this problem class know that the user hasn't
+> mentioned?
 
-### 3. Priority ordering — *"When things clash, what wins?"*
-Speed vs polish. Simplicity vs power. Consistency vs novelty.
-When two requirements conflict during implementation, this resolves it silently.
-Format: `X > Y > Z` (most important first).
+Produce the ones that matter as **named decisions with a recommendation** — not as
+questions. Three or four is plenty; a wall of them is its own kind of unhelpful.
 
-### 4. Feeling of done — *"How will you know it's right?"*
-Not acceptance criteria — the *experience* of completion.
-"I'll know it's right when..." / "It should feel like..."
-This guides the 100 micro-decisions no checklist can enumerate.
+- *"You haven't said what happens when the token expires mid-upload. I'd resume
+  rather than fail — say if not."*
 
-### 5. Pushback permission — *"Can I tell you 'no'?"*
-Can the agent say "I think that's wrong because..."?
-Some users want execution; others want a thinking partner.
-Default: collaborator (push back with evidence, not authority).
-
-### 6. Existing knowledge — *"What do you already know?"*
-What does the user already understand? Prevents over/under-explaining.
-"I know React well, skip basics" vs "I'm a backend dev, explain frontend concepts."
+That single move is what separates this from a clarifying questionnaire. The user is
+a noob by construction; asking them to supply architecture is asking the wrong party.
 
 ## Materiality Gate
 
-For each unknown dimension, ask:
+For each remaining unknown:
 
-> Would two plausible answers produce materially different, difficult-to-reverse outcomes?
+> Would two plausible answers produce materially different, hard-to-reverse outcomes?
 
-- **Yes:** Ask one focused question. Explain which decisions it controls.
-- **No:** Choose the conservative default, label it as assumption, continue.
-- **Discoverable from context/code:** Investigate directly, don't ask.
+- **Yes** — ask one focused question, and say which decision it controls.
+- **No** — take the conservative default, label it an assumption, move on.
+- **Discoverable** — go and look. Don't ask.
 
-Never ask a question the conversation already answered. Never ask a question whose answer
-you can observe from the codebase.
-
-## Produce The Intent Brief
+## Output — the Intent Brief
 
 ```yaml
 intent: <one line — what outcome matters and to whom>
 constraints: <hard limits that kill options>
 anti_examples: <what it must NOT be or feel like>
-priorities: <X > Y > Z ordering for conflict resolution>
-feeling_of_done: <the gestalt — "I'll know it's right when...">
-pushback: collaborator | executor
+priorities: <X > Y > Z>
+feeling_of_done: <"I'll know it's right when...">
+pushback: partner | executor
 existing_knowledge: <what to skip explaining>
 current_state: <what exists now, from evidence>
 target_state: <observable change>
-assumptions: <labeled defaults for dimensions not confirmed>
-risks: <what could go wrong, from evidence>
-skill_map_signal: <one honest line about input quality, e.g. "asked 3 questions → constraints were buried", or "none">
+supplied: <decisions you raised that the user never mentioned — the architect pass>
+assumptions: <labeled defaults, each with what breaks if wrong>
+risks: <from evidence>
+skill_map_signal: <one honest line about input quality, or "none">
 topology: single-agent | subagent
 ```
 
-Keep it lean. If a dimension is fully known from context, one line suffices. If unknown
-and immaterial, it goes in assumptions with its default. No padding.
+Lean. A dimension known from context is one line. Subagent dispatch is the only case
+where the brief must stand alone without the conversation.
 
 ## Modes
 
-| Mode | When | Output |
-|------|------|--------|
-| **Converge** | User has vague direction, needs it sharpened | Intent Brief |
-| **Pressure-test** | User has a plan/proposal, wants it stress-tested | Intent Brief + gap analysis |
-| **Handoff** | Intent is clear enough for shapeify | Intent Brief routed to shapeify |
+- **Converge** — vague direction, needs sharpening. Return the brief.
+- **Pressure-test** — user has a plan; return the brief plus what it's missing.
+- **Diverge** — user doesn't know what they want yet. Offer 2–3 options that differ on
+  a *fundamental axis*, not a variation. Blue button vs green button is one option;
+  remove the button vs make it ambient is three. Sketch each concretely enough to react
+  to, then converge on the one they point at.
+- **Handoff** — intent is clear; pass to `shapeify`. Don't do shapeify's planning.
 
-Infer the mode. Honor explicit overrides.
+## Skip when
 
-## Routing
+The task is already decision-ready, it's a direct low-risk operation, the user asked a
+quick factual question, or you're inside a traceify loop.
 
-- **Converge / Pressure-test:** Return the brief. User reviews, may iterate.
-- **Handoff:** Pass brief to `shapeify`. Do not duplicate shapeify's planning work.
+## Before you emit
 
-Use Handoff only when the user approves or the work is reversible.
-
-## Topology Behavior
-
-- **Single-agent:** The brief is an internal working note. Keep it short — you already
-  have the context. The value is in making implicit knowledge explicit for your future
-  self (post-compaction) and for shapeify if dispatched to a subagent.
-- **Subagent dispatch:** The brief must be self-contained. Include enough context that a
-  fresh agent can plan without seeing the conversation. This is when the brief earns its
-  full structure.
-
-## Invocation Brake
-
-Skip when: the task is already decision-ready, it's a direct low-risk operation, the user
-asked a quick factual question, or you're in a traceify loop (traceify has its own
-convergence path).
-
-## Final Gate
-
-- [ ] Context assessed before asking (no redundant questions)
-- [ ] All six dimensions addressed (known, assumed, or asked)
-- [ ] Materiality Gate applied to every question
-- [ ] Anti-examples captured (or confirmed absent)
-- [ ] Priority ordering exists (even if implicit from context)
-- [ ] Feeling of done captured (or confirmed as "acceptance criteria suffice")
-- [ ] Brief is lean — no padding, no restating what's obvious
-- [ ] Topology declared
+Two things that aren't checkable from the text above: every question you asked passed
+the Materiality Gate, and the architect pass produced at least one thing the user
+hadn't said. If it produced nothing, either the prompt was already good — say so — or
+you didn't look hard enough.
