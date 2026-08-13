@@ -1,119 +1,74 @@
 ---
 name: librify
-description: Compile verified lessons into the library (Shoin) and recall them on demand — evidence-linked, valenced (what worked AND what failed), sanitized entries. Write-only librarian: agents never self-publish; the librarian compiles from verified artifacts + owner feedback. Recall is bounded — top-k (≤5) summaries with confidence, status, and valence, never full dumps. Use when asked to "check the library," "what did we learn about X," after a run (post-run compile), or to capture owner feedback.
+description: Compiles verified lessons into the library and recalls them on demand — evidence-linked, valenced so failures are shelved as bluntly as wins, sanitized on entry, and recalled as bounded top-k summaries rather than dumps. Use for "check the library", "what did we learn about X", or a post-run compile.
+disable-model-invocation: true
 ---
 
 # Librify
 
-Agents forget. Every run rediscovers what a previous run already learned — or
-repeats a mistake that already cost a repair loop. Librify is the fix: a library
-(Shoin) of evidence-linked, valenced lessons, compiled by the librarian and shelved
-where any agent can look them up. Positive entries are patterns that worked; negative
-entries are post-mortems — "we tried this, it failed, don't repeat."
+Agents forget. Every run rediscovers what a previous run learned, or repeats a mistake
+that already cost a repair loop. The library is the fix — and it is a **reference shelf,
+not a brain**.
 
-The library is a location, librify is the method — the location is config-relative:
-the library lives in `shoin/` of your knowledge repo (or wherever your setup points
-the librarian). Point it at your own shelf; the skill below is the same everywhere.
+The librarian writes; agents never self-publish. Recall is a bounded lookup, never an
+ambient dump.
 
-This is the librarian's skill. It runs on demand ("check the library" / "what did we
-learn about X"), after each run (post-run compile), and when the owner gives feedback
-worth keeping. The librarian is write-only: it compiles from VERIFIED artifacts + the
-owner's feedback, never from vibes, and agents never self-publish. Recall is a bounded
-lookup — top-k summaries, flagged, never an ambient full-dump. The library is a
-reference shelf, not a brain.
+The library lives in `shoin/` of your knowledge repo, or wherever your setup points it.
+The location is config; the method below is the same everywhere.
 
-## When To Use
+## Compile only from verified sources
 
-- "Check the library" / "What did we learn about X?"
-- Post-run compile — after a run lands, harvest its verified lessons
-- Owner feedback capture — "that worked" / "never do that again" worth shelving
-- Before planning a task that touches ground already worked before
-- Compiling a sanitized record into a durable, evidence-linked entry
+Every entry comes from a **verified artifact** — a session record, field report, commit
+or research brief — or from the owner's explicit "keep this" / "never again".
 
-## When NOT To Use
+**No citation, no entry.** An entry that can't point at something is an opinion, and
+opinions shelved next to evidence are how a library becomes a rumour mill.
 
-- Capturing a raw session record — librify compiles records into entries; it doesn't
-  replace the records themselves
-- Gathering external evidence — the library is internal memory, not the web; research
-  belongs in its own step
-- Teaching the owner a competency — the library serves the agents' memory, not a
-  learning progression
-- Dumping the whole library into context → forbidden by §4 (bounded top-k only)
-- Publishing an agent's own opinion → forbidden (write-only librarian; agents never
-  self-publish)
+## Valence, stated bluntly
 
-## 1. Compile From Verified Sources Only
+Every entry is **positive** (a pattern that worked) or **negative** (a post-mortem: we
+tried this, it failed, don't repeat).
 
-The librarian writes; agents don't. Every entry is compiled from:
-- **Verified artifacts** — session records, field reports, commits, research briefs
-- **The owner's feedback** — explicit "keep this" / "never again"
+Negatives get the same plain treatment as positives — the failure mode, what happened,
+why, the guardrail, the evidence. No sugar-coating and no self-flagellation. Most memory
+systems only keep wins, which is precisely why they keep re-teaching the same mistake.
 
-**No citation → no entry.** An entry that can't point at a record, report, commit, or
-brief is not shelved. Opinions and vibes are rejected at the door.
+## Sanitize on entry
 
-## 2. Assign Valence Honestly
+Paraphrase first, strip identifiers, paths and verbatim speech, then run the privacy
+audit over the draft. **Gate must be clean** before an entry moves from `seed` to
+`accepted`. A tripped entry stays a seed or is rejected — never accepted raw.
 
-Every entry is **positive** (a pattern that worked) or **negative** (a post-mortem:
-we tried this, it failed, don't repeat). Negatives are evidence-linked failures, never
-moods. State negatives as bluntly as positives — no sugar-coating, no self-flagellation.
-The failure mode, what happened, why, the guardrail, the evidence. Nothing more.
+## Bound the recall
 
-## 3. Sanitize On Entry (the I1 gate)
+Return **at most five** summaries, never full entries. Each carries id, valence,
+category, status, a one-line summary, its evidence link and a confidence.
 
-Every entry is sanitized before it is accepted: paraphrase-first, strip identifiers,
-paths, and verbatim speech. Run the privacy audit over the draft entry —
-**gate=0 required** to move `seed → accepted`. A tripped entry stays `seed` or is
-rejected; it is never accepted raw.
-
-## 4. Bound the Recall
-
-Recall returns **top-k (≤5)** summaries — never full entries, never an ambient dump.
-Each summary carries **id · valence · category · status · one-line summary · evidence
-link · confidence**. **Superseded entries surface only their superseding pointer.**
-Results are flagged as library-derived (a reference shelf, not instructions). k is
-capped at 5; a broad query does not widen k, it sharpens the terms.
-
-## 5. Tend the Garden
-
-Entries live `seed → accepted → superseded`. On the staleness audit: promote a `seed`
-to `accepted` when the audit gate is green; demote an `accepted` entry to `superseded`
-when its failure mode is moot (the guardrail is now structural/CI-enforced) or its
-principle is replaced. Record `superseded_by`.
-
-## 6. Report
+Superseded entries surface only their superseding pointer. Results are flagged as
+library-derived — a reference, not an instruction. **A broad query does not widen k, it
+sharpens the terms.** Widening is how a shelf becomes a context dump.
 
 ```markdown
 ## Library Recall — "<query>"
-
-**k:** <≤5> · **flagged:** library-derived (reference only)
-1. **<id>** [<valence> · <category> · <status>] — <one-line summary> — confidence: <high|medium|low> — evidence: <link>
-2. ...
+**k:** <≤5> · flagged: library-derived (reference only)
+1. **<id>** [<valence> · <category> · <status>] — <summary> — confidence: <high|med|low> — evidence: <link>
 **Superseded surfaced:** <id → superseded_by, or none>
-**Open gaps:** <what the library does not yet know, or none>
+**Open gaps:** <what the library doesn't know yet, or none>
 ```
-For a post-run compile, report instead: entries shelved (id + valence), entries left
-`seed` (gate not green), and the audit result.
 
-## Topology Behavior
+A post-run compile reports instead: what was shelved with its valence, what stayed a
+seed because the gate wasn't clean, and the audit result.
 
-- **Single-agent:** librify compiles/recalls inline; the artifact is the recall brief or
-  the shelved entries.
-- **Subagent:** the librarian returns the bounded recall brief (or the compile report) to
-  the parent. The parent decides; the library decides nothing on its own.
+## Tend it
 
-## Interaction With Pipeline
+Entries live `seed → accepted → superseded`. Promote a seed when the audit is clean.
+Demote to superseded when the failure mode is moot — the guardrail became structural or
+CI-enforced — or the principle was replaced. Record `superseded_by`.
 
-- **Harvests** durable, verified artifacts — session records, research briefs, commits —
-  never raw chatter.
-- **Feeds** planning at run start via the bounded lookup protocol (§4) — never by
-  writing into another agent's context.
-- The librarian never blocks the build pipeline; recall is advisory, flagged, bounded.
+## Status
 
-## Final Gate
-
-- [ ] Compiled from verified artifacts / owner feedback only (no vibes)
-- [ ] Every entry evidence-linked (≥1 citation)
-- [ ] Valence assigned honestly (negatives are post-mortems, stated bluntly)
-- [ ] I1 gate green (gate=0) before `accepted`
-- [ ] Recall bounded (top-k ≤5), flagged, supersession respected
-- [ ] No full dumps; no self-publishing; no writes into other agents' context
+**Not currently earning its keep.** The shelf holds 22 entries, all seeded by hand on a
+single day, and nothing has been compiled organically since. This skill needs a volume
+of runs that doesn't exist yet, and until then it is governance for a shelf that isn't
+filling. It stays uninstalled deliberately; revisit when there's a run volume worth
+compiling rather than treating the emptiness as a bug to fix.

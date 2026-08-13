@@ -1,112 +1,89 @@
 ---
 name: orientify
-description: Orient yourself in a codebase you don't know before planning or changing anything. Produces a Codebase Brief — vocabulary, architecture, hot spots, seams, landmines. Use when dropped into a repo for the first time, or returning after a long gap.
+description: Orient in a codebase you don't know before planning or changing anything. Traces one real flow end to end, applies the deletion test to suspected shallow modules, names landmines without defusing them. Produces a Codebase Brief and touches nothing. Use when dropped into an unfamiliar repo, or returning after a long gap.
 disable-model-invocation: true
 argument-hint: "a codebase to orient in, or nothing to orient in the current one"
 ---
 
 # Orientify
 
-You can't have intent about a codebase you don't understand. Before explorify (diverge), undumbify (converge), shapeify (plan) — there is the cold start. Orientify is that step: build the mental model in one focused session, output a **Codebase Brief**, touch nothing.
+You can't have intent about a codebase you don't understand. Build the model, write the
+brief, change nothing.
 
-## When To Use
+Most of this an agent does natively when asked. Three things it reliably doesn't, and
+they are the reason this skill exists: **tracing one flow all the way through** rather
+than sampling files, **applying the deletion test** instead of describing structure, and
+**naming landmines without fixing them**.
 
-- Dropped into a repo you've never seen (or don't remember)
-- Returning after weeks away — the brief beats the memory
-- Before any planning skill, when the codebase is the subject
+## Quick orient
 
-## When NOT To Use
-
-- You already know the codebase — go straight to undumbify/shapeify
-- Mid-debug (traceify owns that loop — don't stop to orient)
-- Exploring options (explorify) — orientation is not ideation
-
-## Quick Orient (small scope)
-
-If ANY of these hold, produce a **5-line brief** instead of the full process:
-
-- The repo has <20 meaningful source files
-- You already have a recent orientify brief for this repo
-- The user's question is narrow ("where does X live?" / "what calls Y?")
+If the repo has under ~20 meaningful source files, you already have a recent brief, or
+the question is narrow ("where does X live?"), write five lines and stop:
 
 ```markdown
-**Shape:** <one line — what the system is, entry → exit>
+**Shape:** <what the system is, entry → exit>
 **Entry:** <where things start>
 **Flow:** <the one path, 2-3 hops>
-**Seams:** <where modules meet, one line>
-**Watch out:** <one landmine, or "none spotted">
+**Seams:** <where modules meet>
+**Watch out:** <one landmine, or none spotted>
 ```
 
-Done. No full scan, no hot-spot analysis, no deletion test. If the quick brief reveals
-hidden complexity (more modules than expected, unclear boundaries), escalate to the full
-process below.
+Escalate only if that reveals more than expected — unclear boundaries, more modules than
+the file count suggested.
 
----
+## Full orient
 
-## Full Process
+**Scan.** README, CONTEXT.md or AGENTS.md for the intended story. Entry points — main,
+index, handlers, CLI, config. `git log` walked back for what keeps changing, and why it
+attracts change. Dependencies and test layout. Note it when there's no git history
+rather than pretending the hot-spot read is complete.
 
-### 1. Scan
+**Trace one flow end to end.** Pick the path the repo exists for — a request, a run, a
+render, a build — and follow it through every module it touches. Where you had to bounce
+between files to hold one idea, that's not your failing, that's data about the design.
 
-- README / CONTEXT.md / AGENTS.md — the intended story of the repo
-- Entry points: main, index, handlers, CLI, config — where things start
-- Hot spots: `git log --oneline` walked back — what keeps changing (skip when no git history; note it)
-- Dependencies and test layout — what it leans on, how it proves itself
-- If your harness offers compact-output wrappers (for git log, tree, read, search), prefer them — same truth, less noise; otherwise run the commands directly
+**Find the seams** with the deletion test: *would deleting this concentrate complexity,
+or just move it?* A module that only moves complexity is shallow, and the seam is in the
+wrong place. Real seams are where modules meet without leaking.
 
-### 2. Trace One Flow End-To-End
+**Name the landmines.** What looks alive but isn't — unreferenced exports, half-finished
+migrations, TODO empires. What's dangerous — untested, recently rewritten, clever.
+**Name them, don't defuse them.** Fixing is a different job and doing it here means the
+orientation never finishes.
 
-Pick the one path the repo exists for — a request, a run, a render, a build — and follow it from entry to exit, through every module it touches. Note where understanding required bouncing between files. Friction is data.
-
-### 3. Find The Seams
-
-Apply the **deletion test** to anything suspected shallow: would deleting it concentrate complexity, or just move it? The seams are where modules meet without leaking.
-
-### 4. Map Dead Code And Landmines
-
-What looks alive but isn't (unreferenced exports, half-migrations, TODO empires). What is dangerous (untested, recently rewritten, clever). Landmines get **named, not defused** — fixing is out of scope.
-
-### 5. Emit The Codebase Brief
+## The brief
 
 ```markdown
 ## Codebase Brief — <repo>
 <date — briefs rot>
 
 ### Vocabulary
-<terms from CONTEXT.md/README, plus what the code actually calls things>
+<terms from the docs, plus what the code actually calls things>
 
 ### Architecture
-<~10 lines: the shape of the system, entry → seams → exits>
+<~10 lines: entry → seams → exits>
 
-### Hot Spots
-<files that keep changing — and why they attract change>
+### Hot spots
+<what keeps changing, and why it attracts change>
 
 ### Seams
-<where modules meet; what the deletion test said about each>
+<where modules meet; what the deletion test said>
 
 ### Landmines
 <dangerous, untested, half-migrated — named, not fixed>
 
-### Open Questions
+### Open questions
 <what orientation couldn't resolve — these feed undumbify or the user>
 
-### Orientation Check
-<the one flow you traced, in 3 lines — proof the map is real>
+### Orientation check
+<the flow you traced, in 3 lines — proof the map is real>
 ```
 
-## Completion Criterion
+## Done when
 
-A fresh agent reading the brief asks zero orientation questions. The session ends when the brief is written — one session, artifact only. Refactoring, fixing, or "while I'm here" work is a scope violation; record it as an Open Question instead.
+A fresh agent reading the brief asks no orientation questions. The session ends when the
+brief is written. Refactoring or fixing anything is a scope violation — it goes in Open
+Questions instead.
 
-## Final Gate
-
-- [ ] Scanned README/context, entry points, hot spots (or noted absent git history)
-- [ ] One end-to-end flow traced and recorded
-- [ ] Deletion test applied to suspected shallow modules
-- [ ] Landmines named, not fixed
-- [ ] Brief complete with all sections, dated
-- [ ] No code changed, no files modified
-
-## Topology Behavior
-
-- **Single-agent:** The brief is your working map — keep it tight, but complete. The artifact matters more than the chat.
-- **Subagent:** Return the full Codebase Brief as your output. The parent routes it: to undumbify for intent, or to the human for orientation.
+The orientation check is the part worth guarding: without a flow actually traced, the
+brief is a plausible summary of directory names rather than a map of the system.

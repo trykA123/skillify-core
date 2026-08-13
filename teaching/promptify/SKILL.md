@@ -1,164 +1,90 @@
 ---
 name: promptify
-description: Teaches you to think, speak, and prompt more concisely — by debriefing your real conversations. One concrete improvement per session; progress tracked on an evidence-based skill map, not gamification. Use after a discussion, or to coach a draft prompt.
+description: Teaches you to prompt more concisely by debriefing your real conversations — one concrete improvement per session, drawn from your own words, tracked on an evidence-based skill map. Quick mode by default. Use after a discussion, or to sharpen a draft prompt.
 disable-model-invocation: true
 argument-hint: "a discussion to debrief, or a prompt to sharpen"
 ---
 
 # Promptify
 
-Your words are the curriculum. Not generic prompt tips — YOUR phrasing, your habits, your wins and your token-waste. Each session teaches one thing you can use immediately, saves what was learned, and levels you up.
+Your words are the curriculum — not generic prompt advice. Each session teaches one
+thing you can use immediately.
 
-## When To Use
+A skill that teaches conciseness has to be concise, so: quick mode is the default,
+one lesson per session, and re-teaching is the only sin.
 
-- "Debrief that" / "what could I have said better?" after a meaty discussion
-- "Make this prompt more concise" / "how should I have asked that?"
-- A periodic review: "what patterns am I repeating?"
+## Load first
 
-## When NOT To Use
+Read the profile at `~/.agents/learnings/promptify/profile.md` (create it from
+`seeds/profile.md` on first run), the glossary, and the skill map at
+`~/.agents/learnings/progress.json`. The profile is who you're teaching — level, goals,
+known terms, observed habits.
 
-- Mid-flow: don't stop momentum to teach unless asked
-- User wants content, not coaching (a rewrite is fine; a lecture is not)
-- Trivial exchanges — one good prompt doesn't need a lesson. The map is anti-grind: evidence only for genuine moments
+## Harvest
 
-## The Skill Map
+Scan the conversation for one or two high-signal patterns:
 
-Promptify shares the **skill map** with explainify: a competency-based progression tracked
-in `~/.agents/learnings/progress.json` and rendered as `progress.html`. The full spec
-(competencies, rating scale, evidence rules, dashboard layout) lives in **game-layer.md
-at the skillify repo root** — follow it exactly.
+- **A win** — a prompt that got exactly what it wanted. Name the move it made.
+- **A cost** — wordiness, a buried request, missing format, re-stating what the agent
+  already knew.
+- **A thinking pattern** — asked *how* before *why*, bounded the options, gave an
+  authorization path.
 
-Every activation: identify which competencies were touched (usually 1–3), append honest
-evidence (positive or negative — both are valuable), append history, regenerate the
-dashboard, and tell the user one line of signal:
-- "P1 → developing: you led with intent today. 3 more to reliable."
-- "P6 gap: re-stated what the agent already knew. Trim next time."
+Use their real words. **Never invent an example** — a fabricated illustration teaches a
+habit they don't have.
 
-No XP. No streaks. No badges. The bars moving IS the reward.
+**Then check the index.** Is this pattern, or a near-twin, already in the profile's
+known terms or the `lessons/` filenames? If so: teach a different pattern from the
+harvest, go a level deeper on the same one, or skip with a one-line pointer to the
+existing lesson. Re-teaching is the only sin — it's what turns a coach into a nag.
 
-## Process
+## Teach one thing
 
-### 1. Load The Player
+One pattern, one fix, in chat, fitting on one screen: the pattern in their words, what
+it costs or earns, and the fix as before → after. Coaching a draft? Show the sharpened
+version and name the moves you made.
 
-Read `~/.agents/learnings/promptify/profile.md` (create from `seeds/profile.md` on first run), `glossary.md`, and the skill map (`progress.json`). Profile = who you're teaching: level, goals, known terms, observed habits, preferences.
+Two strong patterns means teach the better one and note the other in the profile.
 
-### 2. Harvest The Conversation
+## Quick mode is the default
 
-Scan the discussion for 1–2 high-signal patterns:
+Most teaching moments are small — a one-line fix, a reframe, a nudge. Chat only. No
+lesson file, no HTML. Still update the profile with one dated habit line and the skill
+map with an evidence entry (artifact `null`). Say so in the signal: *"quick lesson —
+chat only"*.
 
-- **A win** — a prompt that got exactly what it wanted; name the move it made
-- **A cost** — wordiness, buried request, missing context/format, re-asking what was already said
-- **A thinking pattern** — asked "how" before "why", bounded the options, gave an authorization path…
+**Escalate to a saved lesson only when** the pattern has recurred three or more times
+(a habit, not a slip), the improvement takes several moves rather than one, the user
+asks for something durable, or it's fundamental enough that re-teaching it later would
+waste real time.
 
-Use their real words. Never invent an example.
+Escalating means `lessons/YYYY-MM-DD-<slug>.md` — title, the pattern in their words,
+what it costs, the fix as before → after, and one exercise sized to their actual
+upcoming work. Optionally the same as a single-file HTML page. Add at most three
+glossary terms, each with real definitional weight and their own example.
 
-**Check the index first — no re-teaching.** Before committing to a pattern, check the profile's Known terms and the `lessons/` filenames: is this (or a near-twin) already taught? If yes, teach a different pattern from the harvest, go one level deeper on the same one, or skip with a one-line pointer to the existing lesson ('covered on <date> — link'). Re-teaching is the only sin.
+## The skill map
 
-### 3. Teach One Lesson (ZPD-sized)
+Follow `game-layer.md` at the repo root exactly — it owns the competencies, rating
+scale and evidence rules.
 
-One pattern, one fix, in chat, tight:
+Each session: identify the competencies touched (usually one to three), append honest
+evidence, append history, render with
+`bun <skillify-root>/game-render.ts <progress.json>` (skip silently if bun is absent),
+and give one line of signal:
 
-- The pattern (with their real words)
-- What it costs or earns (tokens, clarity, speed)
-- The fix (before → after, minimal)
-- Coaching a draft? Show the sharpened version + the moves you made
+- *"P1 → developing: you led with intent today. Three more to reliable."*
+- *"P6 gap: re-stated what the agent already knew. Trim next time."*
 
-A lesson fits in one screen. Two strong patterns? Teach the better one, note the other in the profile.
+**Negative evidence is as valuable as positive** and gets recorded just as plainly. No
+XP, no streaks, no badges — the bars moving is the reward.
 
-### 4. Save The Artifacts
+Then record the session through recordify. Quick mode still records.
 
-- **Lesson**: `lessons/YYYY-MM-DD-<slug>.md` (template below) — the durable record
-- **HTML** (optional, encouraged): the same lesson as a simple single-file page — inline CSS, one diagram max, no dependencies (see html-template.md)
-- **Glossary**: add 1–3 terms max per session, only terms with real definitional weight; each entry uses the session's real example
-- **Profile**: update habits (dated observations), adjust level if evidence says so
+## Done when
 
-### 5. Update The Skill Map
+They can state the fix in their own words, or try it in their next message — and the
+map holds honest evidence for what was touched.
 
-Per game-layer.md: identify competencies touched, append evidence (honest valence),
-append history, then render via `bun <skillify-root>/game-render.ts <progress.json>` (skip silently if bun isn't available).
-One line to the user — the signal, not ceremony.
-
-## Default: Quick Mode
-
-Quick mode is the **default**, not the exception. Most teaching moments are small — a
-one-line fix, a reframe, a nudge. Teach chat-only, no lesson file, no HTML. Still update
-the profile (one dated habit line) and the skill map (evidence entry, history with
-artifact `null`). Say it in the signal line: 'quick lesson — chat only'.
-
-### Escalate to full ceremony ONLY when:
-
-- The user has repeated the same pattern 3+ times (it's a habit, not a slip)
-- The lesson involves a multi-move improvement (not a one-line fix)
-- The user explicitly asks for a durable artifact ("save this", "write it up")
-- The pattern is fundamental enough that re-teaching it later would waste real time
-
-When escalating: lesson file, optional HTML, glossary, the works. But the bar is high.
-A skill that teaches conciseness must itself be concise.
-
-## Artifact Templates
-
-### Lesson
-
-```markdown
-# <One-line title>
-<date>
-
-## The pattern
-<their real words>
-
-## What it costs / earns
-
-## The fix
-<before → after>
-
-## Try it
-<one prompt-sized exercise using their own upcoming work>
-```
-
-### Glossary entry
-
-`<term> — <definition in plain words> — <their real example, one line>`
-
-### Profile
-
-```markdown
-# Profile — <user>
-<updated date>
-
-## Level
-<novice | intermediate | advanced — inferred from evidence, confirmed with user>
-
-## Goals
-<from the user — e.g. think better, speak better, be more concise>
-
-## Known terms
-<linked to glossary — never re-teach these>
-
-## Observed habits
-- <date>: <pattern observed> — <strength or cost>
-
-## Preferences
-<lesson length, HTML yes/no, register, anything they've stated>
-```
-
-## Completion Criterion
-
-The user can state the fix in their own words (or tries it in their next message) AND the skill map has honest evidence for the competencies touched. Full artifacts (lesson, glossary) only when escalation criteria were met. Quick mode: chat-only, evidence still recorded, artifact null.
-
-## Final Gate
-
-- [ ] Profile and skill map loaded before teaching
-- [ ] Pattern checked against the lessons index + glossary — no re-teaching
-- [ ] One pattern taught — real words, one screen, one fix
-- [ ] Lesson saved (md; html when encouraged) — or quick mode declared (artifact null)
-- [ ] Glossary updated with 1–3 weighted terms (when escalated)
-- [ ] Profile updated with dated observations
-- [ ] Skill map updated: evidence appended (honest valence); dashboard rendered when Node is available
-- [ ] Session recorded via recordify (sanitized session record written to RECORDS_DIR) — the done path fires it; quick mode still records
-- [ ] User told one line: which competency moved, or which gap was exposed
-- [ ] No invented examples; no lecture without a lesson
-
-## Topology Behavior
-
-- **Single-agent:** You have the conversation — harvest from it, teach in it, keep artifacts tight.
-- **Subagent:** You arrive with a transcript or a draft prompt. Harvest from what you're given; if the transcript is absent, ask for it — never fabricate a pattern.
+The failure this skill has to avoid is being unwelcome: teaching mid-flow when nobody
+asked, lecturing without a lesson, or explaining something already taught.

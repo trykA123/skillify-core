@@ -5,7 +5,7 @@ Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown
 
 ## What's Inside
 
-- **Twelve skills** — `orientify`, `explorify`, `undumbify`, `shapeify`, `shipify`,
+- **Eleven skills** — `orientify`, `undumbify`, `shapeify`, `shipify`,
   `reviewify`, `traceify`, `promptify`, `explainify`, `recordify`, `researchify`, `librify`. Each folder holds one `SKILL.md` — the skills ARE the prompts. Catalog below.
 - **The fleet** — [`agents/`](agents/README.md): orchestrator + 9 builtin snapshots + `fleet-config.json`. No credentials.
 - **Docs** — [`docs/index.html`](docs/index.html) (skill map) + [`docs/html/`](docs/html/) — 17 standalone HTML artifacts.
@@ -14,7 +14,6 @@ Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown
 | Skill | Cognitive mode | Trigger |
 |-------|---------------|---------|
 | `orientify` | Cartographic — map an unknown codebase before acting | "I just landed in this repo" |
-| `explorify` | Divergent — generate radically different options | "I don't know what I want yet" |
 | `undumbify` | Convergent — extract intent from ambiguity | "I have a direction but it's vague" |
 | `shapeify` | Structural — decompose into executable slices | "Plan this" |
 | `shipify` | Disciplined — execute with adaptive validation | "Build this" |
@@ -26,7 +25,7 @@ Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown
 | `researchify` | Investigative — gather and vet evidence from the web and given documents | "Research this" |
 | `librify` | Curatorial — compile & recall the fleet's evidence-linked lessons | "Check the library" |
 
-They chain: `orientify → explorify → undumbify → shapeify → shipify → reviewify`
+They chain: `orientify → undumbify → shapeify → shipify → reviewify`
 (map → diverge → converge → plan → build → judge). `traceify` is the debug entry;
 `researchify` gathers the evidence on demand; `promptify` + `explainify` harvest into the game layer; `recordify` writes the sanitized session records that feed the skill map. Ceremony scales with the work — every skill has a lite path; "just do it" overrides.
 
@@ -105,7 +104,7 @@ skillify/
 ├── agents/                # fleet — see agents/README.md
 ├── docs/                  # skill map + html/ artifacts
 ├── entry/                 # entry points — standalone, start anywhere
-│   ├── orientify/  explorify/  traceify/  researchify/
+│   ├── orientify/  traceify/  researchify/
 ├── pipeline/              # the build pipeline
 │   ├── undumbify/  shapeify/  shipify/  reviewify/
 ├── teaching/              # the teaching cluster — about you, not the work

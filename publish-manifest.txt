@@ -4,7 +4,6 @@
 # the A1 acceptance (diff -r staged vs public checkout empty) covers the sync.
 # Everything NOT listed here stays private — the overlay files are copied on top.
 entry/orientify/    -> entry/orientify/
-entry/explorify/    -> entry/explorify/
 entry/traceify/     -> entry/traceify/
 pipeline/undumbify/ -> pipeline/undumbify/
 pipeline/shapeify/  -> pipeline/shapeify/

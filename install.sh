@@ -19,12 +19,11 @@ set -euo pipefail
 # of the repo. An unknown skill name fails loudly instead of silent-skipping.
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILLS=(orientify explorify undumbify shapeify shipify reviewify traceify promptify explainify recordify researchify librify)
+SKILLS=(orientify undumbify shapeify shipify reviewify traceify promptify explainify recordify researchify librify)
 
 # name → family (mirrors the repo tree and the docs-site taxonomy)
 declare -A SKILL_FAMILY=(
   [orientify]=entry
-  [explorify]=entry
   [traceify]=entry
   [researchify]=entry
   [undumbify]=pipeline
