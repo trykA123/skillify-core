@@ -5,9 +5,12 @@ run it — model, tool names, thinking level, attached skills. They are kept apa
 same roles work under pi, Claude Code, or anything else.
 
 ```
-roles/       one .md per agent: name, description, and the role prompt. No harness keys.
-profiles/    one .json per harness: model, tools, skills, and the capability map.
+roles/<group>/   one .md per agent: name, description, and the role prompt. No harness keys.
+profiles/        one .json per harness: model, tools, skills, group, and the capability map.
 ```
+
+Groups are how the fleet reads at a glance, not a runtime concept — profiles address
+agents by name and carry the `role` path.
 
 ## Why split
 
@@ -51,26 +54,38 @@ channel is an optimisation, not the rule.
 
 ## The roles
 
-| Role | What it does | Skill that owns its method |
-|---|---|---|
-| `orchestrator` | Conductor — delegates, verifies, escalates | — |
-| `context-builder` | Intent extraction and the handoff pack | `undumbify` |
-| `planner` | Turns intent into an executable packet | `shapeify` |
-| `worker` | The single writer thread | `shipify` |
-| `reviewer` | Judges work against intent | `reviewify` |
-| `oracle` | Decision-consistency check (`advisor` is an alias) | — |
-| `researcher` | Autonomous web research | `researchify` |
-| `scout` | Fast codebase recon | — |
-| `librarian` | Compiles and recalls the library | `librify` |
-| `recorder` | Writes the sanitized session record | `recordify` |
-| `delegate` | Lightweight generic child | — |
+| Group | Role | What it does | Skill that owns its method |
+|---|---|---|---|
+| `oversight` | `orchestrator` | Conductor — delegates, verifies, escalates | — |
+| `oversight` | `oracle` | Decision-consistency check (`advisor` is an alias) | — |
+| `recon` | `scout` | Fast codebase recon | `orientify` |
+| `recon` | `context-builder` | Intent extraction and the handoff pack | `undumbify` |
+| `recon` | `researcher` | Autonomous web research | `researchify` |
+| `pipeline` | `planner` | Turns intent into an executable packet | `shapeify` |
+| `pipeline` | `worker` | The single writer thread | `shipify` |
+| `pipeline` | `reviewer` | Judges work against intent | `reviewify`, `audify` |
+| `memory` | `recorder` | Writes the sanitized session record | `recordify` |
 
-`orchestrator`, `librarian` and `recorder` are ours. The other eight began as snapshots
-of the `pi-subagents` package; their roles are now maintained here, and their wiring
-lives in `profiles/pi.json`.
+`orchestrator` and `recorder` are ours. The other seven began as snapshots of the
+`pi-subagents` package; their roles are now maintained here, and their wiring lives in
+`profiles/pi.json`.
 
-`oracle` and `scout` have no owning skill — decision-consistency and recon-for-handoff
+`orchestrator` and `oracle` have no owning skill — conducting and decision-consistency
 aren't covered by one, so those two role files legitimately carry their own method.
+
+## Retired
+
+Kept out on evidence, not taste. Counted from every pi session log (2,518 subagent
+spawns):
+
+| Retired | Calls | Why |
+|---|---:|---|
+| `advisor` | 0 | Was a byte-for-byte copy of `oracle`. Now an alias in both profiles. |
+| `delegate` | 0 | A generic no-context child — which is what every harness already ships as its default subagent. |
+| `librarian` | 0 | `librify`'s own Status section says it isn't earning its keep yet: 22 entries, all hand-seeded on one day. The skill stays; the fleet slot didn't. |
+
+Nine agents remain and six of them — worker, orchestrator, reviewer, planner,
+researcher, scout — account for ~97% of all calls.
 
 ## No secrets
 

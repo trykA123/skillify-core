@@ -19,35 +19,9 @@
         "undumbify",
         "domain-modeling",
         "rtk-first"
-      ]
-    },
-    "delegate": {
-      "model": "inherit",
-      "tools": [
-        "Bash",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Read",
-        "Write"
       ],
-      "skills": [
-        "rtk-first"
-      ]
-    },
-    "librarian": {
-      "model": "opus",
-      "tools": [
-        "Bash",
-        "Glob",
-        "Grep",
-        "Read",
-        "Write"
-      ],
-      "skills": [
-        "librify",
-        "rtk-first"
-      ]
+      "group": "recon",
+      "role": "roles/recon/context-builder.md"
     },
     "oracle": {
       "model": "opus",
@@ -62,7 +36,9 @@
         "domain-modeling",
         "codebase-design",
         "rtk-first"
-      ]
+      ],
+      "group": "oversight",
+      "role": "roles/oversight/oracle.md"
     },
     "orchestrator": {
       "model": "sonnet",
@@ -76,7 +52,9 @@
       ],
       "skills": [
         "rtk-first"
-      ]
+      ],
+      "group": "oversight",
+      "role": "roles/oversight/orchestrator.md"
     },
     "planner": {
       "model": "opus",
@@ -87,8 +65,11 @@
       ],
       "skills": [
         "undumbify",
-        "shapeify"
-      ]
+        "shapeify",
+        "rtk-first"
+      ],
+      "group": "pipeline",
+      "role": "roles/pipeline/planner.md"
     },
     "recorder": {
       "model": "opus",
@@ -103,7 +84,9 @@
         "recordify",
         "rtk-first"
       ],
-      "thinking": "high"
+      "thinking": "high",
+      "group": "memory",
+      "role": "roles/memory/recorder.md"
     },
     "researcher": {
       "model": "sonnet",
@@ -112,9 +95,12 @@
         "Write"
       ],
       "skills": [
+        "researchify",
         "research",
-        "researchify"
-      ]
+        "rtk-first"
+      ],
+      "group": "recon",
+      "role": "roles/recon/researcher.md"
     },
     "reviewer": {
       "model": "opus",
@@ -128,13 +114,16 @@
       ],
       "skills": [
         "reviewify",
+        "audify",
         "code-review",
         "ponytail-review",
         "ponytail-audit",
         "ponytail-debt",
         "caveman-review",
         "rtk-first"
-      ]
+      ],
+      "group": "pipeline",
+      "role": "roles/pipeline/reviewer.md"
     },
     "scout": {
       "model": "haiku",
@@ -146,9 +135,12 @@
         "Write"
       ],
       "skills": [
+        "orientify",
         "caveman",
         "rtk-first"
-      ]
+      ],
+      "group": "recon",
+      "role": "roles/recon/scout.md"
     },
     "worker": {
       "model": "sonnet",
@@ -162,13 +154,15 @@
       ],
       "skills": [
         "shipify",
-        "ponytail",
         "traceify",
+        "ponytail",
         "prototype",
         "shadcn",
         "caveman-commit",
         "rtk-first"
-      ]
+      ],
+      "group": "pipeline",
+      "role": "roles/pipeline/worker.md"
     }
   },
   "aliases": {

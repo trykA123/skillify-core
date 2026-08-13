@@ -7,7 +7,7 @@ Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown
 
 - **Twelve skills** — `orientify`, `undumbify`, `shapeify`, `shipify`,
   `reviewify`, `traceify`, `promptify`, `explainify`, `recordify`, `researchify`, `librify`, `audify`. Each folder holds one `SKILL.md` — the skills ARE the prompts. Catalog below.
-- **The fleet** — [`agents/`](agents/README.md): 11 harness-agnostic roles in `roles/`, per-harness wiring in `profiles/`. No credentials.
+- **The fleet** — [`agents/`](agents/README.md): 9 harness-agnostic roles, grouped in `roles/`, per-harness wiring in `profiles/`. No credentials.
 - **Docs** — [`docs/index.html`](docs/index.html) (skill map) + [`docs/html/`](docs/html/) — 19 standalone HTML artifacts.
 
 ## The Skills
@@ -87,9 +87,17 @@ bun game-render.ts path/to/progress.json   # or point at any progress file
 ```
 
 ## The Fleet — `agents/`
-Eleven agent roles, kept harness-agnostic: `roles/` holds what each agent is *for* —
-name, description, prompt, nothing local. `profiles/` holds what a given harness needs to
-run them: model, tool names, thinking level, attached skills, and a capability map.
+Nine agent roles in four groups, kept harness-agnostic: `roles/<group>/` holds what each
+agent is *for* — name, description, prompt, nothing local. `profiles/` holds what a given
+harness needs to run them: model, tool names, thinking level, attached skills, and a
+capability map.
+
+| Group | Agents | Does |
+|---|---|---|
+| `oversight/` | orchestrator, oracle | conducts and checks; never does the work |
+| `recon/` | scout, context-builder, researcher | gathers before the pipeline runs |
+| `pipeline/` | planner, worker, reviewer | plan → build → judge |
+| `memory/` | recorder | writes the session record |
 
 Roles speak capability names (`escalate`); profiles map them to the harness's own tools.
 Where a harness has no escalation channel, an agent returns the decision as a blocking
@@ -98,8 +106,10 @@ question instead of guessing. Full table: [agents/README.md](agents/README.md).
 ## The Docs Site — `docs/`
 - **Self-hosted** — [dojo.erzago.duckdns.org](https://dojo.erzago.duckdns.org) — the skill map behind the homelab SSO (zenauth); static files are served live from the pulled repo (no rebuild needed).
 - [`docs/index.html`](docs/index.html) — skill map: the cognitive pipeline as spec-sheet dossiers, 20px base / 1.250 (major third) type scale.
-- [`docs/html/`](docs/html/) — 17 tracked HTML artifacts: 16 `RATINGS-*.html` design
-  iterations + `progress.html`, the practice record rendered by `game-render.ts`.
+- [`docs/html/`](docs/html/) — the rendered dashboards: `progress.html` (practice record,
+  from `game-render.ts`), `usage.html` (fleet ledger, from `usage-stats.ts`), and
+  `SKILLMAP.html`. Renders, never hand-edited. The 16 `RATINGS-*.html` design iterations
+  were retired once the design landed; they remain in git history.
 
 ## Repo Structure
 ```

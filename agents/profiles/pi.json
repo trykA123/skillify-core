@@ -19,31 +19,9 @@
         "undumbify",
         "domain-modeling",
         "rtk-first"
-      ]
-    },
-    "delegate": {
-      "systemPromptMode": "append",
-      "inheritProjectContext": "true",
-      "tools": "read, grep, find, ls, bash, edit, write, contact_supervisor",
-      "inheritSkills": "false",
-      "skills": [
-        "rtk-first"
-      ]
-    },
-    "librarian": {
-      "tools": "read, grep, find, ls, bash, write, intercom",
-      "thinking": "xhigh",
-      "systemPromptMode": "replace",
-      "inheritProjectContext": "true",
-      "inheritSkills": "false",
-      "model": "deepseek/deepseek-v4-flash",
-      "fallbackModels": [
-        "deepseek/deepseek-v4-flash"
       ],
-      "skills": [
-        "librify",
-        "rtk-first"
-      ]
+      "group": "recon",
+      "role": "roles/recon/context-builder.md"
     },
     "oracle": {
       "tools": "read, grep, find, ls, bash, intercom",
@@ -61,7 +39,9 @@
         "domain-modeling",
         "codebase-design",
         "rtk-first"
-      ]
+      ],
+      "group": "oversight",
+      "role": "roles/oversight/oracle.md"
     },
     "orchestrator": {
       "aliases": "conductor, boss",
@@ -76,7 +56,9 @@
       "skills": [
         "rtk-first"
       ],
-      "maxSubagentDepth": "2"
+      "maxSubagentDepth": "2",
+      "group": "oversight",
+      "role": "roles/oversight/orchestrator.md"
     },
     "planner": {
       "tools": "read, grep, find, ls, intercom",
@@ -94,8 +76,11 @@
       ],
       "skills": [
         "undumbify",
-        "shapeify"
-      ]
+        "shapeify",
+        "rtk-first"
+      ],
+      "group": "pipeline",
+      "role": "roles/pipeline/planner.md"
     },
     "recorder": {
       "tools": "read, grep, find, ls, bash, write, intercom",
@@ -110,7 +95,9 @@
       "skills": [
         "recordify",
         "rtk-first"
-      ]
+      ],
+      "group": "memory",
+      "role": "roles/memory/recorder.md"
     },
     "researcher": {
       "tools": "read, write, web_search, fetch_content, get_search_content, intercom",
@@ -123,9 +110,12 @@
       "model": "deepseek/deepseek-v4-flash",
       "fallbackModels": [],
       "skills": [
+        "researchify",
         "research",
-        "researchify"
-      ]
+        "rtk-first"
+      ],
+      "group": "recon",
+      "role": "roles/recon/researcher.md"
     },
     "reviewer": {
       "tools": "read, grep, find, ls, bash, edit, write, intercom",
@@ -140,13 +130,16 @@
       ],
       "skills": [
         "reviewify",
+        "audify",
         "code-review",
         "ponytail-review",
         "ponytail-audit",
         "ponytail-debt",
         "caveman-review",
         "rtk-first"
-      ]
+      ],
+      "group": "pipeline",
+      "role": "roles/pipeline/reviewer.md"
     },
     "scout": {
       "tools": "read, grep, find, ls, bash, write, intercom",
@@ -159,9 +152,12 @@
       "model": "deepseek/deepseek-v4-flash",
       "fallbackModels": [],
       "skills": [
+        "orientify",
         "caveman",
         "rtk-first"
-      ]
+      ],
+      "group": "recon",
+      "role": "roles/recon/scout.md"
     },
     "worker": {
       "aliases": "developer, coder, implementer, develop",
@@ -179,13 +175,15 @@
       ],
       "skills": [
         "shipify",
-        "ponytail",
         "traceify",
+        "ponytail",
         "prototype",
         "shadcn",
         "caveman-commit",
         "rtk-first"
-      ]
+      ],
+      "group": "pipeline",
+      "role": "roles/pipeline/worker.md"
     }
   },
   "aliases": {
