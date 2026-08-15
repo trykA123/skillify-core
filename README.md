@@ -1,143 +1,66 @@
-# skillify
+# Skillify
 
-Twelve interlocking skills for AI-assisted work. Harness-agnostic — works with Qwen Code,
-Claude Code, Cursor, OpenCode, Codex, Windsurf, or any agent that reads markdown.
+Portable, harness-neutral contracts for AI-assisted work: twelve skills and ten
+agent roles. The skills define methods and handoffs; runtimes map them to their own
+tools and models.
 
-## What's Inside
+## Skills
 
-- **Twelve skills** — `orientify`, `undumbify`, `shapeify`, `shipify`,
-  `reviewify`, `traceify`, `promptify`, `explainify`, `recordify`, `researchify`, `librify`, `audify`. Each folder holds one `SKILL.md` — the skills ARE the prompts. Catalog below.
-- **The fleet** — [`agents/`](agents/README.md): 9 harness-agnostic roles, grouped in `roles/`, per-harness wiring in `profiles/`. No credentials.
-- **Docs** — [`docs/index.html`](docs/index.html) (skill map) + [`docs/html/`](docs/html/) — 19 standalone HTML artifacts.
+| Family | Skills |
+|---|---|
+| Entry | `audify`, `orientify`, `researchify`, `traceify` |
+| Pipeline | `undumbify`, `shapeify`, `shipify`, `reviewify` |
+| Teaching | `promptify`, `explainify`, `recordify` |
+| Memory | `librify` |
 
-## The Skills
-| Skill | Cognitive mode | Trigger |
-|-------|---------------|---------|
-| `orientify` | Cartographic — map an unknown codebase before acting | "I just landed in this repo" |
-| `undumbify` | Convergent — extract intent from ambiguity | "I have a direction but it's vague" |
-| `shapeify` | Structural — decompose into executable slices | "Plan this" |
-| `shipify` | Disciplined — execute with adaptive validation | "Build this" |
-| `reviewify` | Critical — judge against intent, not taste | "Review this" |
-| `traceify` | Abductive — infer cause from symptoms | "Something broke" |
-| `promptify` | Coaching — teach prompt craft from your real conversations | "Debrief that" |
-| `explainify` | Teaching — explain code and its wiring at your level | "What does this do?" |
-| `recordify` | Recording — capture a sanitized session record | "Record this session" |
-| `researchify` | Investigative — gather and vet evidence from the web and given documents | "Research this" |
-| `librify` | Curatorial — compile & recall the fleet's evidence-linked lessons | "Check the library" |
-| `audify` | Forensic — measure a subject's condition against a standard you set first | "Audit this" |
+The normal delivery path is `orientify → undumbify → shapeify → shipify → reviewify`.
+The other skills are independent entry points or opt-in side paths.
 
-They chain: `orientify → undumbify → shapeify → shipify → reviewify`
-(map → diverge → converge → plan → build → judge). `traceify` is the debug entry;
-`audify` is the standing-assessment entry — no packet, so it sets the standard itself and
-reports in HTML, where `reviewify` judges a diff against an intent already written down;
-`researchify` gathers the evidence on demand; `promptify` + `explainify` harvest into the game layer; `recordify` writes the sanitized session records that feed the skill map. Ceremony scales with the work — every skill has a lite path; "just do it" overrides.
+## Agents
+
+The portable fleet lives in [`agents/`](agents/). [`agents/manifest.json`](agents/manifest.json)
+declares each role's skills, capabilities, mutability, and aliases. Roles contain no
+vendor-specific model names, tool names, credentials, or runtime configuration.
 
 ## Install
-### Option 1: `npx skills` (recommended, uses symlinks by default)
+
+Clone the repository, then run the installer:
+
 ```bash
-# Global install (all detected agents)
-npx skills add trykA123/skillify -g
+git clone https://github.com/trykA123/skillify-core.git
+cd skillify-core
 
-# Target specific agents
-npx skills add trykA123/skillify -g -a claude-code -a cursor
-
-# Copy instead of symlink
-npx skills add trykA123/skillify -g --copy
-```
-
-### Option 2: Manual symlinks via install script
-```bash
-git clone git@github.com:trykA123/skillify.git ~/path/to/skillify
-cd ~/path/to/skillify
-
-# Auto-detect harnesses, symlink globally
+# Auto-detect known harnesses
 ./install.sh
 
-# Target specific harnesses
-./install.sh --harness qwen,claude,cursor
+# Select harnesses explicitly
+./install.sh --harness qwen,claude,codex
 
-# Project-local instead of global
-./install.sh --project
+# Install into a project-local .agents/skills directory
+./install.sh --project --harness universal
 
-# Copy instead of symlink (for systems without symlink support)
-./install.sh --copy
+# Install the portable agent fleet as well
+./install.sh --project --harness universal --with-agents
 
-# Remove
-./install.sh --uninstall
+# Use any harness directory, or copy instead of symlinking
+./install.sh --target /path/to/harness/skills
+./install.sh --copy --target /path/to/harness/skills
 ```
 
-`install.sh` supports Qwen Code, Claude Code, Cursor, OpenCode, Codex, Windsurf, and
-GitHub Copilot. The `npx skills` CLI supports even more — check `npx skills add --help`.
+Use `./install.sh --list` to see known harness presets. Symlinks are the default, so
+pulling a new Skillify revision updates installed skills automatically. Use
+`--uninstall` to remove managed installations; unrecognized destinations are never
+removed unless `--force` is supplied.
 
-### Option 3: Reference directly in rules/system prompt
-```markdown
-<!-- In CLAUDE.md, .cursorrules, AGENTS.md, QWEN.md, etc. -->
-When planning implementation, follow: /path/to/skillify/shapeify/SKILL.md
-When debugging, follow: /path/to/skillify/traceify/SKILL.md
-```
+## Supporting files
 
-## The Game Layer
-- **Spec:** [`game-layer.md`](game-layer.md) — single source of truth for both teaching skills.
-- **Runtime data:** `~/.agents/learnings/progress.json` — lives outside this repo.
-- **Session records:** `recordify` writes sanitized session records (git-native, the skill-map app's source of truth) at commit/push or an explicit "done".
-- **Dashboard:** [`docs/html/progress.html`](docs/html/progress.html) — a render, never hand-edited.
-```bash
-bun game-render.ts                      # default: reads ~/.agents/learnings/progress.json
-bun game-render.ts path/to/progress.json   # or point at any progress file
-```
+Each skill keeps its own templates, seed profiles, and small runtime helpers beside
+its `SKILL.md`. Runtime learning data, records, libraries, and durable artifacts stay
+outside this repository.
 
-## The Fleet — `agents/`
-Nine agent roles in four groups, kept harness-agnostic: `roles/<group>/` holds what each
-agent is *for* — name, description, prompt, nothing local. `profiles/` holds what a given
-harness needs to run them: model, tool names, thinking level, attached skills, and a
-capability map.
-
-| Group | Agents | Does |
-|---|---|---|
-| `oversight/` | orchestrator, oracle | conducts and checks; never does the work |
-| `recon/` | scout, context-builder, researcher | gathers before the pipeline runs |
-| `pipeline/` | planner, worker, reviewer | plan → build → judge |
-| `memory/` | recorder | writes the session record |
-
-Roles speak capability names (`escalate`); profiles map them to the harness's own tools.
-Where a harness has no escalation channel, an agent returns the decision as a blocking
-question instead of guessing. Full table: [agents/README.md](agents/README.md).
-
-## The Docs Site — `docs/`
-- **Self-hosted** — [dojo.erzago.duckdns.org](https://dojo.erzago.duckdns.org) — the skill map behind the homelab SSO (zenauth); static files are served live from the pulled repo (no rebuild needed).
-- [`docs/index.html`](docs/index.html) — skill map: the cognitive pipeline as spec-sheet dossiers, 20px base / 1.250 (major third) type scale.
-- [`docs/html/`](docs/html/) — the rendered dashboards: `progress.html` (practice record,
-  from `game-render.ts`), `usage.html` (fleet ledger, from `usage-stats.ts`), and
-  `SKILLMAP.html`. Renders, never hand-edited. The 16 `RATINGS-*.html` design iterations
-  were retired once the design landed; they remain in git history.
-
-## Repo Structure
-```
-skillify/
-├── README.md
-├── game-layer.md          # spec shared by promptify + explainify
-├── game-render.ts         # renders progress.json → progress.html
-├── install.sh             # symlink skills into AI harnesses
-├── agents/                # fleet — see agents/README.md
-├── docs/                  # skill map + html/ artifacts
-├── entry/                 # entry points — standalone, start anywhere
-│   ├── orientify/  traceify/  researchify/
-├── pipeline/              # the build pipeline
-│   ├── undumbify/  shapeify/  shipify/  reviewify/
-├── teaching/              # the teaching cluster — about you, not the work
-│   └── promptify/  explainify/  recordify/
-└── memory/                # the library — institutional memory, fleet-internal
-    └── librify/
-```
-
-## No Secrets
-No credentials — no API keys, tokens, or auth URLs. Runtime secrets live in `~/.pi/agent/auth.json`, `~/.agents/`, and the homelab `.env` — never in committed files.
-
-## Design Principles
-- **Constraints over solutions** — extract WHY, not HOW
-- **Anti-examples are high-signal** — "NOT like X" eliminates more than "like Y" generates
-- **Priority ordering resolves conflicts silently** — no asking when things clash
-- **Living documents** — plans amend in place, no full regeneration
+The root [`index.html`](index.html) is a standalone GitHub Pages presentation of the
+skills and agent fleet.
 
 ## License
+
 MIT

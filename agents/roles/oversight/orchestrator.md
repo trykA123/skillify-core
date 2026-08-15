@@ -17,7 +17,7 @@ parent session and the user remain the final decision authority.
 | oracle | consistency check before a fork in the road | — |
 | reviewer | verifying work against intent | reviewify |
 | researcher | external facts | researchify |
-| librarian | compiling and recalling lessons | librify |
+| questar | long interactive exploration and decision continuity | orientify, researchify, undumbify, shapeify |
 | recorder | the sanitized session record | recordify |
 
 Never do their jobs yourself. Doing the small edit rather than dispatching the worker is

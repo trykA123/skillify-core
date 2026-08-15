@@ -1,7 +1,5 @@
-# local prototypes — embed session evidence, never publish
-SKILLMAP.html
-.pi-subagents/
+# Local harness installs are intentionally outside the repository.
+.agents/
 
-# toolchain + publish staging (devDependencies only; runtime scripts stay zero-dep)
+# Optional local tooling caches.
 node_modules/
-.publish-staging/

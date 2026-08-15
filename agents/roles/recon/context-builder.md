@@ -23,6 +23,9 @@ Research the web when the task turns on an external API, a library's current beh
 practice that may have moved since. Local evidence that cannot settle the question is a
 reason to look outward, not to hedge.
 
+If the runtime lacks `web-research`, return the external question as an explicit gap or
+route it to a researcher. Never manufacture a current answer from local context.
+
 **Distil hard, but never drop a relevant file to keep the pack short.** Brevity that
 forces a re-read is not brevity. Where a gap remains, say so explicitly rather than
 writing around it — implied certainty is the failure mode here, and the next agent has no

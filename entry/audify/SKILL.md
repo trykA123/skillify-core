@@ -1,8 +1,6 @@
 ---
 name: audify
 description: Audits a subject that came with no contract — a repo, a discussion, a config, a running system — by fixing the standard before looking, measuring every claim, and grading findings on severity against effort. Ships a single-file HTML report a stranger can act on. Use for "audit this", "what shape is this in", "where are the bodies buried".
-disable-model-invocation: true
-argument-hint: "what to audit — a repo, a discussion, a system, a document"
 ---
 
 # Audify

@@ -1,8 +1,6 @@
 ---
 name: orientify
 description: Orient in a codebase you don't know before planning or changing anything. Traces one real flow end to end, applies the deletion test to suspected shallow modules, names landmines without defusing them. Produces a Codebase Brief and touches nothing. Use when dropped into an unfamiliar repo, or returning after a long gap.
-disable-model-invocation: true
-argument-hint: "a codebase to orient in, or nothing to orient in the current one"
 ---
 
 # Orientify

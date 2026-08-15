@@ -1,17 +1,17 @@
 ---
 name: recordify
-description: Writes a sanitized session record — the pattern practiced plus a de-identified gist, never verbatim quotes, paths, project names or identifiers — and refuses to write if the automated privacy gate finds anything. Called by promptify and explainify at their done path, or on an explicit "record this session".
-disable-model-invocation: true
+description: Writes a sanitized session record — the pattern practiced plus a de-identified gist, never verbatim quotes, paths, project names or identifiers — and refuses to write if the automated privacy gate finds anything. Called by tracked Promptify or Explainify sessions, or on an explicit "record this session".
 ---
 
 # Recordify
 
 Capture what a session practiced, with the privacy gate enforced rather than promised.
 
-This is a subroutine more than a mode of work: promptify and explainify call it when
-they finish. It fires at commit or push when the session's artifacts land, or on an
-explicit "record this". **Never write a record from memory of a session you didn't read,
-or from a transcript you haven't opened.**
+This is a subroutine more than a mode of work: tracked Promptify and Explainify sessions
+call it when they finish. It fires at commit or push when the session's artifacts land,
+or on an explicit "record this". Ephemeral teaching never records. **Never write a
+record from memory of a session you didn't read, or from a transcript you haven't
+opened.**
 
 ## The record
 
@@ -83,7 +83,7 @@ for (const f of process.argv.slice(1)) {
   else console.log('clean: ' + f);
 }
 process.exit(bad ? 1 : 0);
-" data/records/*.md
+" <records-dir>/*.md
 ```
 
 **If it returns anything, the record is refused.** Paraphrase and re-gate; do not ship

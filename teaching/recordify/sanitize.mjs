@@ -25,6 +25,7 @@
 // scripts/audit.ts) — verified at deploy time.
 
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 
 const DOUBLE_Q = /(^|[\s(])(")([^"\n]{4,})\2/g;
@@ -41,7 +42,8 @@ const HEX = /\b[0-9a-fA-F]{16,}\b|\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}
 // from recordify-curation.json when present — it never ships with the public
 // skill. Add a new real identifier to that local file (with a test), not here.
 const BASE_IDENTIFIERS = ['example-app', 'my-class', 'sample-config.json', 'demo-widget'];
-const CURATION_FILE = path.join(process.env.HOME || '/root', '.agents', 'learnings', 'recordify-curation.json');
+const LEARNING_ROOT = process.env.SKILLIFY_LEARNING_ROOT || path.join(os.homedir(), '.skillify', 'learnings');
+const CURATION_FILE = path.join(LEARNING_ROOT, 'recordify-curation.json');
 let LOCAL_IDENTIFIERS = [];
 try {
   LOCAL_IDENTIFIERS = JSON.parse(fs.readFileSync(CURATION_FILE, 'utf8')).identifiers ?? [];

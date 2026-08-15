@@ -1,93 +1,94 @@
-# Agents — harness-agnostic roles
+# Agents — harness-neutral roles
 
-A **role** is what an agent is for. **Wiring** is what a particular harness needs to
-run it — model, tool names, thinking level, attached skills. They are kept apart so the
-same roles work under pi, Claude Code, or anything else.
+A role says what an agent is for. The fleet manifest says which portable capabilities
+and skills it needs. A runtime adapter maps those capabilities to its own models and
+tools outside this repository.
 
+```text
+roles/<group>/    one Markdown contract per agent
+manifest.json     role, skills, capabilities, mutability, aliases
 ```
-roles/<group>/   one .md per agent: name, description, and the role prompt. No harness keys.
-profiles/        one .json per harness: model, tools, skills, group, and the capability map.
-```
 
-Groups are how the fleet reads at a glance, not a runtime concept — profiles address
-agents by name and carry the `role` path.
+There are no model names, vendor tool names, credentials or harness profiles in the
+fleet source of truth.
 
-## Why split
+## Why the split
 
-The roles previously carried pi's vocabulary in their frontmatter — `thinking`,
-`inheritSkills`, `systemPromptMode`, `fallbackModels`, and tool names like `read, grep,
-bash, contact_supervisor`. Claude Code expects `Read, Grep, Bash` and model tiers rather
-than `deepseek/deepseek-v4-flash`. Neither set is wrong; both are local. Anything local
-belongs in a profile.
+Model tiers, tool spellings, escalation channels and configuration schemas belong to a
+runtime. Putting them in a role makes the role work on one harness by accident and fail
+everywhere else silently.
+
+Roles therefore speak only the capabilities declared in `manifest.json`:
+
+| Capability | Meaning |
+|---|---|
+| `inspect` | Read and search local context without changing product files |
+| `shell` | Run non-interactive inspection and verification commands |
+| `artifact-write` | Write only the role's declared report, plan or session artifact |
+| `code-edit` | Change product files inside an assigned scope |
+| `web-research` | Search and fetch external sources; never execute fetched code |
+| `delegate` | Dispatch a bounded task to another role |
+| `escalate` | Ask the parent or user for a decision and wait |
+
+When a runtime lacks a required capability, the role reports the missing capability and
+stops. It never guesses a vendor-specific substitute.
 
 ## Roles point at skills; they never restate them
 
-Where a role has a skill attached, **the skill owns the method and the output format —
-the role owns the boundary**: what this agent is, what it must not do, and what it hands
-back.
+The skill owns the method and output format. The role owns its boundary, capability
+requirements and handoff. Duplicating a skill's method in a role creates two competing
+answers when either one evolves.
 
-The roles were written before the skills matured, and they had drifted into describing
-the same jobs in weaker words. `planner` carried its own plan format alongside shapeify's
-packet; `reviewer` had a `Blocker`/`Note` scale competing with reviewify's
-`Blocking`/`Material`/`Advisory`; `researcher` restated a thinner version of researchify's
-sourcing rules. A configured agent loads both, and where two instructions conflict,
-which one wins is undefined.
+## The fleet
 
-So a rule with teeth: **if you find yourself explaining how to do the work in a role
-file, the skill already says it — point at it instead.** Duplication here doesn't cost
-tokens so much as it costs a decidable answer.
-
-## Capabilities
-
-Roles speak **capability names**; profiles map them to whatever the harness actually
-offers.
-
-| Capability | Meaning | pi | Claude Code |
+| Group | Role | What it does | Method owner |
 |---|---|---|---|
-| `escalate` | Ask the dispatcher for a decision and wait for the reply | `contact_supervisor` | *(none)* |
-| `fallbackChannel` | Generic message channel when escalation is unavailable | `intercom` | *(none)* |
-
-**When a harness provides no escalation channel**, an agent that needs a decision does
-not guess and does not silently choose: it returns the decision as a blocking question
-in its result and stops. That is the portable behaviour the capability abstracts — the
-channel is an optimisation, not the rule.
-
-## The roles
-
-| Group | Role | What it does | Skill that owns its method |
-|---|---|---|---|
-| `oversight` | `orchestrator` | Conductor — delegates, verifies, escalates | — |
-| `oversight` | `oracle` | Decision-consistency check (`advisor` is an alias) | — |
+| `oversight` | `orchestrator` | Conducts delivery and verifies every handoff | role |
+| `oversight` | `oracle` | Checks decision consistency from clean context | role |
+| `session` | `questar` | Stewards long exploration and decision continuity | routes skills |
 | `recon` | `scout` | Fast codebase recon | `orientify` |
-| `recon` | `context-builder` | Intent extraction and the handoff pack | `undumbify` |
-| `recon` | `researcher` | Autonomous web research | `researchify` |
-| `pipeline` | `planner` | Turns intent into an executable packet | `shapeify` |
-| `pipeline` | `worker` | The single writer thread | `shipify` |
-| `pipeline` | `reviewer` | Judges work against intent | `reviewify`, `audify` |
-| `memory` | `recorder` | Writes the sanitized session record | `recordify` |
+| `recon` | `context-builder` | Builds a no-rediscovery intent/context handoff | `undumbify`, `researchify` |
+| `recon` | `researcher` | Focused external research | `researchify` |
+| `pipeline` | `planner` | Turns settled intent into an executable packet | `shapeify` |
+| `pipeline` | `worker` | The single product-code writer | `shipify`, `traceify` |
+| `pipeline` | `reviewer` | Reviews contracted work or audits uncontracted subjects | `reviewify`, `audify` |
+| `memory` | `recorder` | Writes one sanitized session record | `recordify` |
 
-`orchestrator` and `recorder` are ours. The other seven began as snapshots of the
-`pi-subagents` package; their roles are now maintained here, and their wiring lives in
-`profiles/pi.json`.
+Questar does not replace Planner. Questar owns a conversation whose direction is still
+forming; Planner owns the final executable packet after direction is settled.
 
-`orchestrator` and `oracle` have no owning skill — conducting and decision-consistency
-aren't covered by one, so those two role files legitimately carry their own method.
+## Mutability is part of the contract
+
+- `read-only`: no product or artifact writes.
+- `artifacts-only`: may write only the role's declared report, plan or dossier.
+- `code`: may edit product files within the assigned scope.
+
+Only Worker has `code` mutability. The fleet check rejects a manifest that grants write
+capabilities outside these boundaries.
+
+## Portable runtime contract
+
+A runtime adapter must:
+
+1. Load the role file named by `manifest.json`.
+2. Make every required capability available or fail before dispatch.
+3. Load the listed local skills by name.
+4. Enforce the declared mutability as tightly as the runtime permits.
+5. Return an unresolved decision to the parent or user when `escalate` is unavailable.
+
+Adapters may choose models and native tool names, but those choices are deployment
+configuration—not fleet source—and are intentionally not checked in here.
 
 ## Retired
 
-Kept out on evidence, not taste. Counted from every pi session log (2,518 subagent
-spawns):
+Retired roles stay out of the manifest and active role tables:
 
-| Retired | Calls | Why |
-|---|---:|---|
-| `advisor` | 0 | Was a byte-for-byte copy of `oracle`. Now an alias in both profiles. |
-| `delegate` | 0 | A generic no-context child — which is what every harness already ships as its default subagent. |
-| `librarian` | 0 | `librify`'s own Status section says it isn't earning its keep yet: 22 entries, all hand-seeded on one day. The skill stays; the fleet slot didn't. |
-
-Nine agents remain and six of them — worker, orchestrator, reviewer, planner,
-researcher, scout — account for ~97% of all calls.
+- `advisor` became an alias of `oracle`.
+- `delegate` duplicated the default child-agent capability.
+- `librarian` had no organic run volume. `librify` remains available for explicit use,
+  but no autonomous fleet slot invokes it.
 
 ## No secrets
 
-No credentials, tokens, or authenticated URLs. Runtime secrets live in the harness's own
-auth store and the homelab `.env` — never here.
+No credentials, tokens, authenticated URLs, local model identifiers or runtime auth
+paths belong in this directory.

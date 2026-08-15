@@ -11,6 +11,19 @@ This is the gate between the outside world and everything downstream: nothing be
 finding without a source, nothing non-official becomes a finding without corroboration,
 and **nothing fetched is ever executed**.
 
+## Pick the weight
+
+**Quick lookup** — use when one narrow, current question can be settled by one to three
+findings. Prefer an official source; a non-official claim still needs two genuinely
+independent sources. Return the direct answer, inline sources, confidence, and any gap in
+chat. Do not manufacture five findings or a saved artifact for a one-answer question.
+
+**Full brief** — use when the decision has multiple angles, sources conflict, the user
+asks for a durable artifact, or another agent needs a standalone handoff. Follow the
+full process below and return five to ten ranked findings.
+
+The source hierarchy and security gate are identical in both weights.
+
 ## 1. Frame it
 
 Write down the question in one sentence — which decision or gap does this serve? Then
@@ -18,7 +31,8 @@ two to four angles to attack it from (official docs, ecosystem maturity, securit
 licensing), each a separate line of inquiry. Then what counts as a finding here:
 checkable, sourceable, relevant.
 
-Done means five to ten ranked findings with open questions stated rather than hidden.
+For a full brief, done means five to ten ranked findings with open questions stated
+rather than hidden.
 
 ## 2. Source by hierarchy
 

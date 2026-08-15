@@ -1,8 +1,6 @@
 ---
 name: explainify
-description: Teaches what code does and how its parts communicate, at your level and in your repo. Answers in chat by default; produces a knowledge doc, glossary terms and a mermaid wiring diagram only when the explanation earns them. Use when you ask about code, a module or a flow, or want the connections mapped.
-disable-model-invocation: true
-argument-hint: "code to explain, or a wiring question"
+description: Teaches what code does and how its parts communicate, at your level and in your repo. Answers ephemerally in chat by default; tracks progress or produces a knowledge doc, glossary terms and a Mermaid wiring diagram only when requested or earned. Use when you ask about code, a module or a flow, or want the connections mapped.
 ---
 
 # Explainify
@@ -13,12 +11,14 @@ it afterwards — not a summary that sounds right.
 **Answer in chat. That's the default and usually the whole job.** Most tools of this kind
 can't resist producing an artifact; an unread document is worse than a good answer.
 
-## Load first
+## Choose persistence first
 
-The profile at `~/.agents/learnings/explainify/profile.md` (create from `seeds/profile.md`
-on first run) for level, known terms and preferences. The `docs/learnings/` index for what
-this repo has already taught — update rather than duplicate. The skill map at
-`~/.agents/learnings/progress.json`.
+**Ephemeral** is the default: answer from the conversation and code, and write nothing.
+
+**Tracked** requires an explicit request to track progress, save durable learning, or
+record the session. Resolve `<learning-root>` from runtime configuration; when none is
+supplied, use `~/.skillify/learnings/`. Load the Explainify profile there (create it from
+`seeds/profile.md`), the repo's `docs/learnings/` index, and the shared progress file.
 
 ## Read the actual code
 
@@ -33,8 +33,9 @@ explanation from a paraphrase of the file names.
 - **The wiring** — how the parts communicate: calls, events, data flow, config. One path
   traced, with real line references.
 
-Real examples only. If the profile says skip the basics, skip them — explaining what a
-promise is to someone who ships async code daily is how a teacher loses their audience.
+Real examples only. Use the conversation to calibrate level; in tracked mode, use the
+profile too. Explaining a basic concept to someone who already applies it daily is how a
+teacher loses their audience.
 
 ## Escalate only when earned
 
@@ -52,22 +53,23 @@ gets asked about twice** — the second question is proof the first answer didn'
   greppable against the code. One node per module with real names, edges labelled with
   the kind of communication, one diagram maximum.
 
-If none of those fire, skip this entirely, note one dated observation in the profile,
-and move on.
+If none of those fire, skip durable artifacts entirely. In tracked mode, note one dated
+observation in the profile; in ephemeral mode, stop after the chat answer.
 
-## The skill map
+## Tracked learning
 
-Shared with promptify, spec in `game-layer.md` at the repo root. Identify the
-competencies touched, append honest evidence, append history, render via
-`bun <skillify-root>/game-render.ts <progress.json>` (skip silently if bun is absent),
-and give one line of signal. No XP, no streaks.
+When tracking is requested, update the learning runtime's profile and progress store
+under `<learning-root>`. If the runtime provides a competency map, record the touched
+areas with honest positive or negative evidence. Skillify does not require a particular
+progress schema or renderer, and it keeps durable learning data outside this repository.
 
-Then record the session through recordify. Chat-only sessions still record.
+Record the session through recordify only when tracking was requested.
 
 ## Done when
 
 They can explain it back, or ask a sharper follow-up question. The sharper follow-up is
 the better signal.
 
-Nothing outside `docs/learnings/` and the skill map should have changed — explaining code
-is not licence to edit it.
+In ephemeral mode, nothing changes. In tracked mode, changes stay inside
+`<learning-root>` and the requested record destination. Explaining code is not licence
+to edit product code.

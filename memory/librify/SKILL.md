@@ -1,7 +1,6 @@
 ---
 name: librify
 description: Compiles verified lessons into the library and recalls them on demand — evidence-linked, valenced so failures are shelved as bluntly as wins, sanitized on entry, and recalled as bounded top-k summaries rather than dumps. Use for "check the library", "what did we learn about X", or a post-run compile.
-disable-model-invocation: true
 ---
 
 # Librify
@@ -13,8 +12,8 @@ not a brain**.
 The librarian writes; agents never self-publish. Recall is a bounded lookup, never an
 ambient dump.
 
-The library lives in `shoin/` of your knowledge repo, or wherever your setup points it.
-The location is config; the method below is the same everywhere.
+The library lives in the configured knowledge-library root. The location is runtime
+configuration; the method below is the same everywhere.
 
 ## Compile only from verified sources
 
@@ -67,8 +66,7 @@ CI-enforced — or the principle was replaced. Record `superseded_by`.
 
 ## Status
 
-**Not currently earning its keep.** The shelf holds 22 entries, all seeded by hand on a
-single day, and nothing has been compiled organically since. This skill needs a volume
-of runs that doesn't exist yet, and until then it is governance for a shelf that isn't
-filling. It stays uninstalled deliberately; revisit when there's a run volume worth
-compiling rather than treating the emptiness as a bug to fix.
+**Experimental, explicit-use only.** The current shelf was hand-seeded and does not yet
+show enough organic run volume to justify an autonomous librarian role. Keep the skill
+installed so a user or parent agent can recall or compile deliberately; do not schedule
+it, invoke it ambiently, or give it a fleet slot until real usage earns one.

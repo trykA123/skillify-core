@@ -28,6 +28,9 @@ embarrassment to smooth over. A brief that answers everything is the one to dist
 Return the direct answer, the findings with inline citations and confidence, the sources
 kept and dropped with reasons, and the open gaps.
 
+This role requires the runtime's `web-research` capability. If it is unavailable, report
+the missing capability and stop; local inspection is not a substitute for web research.
+
 ## Escalation
 
 Blocked, or facing a decision you don't own? Use `escalate` with
