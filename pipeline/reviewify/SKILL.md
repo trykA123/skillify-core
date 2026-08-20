@@ -11,7 +11,15 @@ and the only one that can catch the other three failing.
 Judge against the packet's requirements, invariants, priorities and anti-examples. Not
 against your taste. Not against how you would have written it.
 
-## Two modes
+## Weight and output mode
+
+Inherit **Light**, **Standard** or **Heavy** from the packet. When there is no packet,
+infer it from the review boundary and state it. Promote when the diff reveals a Heavy
+trigger; never silently demote. Light narrows coverage to the changed contract and its
+nearest failure path. Standard uses the method below. Heavy also uses
+[the Heavy review overlay](references/heavy.md).
+
+Output mode is separate from weight:
 
 **Solo** — findings and fixes, nothing else. The builder was in the room. Use when the
 topology is single-agent, when findings go back to whoever wrote it, or when the user
@@ -96,12 +104,16 @@ wrong**. That last field is what stops a review being an assertion.
 
 | Verdict | Condition | Route |
 |---|---|---|
-| **Approve** | No blocking; materials accepted as risks | done |
-| **Approve with fixes** | Blocking exists, design holds | → shipify |
+| **Approve** | No Blocking; every Material is fixed or explicitly accepted by a named decision owner with a reason | done |
+| **Fix required** | Blocking exists, design still holds | → shipify |
 | **Rework** | Implementation wrong, plan sound | → shipify |
 | **Replan** | The plan itself is wrong | → shapeify, as a Packet Defect |
 
 Exactly one verdict.
+
+After fixes, use **Delta review**: re-check each prior finding, the changed lines and the
+acceptance evidence they affect, then run a regression scan for consequences of the
+fix. Reopen the full review only when the repair changes design, scope or an invariant.
 
 ## 6. Durable decisions — full mode only
 

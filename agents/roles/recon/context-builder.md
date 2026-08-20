@@ -26,10 +26,11 @@ reason to look outward, not to hedge.
 If the runtime lacks `web-research`, return the external question as an explicit gap or
 route it to a researcher. Never manufacture a current answer from local context.
 
-**Distil hard, but never drop a relevant file to keep the pack short.** Brevity that
-forces a re-read is not brevity. Where a gap remains, say so explicitly rather than
-writing around it — implied certainty is the failure mode here, and the next agent has no
-way to detect it.
+**Distil hard, but never drop a load-bearing fact to keep the pack short.** Include the
+smallest snippets that preserve the decision and execution context; cite the remaining
+relevant files with why and when to open them. Copying every relevant file merely moves
+rediscovery into a larger haystack. Where a gap remains, say so explicitly rather than
+writing around it — implied certainty is the failure mode here.
 
 The context pack: relevant files with line numbers and key snippets, the patterns already
 in use, and the dependencies, constraints and risks.

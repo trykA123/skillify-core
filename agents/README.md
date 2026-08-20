@@ -30,6 +30,14 @@ Roles therefore speak only the capabilities declared in `manifest.json`:
 | `delegate` | Dispatch a bounded task to another role |
 | `escalate` | Ask the parent or user for a decision and wait |
 
+## Delivery weight crosses handoffs
+
+Tasks may declare `Light`, `Standard` or `Heavy` as defined at the repository root. The
+orchestrator or planner selects a weight when none is supplied, every handoff carries it,
+and downstream roles may promote it when evidence reveals more risk. They never silently
+demote an explicit weight. Weight changes artifact depth and topology, not mutability,
+authorization or safety boundaries.
+
 When a runtime lacks a required capability, the role reports the missing capability and
 stops. It never guesses a vendor-specific substitute.
 
@@ -63,8 +71,8 @@ forming; Planner owns the final executable packet after direction is settled.
 - `artifacts-only`: may write only the role's declared report, plan or dossier.
 - `code`: may edit product files within the assigned scope.
 
-Only Worker has `code` mutability. The fleet check rejects a manifest that grants write
-capabilities outside these boundaries.
+Only Worker has `code` mutability. `node scripts/validate-core.mjs` rejects a manifest
+that grants write capabilities outside these boundaries and checks role/skill links.
 
 ## Portable runtime contract
 

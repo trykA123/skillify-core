@@ -34,11 +34,19 @@ cheapest correction available.
 If the subject's intent genuinely cannot be reconstructed, that is finding number one,
 at the top severity. Everything else is measured against a guess.
 
-## 2. Gather evidence — count it or don't claim it
+## 2. Gather evidence — reproduce it or don't claim it
 
-**Every finding carries a measurement and the command that produced it.** No count, no
-finding. An estimate stated as a number is a fabrication with good posture, and the
-reader has no way to tell them apart.
+**Every finding carries a measurement or reproducible observation, plus how it was
+produced.** Include the exact command for tool-backed evidence; for discussions,
+documents and other non-command subjects, cite the message positions, sections, sample
+rule or comparison that another auditor could repeat. An estimate stated as a number is
+a fabrication with good posture, and the reader has no way to tell it apart.
+
+Label evidence by provenance when the distinction matters: **observed** (you produced
+it), **derived** (reasoning from cited observations), **self-claimed** (the subject says
+it), or **unverified** (the required check was unavailable). Findings require observed
+or derived support. Self-claimed and unverified material may define a gap, never certify
+the subject's condition.
 
 Two rules that carry the whole skill:
 
@@ -79,7 +87,7 @@ everything has ranked nothing.
 
 Drop anything that restates what a linter, type-checker or CI already enforces; is a
 preference with no cost attached; proposes rebuilding something outside the boundary; or
-can't be stated with a location, a measurement and a concrete first step.
+can't be stated with a location, reproducible evidence and a concrete first step.
 
 Cap it at **fifteen findings**. A report that lists everything gets read as noise and
 actioned as nothing. If more survive the filter, the boundary was drawn too wide — say
@@ -103,8 +111,9 @@ network at runtime. It gets opened from disk, mailed around, and read a year lat
   the yardstick rather than only the findings.
 - **The action grid** — the severity × effort matrix as the report's navigation. Clicking
   a quadrant filters the findings below it. This is the one interaction worth building.
-- **Findings** — each with severity, effort, location, the measurement, the command that
-  produced it, and a concrete first step. Evidence collapsed by default, one click away.
+- **Findings** — each with severity, effort, location, the measurement or observation,
+  its provenance, the reproduction method, and a concrete first step. Evidence collapsed
+  by default, one click away.
 - **What's sound** — the healthy part, short.
 - **Coverage** — what you looked at, what you sampled, **and what you did not examine.**
   This is the honesty field. A report without it implies total coverage it doesn't have.
@@ -149,7 +158,7 @@ that a stranger would need the navigation.
 
 ## Before you ship it
 
-Two questions, and they are the ones that decay first: **which finding's number did you
-not personally produce a command for** — and would the severities look the same to
-someone who has to spend their next week on this, or only to someone who had to write
+Two questions, and they are the ones that decay first: **which finding could another
+auditor not reproduce from what you recorded** — and would the severities look the same
+to someone who has to spend their next week on this, or only to someone who had to write
 something notable?

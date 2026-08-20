@@ -21,6 +21,7 @@ by design. Trust it, validate it, and when it's wrong say precisely how.
 below anyway — only the artifact is lighter.
 
 ```markdown
+**Weight:** Light
 **Outcome:** <what exists when done>
 **Steps:** <the few things you'll do>
 **Done when:** <the observable check you'll run>
@@ -29,6 +30,12 @@ below anyway — only the artifact is lighter.
 **With a packet**, confirm it has an outcome and scope, `R*`/`I*`, `P*` steps with
 locations and verifications and tags, `A*` checks, stop conditions, and a risk register.
 From a plan folder: README → packet → lowest ready slice, one slice per run.
+
+Inherit its weight: **Light** uses inline evidence and targeted acceptance; **Standard**
+uses the existing full flow; **Heavy** also follows
+[the Heavy execution overlay](references/heavy.md). Promote when evidence reveals a
+Heavy trigger. Never silently demote an explicit weight, and never treat lighter
+ceremony as permission to skip authorization, failure checks or data protection.
 
 Route it back rather than guessing:
 
@@ -41,7 +48,9 @@ Route it back rather than guessing:
 
 ## 2. Establish a baseline
 
-Before the first edit: read the location the first ready step names, read the owning
+Before the first edit: confirm the current branch, worktree and existing changes belong
+to this task; never switch a shared checkout or absorb another writer's edits. Then read
+the location the first ready step names, read the owning
 symbol and its nearest caller or test, run the cheapest existing check that exercises
 the affected behaviour, and record pre-existing failures as out of scope.
 
@@ -65,8 +74,10 @@ step's outcome only, run its verification, and record what changed and what was 
 Mark it complete only when evidence exists.
 
 Never begin a step while the previous is red. Name the root cause of each failure before
-attempting the next repair. **Two consecutive failures sharing a root cause means the
-step's premise is wrong, not its implementation — stop and send a Revision Request.**
+attempting the next repair. **Stop as soon as evidence falsifies the step's premise and
+send a Revision Request.** Repeated failures sharing a root cause are strong evidence of
+a bad premise, but a fixed retry count is neither required nor permission to keep trying
+after the premise is already disproved.
 
 ## 4. Classify every deviation
 
@@ -110,8 +121,9 @@ slice.
 Never claim a check ran when it didn't.
 
 Then hand to **reviewify** — you built it, so you are the worst-placed judge of whether
-it matches what was asked. Skip only for a one-line change with a passing test, or when
-the user says they're done.
+it matches what was asked. Light may skip a separate review only for a trivial,
+reversible change with a directly exercising check. Heavy always requires an independent
+review. The user may decline a review after the residual risk is stated.
 
 **Skill map signal** — one honest observation about the *input*, harvested passively:
 did the packet work first try because the intent was clear, or did a Revision Request

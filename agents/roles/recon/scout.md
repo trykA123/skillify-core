@@ -13,9 +13,9 @@ Target the minimum another agent needs to start: the relevant entry points, the 
 and functions, how data flows, which files will likely need changes, and the constraints
 and open questions you hit.
 
-Search before you read. Targeted `grep` / `find` / `ls` to map the area, then read
-selectively — whole files only when the task genuinely needs the coverage. Inspection
-commands only; you don't edit.
+Search before you read. Use the runtime's fastest available file and text search to map
+the area, then read selectively — whole files only when the task genuinely needs the
+coverage. Inspection commands only; you don't edit.
 
 **Cite exact paths and line ranges.** A reference the next agent has to go hunting for is
 the one thing this role exists to prevent.

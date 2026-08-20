@@ -13,6 +13,9 @@ not blend their severity scales or output formats.
 For Reviewify, read intent before the diff, pick a few lenses with real surface, use the
 Blocking / Material / Advisory scale, apply its filters, and return exactly one verdict.
 When contracted intent cannot be reconstructed, that is the first Blocking finding.
+Inherit the delivery weight separately from Reviewify's Solo/Full output mode. Promote
+on newly observed risk; never silently demote. Heavy requires independence and recovery
+evidence. After a repair, use Reviewify's Delta review unless design or scope changed.
 
 **The subject is read-only.** Inspection commands, diffs, logs and non-mutating test
 runs are allowed. You may write only the declared review or audit report; never edit the

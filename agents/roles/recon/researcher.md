@@ -12,11 +12,12 @@ are what separates a brief from a plausible summary of the first page of results
 
 What being a subagent adds:
 
-**Break the question into two to four distinct angles** before searching, and search them
-as separate queries. One generic query returns one generic consensus, which is how a
-research pass confirms whatever was already assumed. Angles worth covering: the direct
-answer, the authoritative source, real practical experience or benchmarks, and recent
-developments when the topic moves.
+Match depth to the supplied delivery weight. **Light** uses one or two decisive angles;
+**Standard** uses two to four; **Heavy** also seeks counter-evidence for the load-bearing
+claim. Search distinct angles separately. One generic query returns one generic
+consensus, which is how a research pass confirms whatever was already assumed. Angles
+worth covering: the direct answer, the authoritative source, real practical experience
+or benchmarks, and recent developments when the topic moves.
 
 Read the result summaries first; fetch full content only for the sources that look worth
 it. Drop the stale, the redundant and the SEO-shaped, and **say what you dropped and

@@ -10,6 +10,11 @@
     "delegate": "Dispatch bounded work to another role.",
     "escalate": "Ask the parent or user for a decision and wait."
   },
+  "weights": {
+    "Light": "Small, reversible, single-owner work with inline artifacts and targeted proof.",
+    "Standard": "Normal feature work using the full packet, execution evidence and review.",
+    "Heavy": "Production data, auth, schema, deployment, irreversible changes, public contracts or coordinated agents."
+  },
   "agents": {
     "context-builder": {
       "group": "recon",

@@ -27,12 +27,21 @@ The worker may have only this packet — no conversation, no hidden reasoning.
 
 ## Pick the weight first
 
-**Lite** — ≤5 steps, ≤3 files, one slice, nothing irreversible, no public contract
-change. **Full** — anything else, or subagent dispatch. When in doubt, lite; shipify can
-escalate mid-run.
+- **Light** — ≤5 steps, ≤3 files, one slice, one owner, reversible, no public contract
+  change. Use the compact packet below.
+- **Standard** — normal multi-file or feature work. Use the full packet unchanged.
+- **Heavy** — production data, auth, schema, deployment, irreversible changes, public
+  contracts, or coordinated agents. Use the full packet plus
+  [the Heavy overlay](references/heavy.md).
+
+When uncertain between Light and Standard, choose Light and name the assumption. Heavy
+triggers are mandatory. Weight changes artifact depth, not authorization or safety, and
+shipify may promote it when execution reveals more risk. Accept `Lite` as the legacy
+name for `Light` in existing packets.
 
 ```markdown
-## Lite Packet
+## Light Packet
+**Weight:** Light
 **Outcome:** <what exists when done>
 **Steps:**
 1. <step> — `file` → `symbol` — verify: <command> — trap: <what a junior gets wrong, or none>
@@ -41,12 +50,14 @@ escalate mid-run.
 **Out of scope:** <tempting adjacent work>
 ```
 
-No risk register, no revision log, no plan folder. The lite packet *is* the plan.
+No risk register, no revision log, no plan folder. The Light packet *is* the plan.
 
-## The full packet
+## The full packet — Standard and Heavy
 
 ```markdown
 ## Worker Packet
+
+**Weight:** Standard | Heavy
 
 ### Outcome
 One paragraph: what exists when this is done.
@@ -164,6 +175,7 @@ A single-slice inline packet is the artifact. Don't make a folder for it.
 ## Before you emit
 
 Beyond what the template already forces: every `R*` and `I*` reaches at least one step
-and one acceptance check, dependencies are acyclic, and no step contains a vague verb —
+and one acceptance check, every acceptance check names who or what produces its proof,
+dependencies are acyclic, and no step contains a vague verb —
 *update as needed*, *handle edge cases*, *ensure quality* are not instructions. If the
 packet says "see the discussion above", it has failed its own reliability contract.

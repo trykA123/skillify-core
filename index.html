@@ -174,7 +174,7 @@
     <section class="syn-hero" id="hero">
       <div class="syn-tag interactive">
         <i data-lucide="activity" style="width:14px;height:14px;"></i>
-        PHYSICAL SYNAPSE DYNAMICS // 12 NODES // 9 AUTONOMOUS ROLES
+        PHYSICAL SYNAPSE DYNAMICS // 12 NODES // 10 AUTONOMOUS ROLES
       </div>
       <h1 class="syn-h1 interactive">Neural Fluid<br>Architecture</h1>
       <p class="syn-lead interactive">
@@ -207,7 +207,7 @@
       <div class="fluid-pulse-console interactive">
         <div class="fpc-header">
           <span>NEURAL IMPULSE TELEMETRY STREAM</span>
-          <span>EMPIRICAL AUDIT: 2,518 LOGGED RUNS</span>
+          <span>CONTRACT SIMULATION // STATIC EXAMPLE</span>
         </div>
         <div class="fpc-log">
           [00:00.01] Neural wave packet initiated. Ingress flow scanned via Orientify.<br>
@@ -236,7 +236,7 @@
           <div>GROUP</div>
           <div>OPERATIONAL BOUNDARY</div>
           <div>ATTACHED SKILL</div>
-          <div style="text-align:right;">SESSION LOAD</div>
+          <div style="text-align:right;">MUTABILITY</div>
         </div>
         <div id="sft-body">
           <!-- Injected via JS -->
@@ -262,16 +262,16 @@
     ];
 
     const AGENTS = [
-      { role: "orchestrator", group: "Oversight", desc: "Conductor: delegates tasks, verifies outputs, handles escalations.", skill: "None (Own method)", load: "High" },
-      { role: "oracle", group: "Oversight", desc: "Decision-consistency check. Protects architectural invariants across turns.", skill: "None (Own method)", load: "Med" },
-      { role: "scout", group: "Recon", desc: "Fast codebase recon and territory mapping.", skill: "orientify", load: "High" },
-      { role: "context-builder", group: "Recon", desc: "Intent extraction and handoff pack synthesis.", skill: "undumbify", load: "Med" },
-      { role: "researcher", group: "Recon", desc: "Autonomous web research and multi-source evidence gathering.", skill: "researchify", load: "High" },
-      { role: "questar", group: "Session", desc: "Stewards long exploration and preserves decisions across turns.", skill: "orientify, researchify, undumbify, shapeify, explainify", load: "Med" },
-      { role: "planner", group: "Pipeline", desc: "Turns intent into an executable sliced packet.", skill: "shapeify", load: "High" },
-      { role: "worker", group: "Pipeline", desc: "The single writer thread. Executes code mutations.", skill: "shipify", load: "97% Peak" },
-      { role: "reviewer", group: "Pipeline", desc: "Judges work against original intent and invariants.", skill: "reviewify, audify", load: "High" },
-      { role: "recorder", group: "Memory", desc: "Writes sanitized, persistent session records.", skill: "recordify", load: "Med" }
+      { role: "orchestrator", group: "Oversight", desc: "Conductor: delegates tasks, verifies outputs, handles escalations.", skill: "None (Own method)", mutability: "Artifacts only" },
+      { role: "oracle", group: "Oversight", desc: "Decision-consistency check. Protects architectural invariants across turns.", skill: "None (Own method)", mutability: "Read only" },
+      { role: "scout", group: "Recon", desc: "Fast codebase recon and territory mapping.", skill: "orientify", mutability: "Artifacts only" },
+      { role: "context-builder", group: "Recon", desc: "Intent extraction and handoff pack synthesis.", skill: "undumbify", mutability: "Artifacts only" },
+      { role: "researcher", group: "Recon", desc: "Autonomous web research and multi-source evidence gathering.", skill: "researchify", mutability: "Artifacts only" },
+      { role: "questar", group: "Session", desc: "Stewards long exploration and preserves decisions across turns.", skill: "orientify, researchify, undumbify, shapeify, explainify", mutability: "Artifacts only" },
+      { role: "planner", group: "Pipeline", desc: "Turns intent into an executable sliced packet.", skill: "shapeify", mutability: "Artifacts only" },
+      { role: "worker", group: "Pipeline", desc: "The single writer thread. Executes code mutations.", skill: "shipify", mutability: "Code" },
+      { role: "reviewer", group: "Pipeline", desc: "Judges work against original intent and invariants.", skill: "reviewify, audify", mutability: "Artifacts only" },
+      { role: "recorder", group: "Memory", desc: "Writes sanitized, persistent session records.", skill: "recordify", mutability: "Artifacts only" }
     ];
 
     /* ThreeJS Ferrofluid Physical Simulation */
@@ -381,7 +381,7 @@
           <div style="color:var(--syn-emerald); font-weight:800;">${a.group}</div>
           <div style="color:#cbd5e1; line-height:1.5;">${a.desc}</div>
           <div style="color:#fff; font-weight:600;">${a.skill}</div>
-          <div style="text-align:right; font-weight:800; color:var(--syn-emerald);">${a.load}</div>
+          <div style="text-align:right; font-weight:800; color:var(--syn-emerald);">${a.mutability}</div>
         `;
         sftBody.appendChild(r);
       });
